@@ -359,7 +359,7 @@ enum can_interrupt_flag {
 };
 
 /* CAN initiliaze parameters struct */
-typedef struct {
+struct can_param {
 	uint8_t working_mode;	/* CAN working mode */
 	uint8_t resync_jump_width;	/* CAN resynchronization jump width */
 	uint8_t time_segment_1;	/* time segment 1 */
@@ -371,20 +371,20 @@ typedef struct {
 	enum control_status rec_fifo_overwrite;	/* receive FIFO overwrite mode */
 	enum control_status trans_fifo_order;	/* transmit FIFO order */
 	uint16_t prescaler;	/* baudrate prescaler */
-} can_parameter_struct;
+};
 
 /* CAN transmit message struct */
-typedef struct {
+struct can_trasnmit_message {
 	uint32_t tx_sfid;	/* standard format frame identifier */
 	uint32_t tx_efid;	/* extended format frame identifier */
 	uint8_t tx_ff;		/* format of frame, standard or extended format */
 	uint8_t tx_ft;		/* type of frame, data or remote */
 	uint8_t tx_dlen;	/* data length */
 	uint8_t tx_data[8];	/* transmit data */
-} can_trasnmit_message_struct;
+};
 
 /* CAN receive message struct */
-typedef struct {
+struct can_receive_message {
 	uint32_t rx_sfid;	/* standard format frame identifier */
 	uint32_t rx_efid;	/* extended format frame identifier */
 	uint8_t rx_ff;		/* format of frame, standard or extended format */
@@ -392,10 +392,10 @@ typedef struct {
 	uint8_t rx_dlen;	/* data length */
 	uint8_t rx_data[8];	/* receive data */
 	uint8_t rx_fi;		/* filtering index */
-} can_receive_message_struct;
+};
 
 /* CAN filter parameters struct */
-typedef struct {
+struct can_filter_param {
 	uint16_t filter_list_high;	/* filter list number high bits */
 	uint16_t filter_list_low;	/* filter list number low bits */
 	uint16_t filter_mask_high;	/* filter mask number high bits */
@@ -405,7 +405,7 @@ typedef struct {
 	uint16_t filter_mode;	/* filter mode, list or mask */
 	uint16_t filter_bits;	/* filter scale */
 	enum control_status filter_enable;	/* filter work or not */
-} can_filter_parameter_struct;
+};
 
 /* CAN errors */
 enum can_error {
@@ -651,10 +651,9 @@ void can_deinit(uint32_t can_periph);
 /* initialize CAN struct */
 void can_struct_para_init(enum can_struct_type type, void *p_struct);
 /* initialize CAN */
-enum err_status can_init(uint32_t can_periph,
-			 can_parameter_struct * can_parameter_init);
+enum err_status can_init(uint32_t can_periph, struct can_param * can_parameter_init);
 /* CAN filter init */
-void can_filter_init(can_filter_parameter_struct * can_filter_parameter_init);
+void can_filter_init(struct can_filter_param * can_filter_parameter_init);
 /* set can1 fliter start bank number */
 void can1_filter_start_bank(uint8_t start_bank);
 /* enable functions */
@@ -669,16 +668,14 @@ void can_time_trigger_mode_disable(uint32_t can_periph);
 
 /* transmit functions */
 /* transmit CAN message */
-uint8_t can_message_transmit(uint32_t can_periph,
-			     can_trasnmit_message_struct * transmit_message);
+uint8_t can_message_transmit(uint32_t can_periph, struct can_trasnmit_message * transmit_message);
 /* get CAN transmit state */
-enum can_transmit_state can_transmit_states(uint32_t can_periph,
-					    uint8_t mailbox_number);
+enum can_transmit_state can_transmit_states(uint32_t can_periph, uint8_t mailbox_number);
 /* stop CAN transmission */
 void can_transmission_stop(uint32_t can_periph, uint8_t mailbox_number);
 /* CAN receive message */
 void can_message_receive(uint32_t can_periph, uint8_t fifo_number,
-			 can_receive_message_struct * receive_message);
+			 struct can_receive_message * receive_message);
 /* CAN release fifo */
 void can_fifo_release(uint32_t can_periph, uint8_t fifo_number);
 /* CAN receive message length */

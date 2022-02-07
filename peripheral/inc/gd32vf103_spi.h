@@ -86,8 +86,7 @@
 
 /* constants definitions */
 /* SPI and I2S parameter struct definitions */
-typedef struct
-{   
+struct spi_param {   
     uint32_t device_mode;                                                       /* SPI master or slave */
     uint32_t trans_mode;                                                        /* SPI transtype */
     uint32_t frame_size;                                                        /* SPI frame size */
@@ -95,7 +94,7 @@ typedef struct
     uint32_t endian;                                                            /* SPI big endian or little endian */
     uint32_t clock_polarity_phase;                                              /* SPI clock phase and polarity */
     uint32_t prescale;                                                          /* SPI prescale factor */
-}spi_parameter_struct;
+};
 
 /* SPI mode definitions */
 #define SPI_MASTER                      (SPI_CTL0_MSTMOD | SPI_CTL0_SWNSS)      /* SPI as master */
@@ -224,9 +223,9 @@ typedef struct
 /* reset SPI and I2S */
 void spi_i2s_deinit(uint32_t spi_periph);
 /* initialize the parameters of SPI struct with the default values */
-void spi_struct_para_init(spi_parameter_struct* spi_struct);
+void spi_struct_para_init(struct spi_param* spi_struct);
 /* initialize SPI parameter */
-void spi_init(uint32_t spi_periph, spi_parameter_struct* spi_struct);
+void spi_init(uint32_t spi_periph, struct spi_param* spi_struct);
 /* enable SPI */
 void spi_enable(uint32_t spi_periph);
 /* disable SPI */

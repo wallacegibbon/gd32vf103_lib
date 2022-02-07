@@ -33,17 +33,15 @@
 
 /* constants definitions */
 /* EXMC NOR/SRAM timing initialize struct */
-typedef struct
-{
+struct exmc_norsram_timing_param {
     uint32_t bus_latency;                                               /* configure the bus latency */
     uint32_t asyn_data_setuptime;                                       /* configure the data setup time,asynchronous access mode valid */
     uint32_t asyn_address_holdtime;                                     /* configure the address hold time,asynchronous access mode valid */
     uint32_t asyn_address_setuptime;                                    /* configure the data setup time,asynchronous access mode valid */
-}exmc_norsram_timing_parameter_struct;
+};
 
 /* EXMC NOR/SRAM initialize struct */
-typedef struct
-{
+struct exmc_norsram_param {
     uint32_t norsram_region;                                            /* select the region of EXMC NOR/SRAM bank */
     uint32_t asyn_wait;                                                 /* enable or disable the asynchronous wait function */
     uint32_t nwait_signal;                                              /* enable or disable the NWAIT signal */
@@ -52,8 +50,8 @@ typedef struct
     uint32_t databus_width;                                             /* specifies the databus width of external memory */
     uint32_t memory_type;                                               /* specifies the type of external memory */
     uint32_t address_data_mux;                                          /* specifies whether the data bus and address bus are multiplexed */
-    exmc_norsram_timing_parameter_struct* read_write_timing;            /* timing parameters for read and write */
-}exmc_norsram_parameter_struct;
+    struct exmc_norsram_timing_param* read_write_timing;            /* timing parameters for read and write */
+};
 
 /* EXMC register address */
 #define EXMC_SNCTL(region)                REG32(EXMC + 0x08U * (region))                  /* EXMC SRAM/NOR flash control register */
@@ -81,11 +79,11 @@ typedef struct
 /* deinitialize EXMC NOR/SRAM region */
 void exmc_norsram_deinit(uint32_t norsram_region);
 
-/* exmc_norsram_parameter_struct parameter initialize */
-void exmc_norsram_struct_para_init(exmc_norsram_parameter_struct* exmc_norsram_init_struct);
+/* struct exmc_norsram_param parameter initialize */
+void exmc_norsram_struct_para_init(struct exmc_norsram_param* exmc_norsram_init_struct);
 
 /* initialize EXMC NOR/SRAM region */
-void exmc_norsram_init(exmc_norsram_parameter_struct* exmc_norsram_init_struct);
+void exmc_norsram_init(struct exmc_norsram_param* exmc_norsram_init_struct);
 
 /* EXMC NOR/SRAM bank enable */
 void exmc_norsram_enable(uint32_t norsram_region);

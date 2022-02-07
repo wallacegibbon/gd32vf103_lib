@@ -95,7 +95,7 @@ enum dma_channel {
 };
 
 /* DMA initialize struct */
-typedef struct {
+struct dma_param {
 	uint32_t periph_addr;	/* peripheral base address */
 	uint32_t periph_width;	/* transfer data size of peripheral */
 	uint32_t memory_addr;	/* memory base address */
@@ -106,7 +106,7 @@ typedef struct {
 	uint8_t memory_inc;	/* memory increasing mode */
 	uint8_t direction;	/* channel data transfer direction */
 
-} dma_parameter_struct;
+};
 
 #define DMA_FLAG_ADD(flag, shift)           ((flag) << ((shift) * 4U))	/* DMA channel flag shift */
 
@@ -187,10 +187,10 @@ typedef struct {
 /* deinitialize DMA a channel registers */
 void dma_deinit(uint32_t dma_periph, enum dma_channel channelx);
 /* initialize the parameters of DMA struct with the default values */
-void dma_struct_para_init(dma_parameter_struct * init_struct);
+void dma_struct_para_init(struct dma_param * init_struct);
 /* initialize DMA channel */
 void dma_init(uint32_t dma_periph, enum dma_channel channelx,
-	      dma_parameter_struct * init_struct);
+	      struct dma_param * init_struct);
 /* enable DMA circulation mode */
 void dma_circulation_enable(uint32_t dma_periph, enum dma_channel channelx);
 /* disable DMA circulation mode */

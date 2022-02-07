@@ -36,79 +36,60 @@ void can_struct_para_init(enum can_struct_type type, void *p_struct) {
 
 	/* get type of the struct */
 	switch (type) {
-		/* used for can_init() */
+	/* used for can_init() */
 	case CAN_INIT_STRUCT:
-		((can_parameter_struct *) p_struct)->auto_bus_off_recovery =
-		    DISABLE;
-		((can_parameter_struct *) p_struct)->no_auto_retrans = DISABLE;
-		((can_parameter_struct *) p_struct)->auto_wake_up = DISABLE;
-		((can_parameter_struct *) p_struct)->prescaler = 0x03FFU;
-		((can_parameter_struct *) p_struct)->rec_fifo_overwrite =
-		    DISABLE;
-		((can_parameter_struct *) p_struct)->resync_jump_width =
-		    CAN_BT_SJW_1TQ;
-		((can_parameter_struct *) p_struct)->time_segment_1 =
-		    CAN_BT_BS1_3TQ;
-		((can_parameter_struct *) p_struct)->time_segment_2 =
-		    CAN_BT_BS2_1TQ;
-		((can_parameter_struct *) p_struct)->time_triggered = DISABLE;
-		((can_parameter_struct *) p_struct)->trans_fifo_order = DISABLE;
-		((can_parameter_struct *) p_struct)->working_mode =
-		    CAN_NORMAL_MODE;
-
+		struct can_param *param = (struct can_param *) p_struct;
+		param->auto_bus_off_recovery = DISABLE;
+		param->no_auto_retrans = DISABLE;
+		param->auto_wake_up = DISABLE;
+		param->prescaler = 0x03FFU;
+		param->rec_fifo_overwrite = DISABLE;
+		param->resync_jump_width = CAN_BT_SJW_1TQ;
+		param->time_segment_1 = CAN_BT_BS1_3TQ;
+		param->time_segment_2 = CAN_BT_BS2_1TQ;
+		param->time_triggered = DISABLE;
+		param->trans_fifo_order = DISABLE;
+		param->working_mode = CAN_NORMAL_MODE;
 		break;
-		/* used for can_filter_init() */
+	/* used for can_filter_init() */
 	case CAN_FILTER_STRUCT:
-		((can_filter_parameter_struct *) p_struct)->filter_bits =
-		    CAN_FILTERBITS_32BIT;
-		((can_filter_parameter_struct *) p_struct)->filter_enable =
-		    DISABLE;
-		((can_filter_parameter_struct *) p_struct)->filter_fifo_number =
-		    CAN_FIFO0;
-		((can_filter_parameter_struct *) p_struct)->filter_list_high =
-		    0x0000U;
-		((can_filter_parameter_struct *) p_struct)->filter_list_low =
-		    0x0000U;
-		((can_filter_parameter_struct *) p_struct)->filter_mask_high =
-		    0x0000U;
-		((can_filter_parameter_struct *) p_struct)->filter_mask_low =
-		    0x0000U;
-		((can_filter_parameter_struct *) p_struct)->filter_mode =
-		    CAN_FILTERMODE_MASK;
-		((can_filter_parameter_struct *) p_struct)->filter_number = 0U;
+		struct can_filter_param *f_param = p_struct;
+		f_param->filter_bits = CAN_FILTERBITS_32BIT;
+		f_param->filter_enable = DISABLE;
+		f_param->filter_fifo_number = CAN_FIFO0;
+		f_param->filter_list_high = 0x0000U;
+		f_param->filter_list_low = 0x0000U;
+		f_param->filter_mask_high = 0x0000U;
+		f_param->filter_mask_low = 0x0000U;
+		f_param->filter_mode = CAN_FILTERMODE_MASK;
+		f_param->filter_number = 0U;
 
 		break;
-		/* used for can_message_transmit() */
+	/* used for can_message_transmit() */
 	case CAN_TX_MESSAGE_STRUCT:
-		for (i = 0U; i < 8U; i++) {
-			((can_trasnmit_message_struct *) p_struct)->tx_data[i] =
-			    0U;
-		}
+		struct can_trasnmit_message *t_msg = p_struct;
+		for (i = 0U; i < 8U; i++)
+			t_msg->tx_data[i] = 0U;
 
-		((can_trasnmit_message_struct *) p_struct)->tx_dlen = 0u;
-		((can_trasnmit_message_struct *) p_struct)->tx_efid = 0U;
-		((can_trasnmit_message_struct *) p_struct)->tx_ff =
-		    (uint8_t) CAN_FF_STANDARD;
-		((can_trasnmit_message_struct *) p_struct)->tx_ft =
-		    (uint8_t) CAN_FT_DATA;
-		((can_trasnmit_message_struct *) p_struct)->tx_sfid = 0U;
+		t_msg->tx_dlen = 0u;
+		t_msg->tx_efid = 0U;
+		t_msg->tx_ff = (uint8_t) CAN_FF_STANDARD;
+		t_msg->tx_ft = (uint8_t) CAN_FT_DATA;
+		t_msg->tx_sfid = 0U;
 
 		break;
 		/* used for can_message_receive() */
 	case CAN_RX_MESSAGE_STRUCT:
-		for (i = 0U; i < 8U; i++) {
-			((can_receive_message_struct *) p_struct)->rx_data[i] =
-			    0U;
-		}
+		struct can_receive_message *r_msg = p_struct;
+		for (i = 0U; i < 8U; i++)
+			r_msg->rx_data[i] = 0U;
 
-		((can_receive_message_struct *) p_struct)->rx_dlen = 0U;
-		((can_receive_message_struct *) p_struct)->rx_efid = 0U;
-		((can_receive_message_struct *) p_struct)->rx_ff =
-		    (uint8_t) CAN_FF_STANDARD;
-		((can_receive_message_struct *) p_struct)->rx_fi = 0U;
-		((can_receive_message_struct *) p_struct)->rx_ft =
-		    (uint8_t) CAN_FT_DATA;
-		((can_receive_message_struct *) p_struct)->rx_sfid = 0U;
+		r_msg->rx_dlen = 0U;
+		r_msg->rx_efid = 0U;
+		r_msg->rx_ff = (uint8_t) CAN_FF_STANDARD;
+		r_msg->rx_fi = 0U;
+		r_msg->rx_ft = (uint8_t) CAN_FT_DATA;
+		r_msg->rx_sfid = 0U;
 
 		break;
 
@@ -137,7 +118,7 @@ void can_struct_para_init(enum can_struct_type type, void *p_struct) {
     \retval     enum err_status: SUCCESS or ERROR
 */
 enum err_status can_init(uint32_t can_periph,
-			 can_parameter_struct * can_parameter_init) {
+		struct can_param * can_parameter_init) {
 	uint32_t timeout = CAN_TIMEOUT;
 	enum err_status flag = ERROR;
 
@@ -233,7 +214,7 @@ enum err_status can_init(uint32_t can_periph,
     \param[out] none
     \retval     none
 */
-void can_filter_init(can_filter_parameter_struct * can_filter_parameter_init) {
+void can_filter_init(struct can_filter_param * can_filter_parameter_init) {
 	uint32_t val = 0U;
 
 	val = ((uint32_t) 1) << (can_filter_parameter_init->filter_number);
@@ -412,7 +393,7 @@ void can_time_trigger_mode_disable(uint32_t can_periph) {
     \retval     mailbox_number
 */
 uint8_t can_message_transmit(uint32_t can_periph,
-			     can_trasnmit_message_struct * transmit_message) {
+			     struct can_trasnmit_message * transmit_message) {
 	uint8_t mailbox_number = CAN_MAILBOX0;
 
 	/* select one empty mailbox */
@@ -578,7 +559,7 @@ void can_transmission_stop(uint32_t can_periph, uint8_t mailbox_number) {
     \retval     none
 */
 void can_message_receive(uint32_t can_periph, uint8_t fifo_number,
-			 can_receive_message_struct * receive_message) {
+			 struct can_receive_message * receive_message) {
 	/* get the frame format */
 	receive_message->rx_ff =
 	    (uint8_t) (CAN_RFIFOMI_FF & CAN_RFIFOMI(can_periph, fifo_number));

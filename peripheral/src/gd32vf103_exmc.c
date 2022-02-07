@@ -31,12 +31,12 @@ void exmc_norsram_deinit(uint32_t norsram_region) {
 }
 
 /*!
-    \brief      initialize the structure exmc_norsram_parameter_struct
+    \brief      initialize the structure struct exmc_norsram_param
     \param[in]  none
-    \param[out] exmc_norsram_init_struct: the initialized structure exmc_norsram_parameter_struct pointer
+    \param[out] exmc_norsram_init_struct: the initialized structure struct exmc_norsram_param pointer
     \retval     none
 */
-void exmc_norsram_struct_para_init(exmc_norsram_parameter_struct *
+void exmc_norsram_struct_para_init(struct exmc_norsram_param *
 				   exmc_norsram_init_struct) {
 	/* configure the structure with default value */
 	exmc_norsram_init_struct->norsram_region = EXMC_BANK0_NORSRAM_REGION0;
@@ -60,7 +60,7 @@ void exmc_norsram_struct_para_init(exmc_norsram_parameter_struct *
 
 /*!
     \brief      initialize EXMC NOR/SRAM region
-    \param[in]  exmc_norsram_parameter_struct: configure the EXMC NOR/SRAM parameter
+    \param[in]  struct exmc_norsram_param: configure the EXMC NOR/SRAM parameter
                   norsram_region: EXMC_BANK0_NORSRAM_REGIONx,x=0
                   asyn_wait: ENABLE or DISABLE
                   nwait_signal: ENABLE or DISABLE
@@ -69,11 +69,11 @@ void exmc_norsram_struct_para_init(exmc_norsram_parameter_struct *
                   databus_width: EXMC_NOR_DATABUS_WIDTH_8B,EXMC_NOR_DATABUS_WIDTH_16B
                   memory_type: EXMC_MEMORY_TYPE_SRAM,EXMC_MEMORY_TYPE_PSRAM,EXMC_MEMORY_TYPE_NOR
                   address_data_mux: ENABLE
-                  read_write_timing: structure exmc_norsram_timing_parameter_struct set the time
+                  read_write_timing: structure struct exmc_norsram_timing_param set the time
     \param[out] none
     \retval     none
 */
-void exmc_norsram_init(exmc_norsram_parameter_struct * exmc_norsram_init_struct) {
+void exmc_norsram_init(struct exmc_norsram_param * exmc_norsram_init_struct) {
 	uint32_t snctl = 0x00000000U, sntcfg = 0x00000000U;
 
 	/* get the register value */

@@ -60,7 +60,7 @@ void timer_deinit(uint32_t timer_periph) {
     \param[out] none
     \retval     none
 */
-void timer_struct_para_init(timer_parameter_struct * initpara) {
+void timer_struct_para_init(struct timer_param * initpara) {
 	/* initialize the init parameter struct member with the default value */
 	initpara->prescaler = 0U;
 	initpara->alignedmode = TIMER_COUNTER_EDGE;
@@ -84,7 +84,7 @@ void timer_struct_para_init(timer_parameter_struct * initpara) {
     \param[out] none
     \retval     none
 */
-void timer_init(uint32_t timer_periph, timer_parameter_struct * initpara) {
+void timer_init(uint32_t timer_periph, struct timer_param * initpara) {
 	/* configure the counter prescaler value */
 	TIMER_PSC(timer_periph) = (uint16_t) initpara->prescaler;
 
@@ -463,7 +463,7 @@ void timer_event_software_generate(uint32_t timer_periph, uint16_t event) {
     \param[out] none
     \retval     none
 */
-void timer_break_struct_para_init(timer_break_parameter_struct * breakpara) {
+void timer_break_struct_para_init(struct timer_break_param * breakpara) {
 	/* initialize the break parameter struct member with the default value */
 	breakpara->runoffstate = TIMER_ROS_STATE_DISABLE;
 	breakpara->ideloffstate = TIMER_IOS_STATE_DISABLE;
@@ -489,7 +489,7 @@ void timer_break_struct_para_init(timer_break_parameter_struct * breakpara) {
     \retval     none
 */
 void timer_break_config(uint32_t timer_periph,
-			timer_break_parameter_struct * breakpara) {
+			struct timer_break_param * breakpara) {
 	TIMER_CCHP(timer_periph) =
 	    (uint32_t) (((uint32_t) (breakpara->runoffstate)) |
 			((uint32_t) (breakpara->ideloffstate)) |
@@ -599,7 +599,7 @@ void timer_channel_control_shadow_update_config(uint32_t timer_periph,
     \param[out] none
     \retval     none
 */
-void timer_channel_output_struct_para_init(timer_oc_parameter_struct * ocpara) {
+void timer_channel_output_struct_para_init(struct timer_oc_param * ocpara) {
 	/* initialize the channel output parameter struct member with the default value */
 	ocpara->outputstate = TIMER_CCX_DISABLE;
 	ocpara->outputnstate = TIMER_CCXN_DISABLE;
@@ -629,7 +629,7 @@ void timer_channel_output_struct_para_init(timer_oc_parameter_struct * ocpara) {
     \retval     none
 */
 void timer_channel_output_config(uint32_t timer_periph, uint16_t channel,
-				 timer_oc_parameter_struct * ocpara) {
+				 struct timer_oc_param * ocpara) {
 	switch (channel) {
 		/* configure TIMER_CH_0 */
 	case TIMER_CH_0:
@@ -1210,7 +1210,7 @@ void timer_channel_complementary_output_state_config(uint32_t timer_periph,
     \param[out] none
     \retval     none
 */
-void timer_channel_input_struct_para_init(timer_ic_parameter_struct * icpara) {
+void timer_channel_input_struct_para_init(struct timer_ic_param * icpara) {
 	/* initialize the channel input parameter struct member with the default value */
 	icpara->icpolarity = TIMER_IC_POLARITY_RISING;
 	icpara->icselection = TIMER_IC_SELECTION_DIRECTTI;
@@ -1239,7 +1239,7 @@ void timer_channel_input_struct_para_init(timer_ic_parameter_struct * icpara) {
     \retval      none
 */
 void timer_input_capture_config(uint32_t timer_periph, uint16_t channel,
-				timer_ic_parameter_struct * icpara) {
+				struct timer_ic_param * icpara) {
 	switch (channel) {
 		/* configure TIMER_CH_0 */
 	case TIMER_CH_0:
@@ -1451,7 +1451,7 @@ uint32_t timer_channel_capture_value_register_read(uint32_t timer_periph,
     \retval     none
 */
 void timer_input_pwm_capture_config(uint32_t timer_periph, uint16_t channel,
-				    timer_ic_parameter_struct * icpwm) {
+				    struct timer_ic_param * icpwm) {
 	uint16_t icpolarity = 0x0U;
 	uint16_t icselection = 0x0U;
 

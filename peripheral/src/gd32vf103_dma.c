@@ -37,7 +37,7 @@ void dma_deinit(uint32_t dma_periph, enum dma_channel channelx) {
     \param[out] none
     \retval     none
 */
-void dma_struct_para_init(dma_parameter_struct * init_struct) {
+void dma_struct_para_init(struct dma_param * init_struct) {
 	/* set the DMA struct with the default values */
 	init_struct->periph_addr = 0U;
 	init_struct->periph_width = 0U;
@@ -71,7 +71,7 @@ void dma_struct_para_init(dma_parameter_struct * init_struct) {
     \retval     none
 */
 void dma_init(uint32_t dma_periph, enum dma_channel channelx,
-	      dma_parameter_struct * init_struct) {
+	      struct dma_param * init_struct) {
 	uint32_t ctl;
 
 	if (ERROR == dma_periph_and_channel_check(dma_periph, channelx)) {

@@ -49,7 +49,7 @@ void spi_i2s_deinit(uint32_t spi_periph) {
     \param[out] none
     \retval     none
 */
-void spi_struct_para_init(spi_parameter_struct * spi_struct) {
+void spi_struct_para_init(struct spi_param * spi_struct) {
 	/* set the SPI struct with the default values */
 	spi_struct->device_mode = SPI_SLAVE;
 	spi_struct->trans_mode = SPI_TRANSMODE_FULLDUPLEX;
@@ -76,7 +76,7 @@ void spi_struct_para_init(spi_parameter_struct * spi_struct) {
     \param[out] none
     \retval     none
 */
-void spi_init(uint32_t spi_periph, spi_parameter_struct * spi_struct) {
+void spi_init(uint32_t spi_periph, struct spi_param * spi_struct) {
 	uint32_t reg = 0U;
 	reg = SPI_CTL0(spi_periph);
 	reg &= SPI_INIT_MASK;

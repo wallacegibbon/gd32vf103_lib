@@ -204,19 +204,17 @@
 
 /* constants definitions */
 /* TIMER init parameter struct definitions */
-typedef struct
-{ 
+struct timer_param { 
     uint16_t prescaler;                                      /* prescaler value */
     uint16_t alignedmode;                                    /* aligned mode */
     uint16_t counterdirection;                               /* counter direction */
     uint32_t period;                                         /* period value */
     uint16_t clockdivision;                                  /* clock division value */
     uint8_t  repetitioncounter;                              /* the counter repetition value */
-}timer_parameter_struct;
+};
 
 /* break parameter struct definitions */
-typedef struct
-{ 
+struct timer_break_param { 
     uint16_t runoffstate;                                    /* run mode off-state */
     uint16_t ideloffstate;                                   /* idle mode off-state */
     uint16_t deadtime;                                       /* dead time */
@@ -224,27 +222,25 @@ typedef struct
     uint16_t outputautostate;                                /* output automatic enable */
     uint16_t protectmode;                                    /* complementary register protect control */
     uint16_t breakstate;                                     /* break enable */
-}timer_break_parameter_struct;
+};
 
 /* channel output parameter struct definitions */
-typedef struct
-{ 
+struct timer_oc_param { 
     uint16_t outputstate;                                    /* channel output state */
     uint16_t outputnstate;                                   /* channel complementary output state */
     uint16_t ocpolarity;                                     /* channel output polarity */
     uint16_t ocnpolarity;                                    /* channel complementary output polarity */
     uint16_t ocidlestate;                                    /* idle state of channel output */
     uint16_t ocnidlestate;                                   /* idle state of channel complementary output */
-}timer_oc_parameter_struct;
+};
 
 /* channel input parameter struct definitions */
-typedef struct
-{ 
+struct timer_ic_param { 
     uint16_t icpolarity;                                     /* channel input polarity */
     uint16_t icselection;                                    /* channel input mode selection */
     uint16_t icprescaler;                                    /* channel input capture prescaler */
     uint16_t icfilter;                                       /* channel input capture filter control */
-}timer_ic_parameter_struct;
+};
 
 /* TIMER interrupt enable or disable */
 #define TIMER_INT_UP                        TIMER_DMAINTEN_UPIE                     /* update interrupt */
@@ -536,9 +532,9 @@ typedef struct
 /* deinit a timer */
 void timer_deinit(uint32_t timer_periph);
 /* initialize TIMER init parameter struct */
-void timer_struct_para_init(timer_parameter_struct* initpara);
+void timer_struct_para_init(struct timer_param* initpara);
 /* initialize TIMER counter */
-void timer_init(uint32_t timer_periph, timer_parameter_struct* initpara);
+void timer_init(uint32_t timer_periph, struct timer_param* initpara);
 /* enable a timer */
 void timer_enable(uint32_t timer_periph);
 /* disable a timer */
@@ -589,9 +585,9 @@ void timer_event_software_generate(uint32_t timer_periph, uint16_t event);
 
 /* TIMER channel complementary protection */
 /* initialize TIMER break parameter struct */
-void timer_break_struct_para_init(timer_break_parameter_struct* breakpara);
+void timer_break_struct_para_init(struct timer_break_param* breakpara);
 /* configure TIMER break function */
-void timer_break_config(uint32_t timer_periph, timer_break_parameter_struct* breakpara);
+void timer_break_config(uint32_t timer_periph, struct timer_break_param* breakpara);
 /* enable TIMER break function */
 void timer_break_enable(uint32_t timer_periph);
 /* disable TIMER break function */
@@ -609,9 +605,9 @@ void timer_channel_control_shadow_update_config(uint32_t timer_periph, uint32_t 
 
 /* TIMER channel output */
 /* initialize TIMER channel output parameter struct */
-void timer_channel_output_struct_para_init(timer_oc_parameter_struct* ocpara);
+void timer_channel_output_struct_para_init(struct timer_oc_param* ocpara);
 /* configure TIMER channel output function */
-void timer_channel_output_config(uint32_t timer_periph, uint16_t channel, timer_oc_parameter_struct* ocpara);
+void timer_channel_output_config(uint32_t timer_periph, uint16_t channel, struct timer_oc_param* ocpara);
 /* configure TIMER channel output compare mode */
 void timer_channel_output_mode_config(uint32_t timer_periph, uint16_t channel, uint16_t ocmode);
 /* configure TIMER channel output pulse value */
@@ -633,15 +629,15 @@ void timer_channel_complementary_output_state_config(uint32_t timer_periph, uint
 
 /* TIMER channel input */
 /* initialize TIMER channel input parameter struct */
-void timer_channel_input_struct_para_init(timer_ic_parameter_struct* icpara);
+void timer_channel_input_struct_para_init(struct timer_ic_param* icpara);
 /* configure TIMER input capture parameter */
-void timer_input_capture_config(uint32_t timer_periph, uint16_t channel, timer_ic_parameter_struct* icpara);
+void timer_input_capture_config(uint32_t timer_periph, uint16_t channel, struct timer_ic_param* icpara);
 /* configure TIMER channel input capture prescaler value */
 void timer_channel_input_capture_prescaler_config(uint32_t timer_periph, uint16_t channel, uint16_t prescaler);
 /* read TIMER channel capture compare register value */
 uint32_t timer_channel_capture_value_register_read(uint32_t timer_periph, uint16_t channel);
 /* configure TIMER input pwm capture function */
-void timer_input_pwm_capture_config(uint32_t timer_periph, uint16_t channel, timer_ic_parameter_struct* icpwm);
+void timer_input_pwm_capture_config(uint32_t timer_periph, uint16_t channel, struct timer_ic_param* icpwm);
 /* configure TIMER hall sensor mode */
 void timer_hall_mode_config(uint32_t timer_periph, uint32_t hallmode);
 
