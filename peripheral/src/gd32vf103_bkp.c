@@ -1,58 +1,53 @@
 #include "gd32vf103_bkp.h"
 
 /* BKP register bits offset */
-#define BKP_TAMPER_BITS_OFFSET          ((uint32_t)8U)
+#define BKP_TAMPER_BITS_OFFSET	((uint32_t) 8U)
 
-/*!
-    \brief      reset BKP registers
-    \param[in]  none
-    \param[out] none
-    \retval     none
+/*
+ * reset BKP registers
 */
 void bkp_deinit(void) {
-	/* reset BKP domain register */
 	rcu_bkp_reset_enable();
 	rcu_bkp_reset_disable();
 }
 
-/*!
-    \brief      write BKP data register
-    \param[in]  register_number: refer to enum bkp_data_reg
-                only one parameter can be selected which is shown as below:
-      \arg        BKP_DATA_x(x = 0..41): bkp data register number x
-    \param[in]  data: the data to be write in BKP data register
-    \param[out] none
-    \retval     none
-*/
+/*
+ * write BKP data register
+ * register_number: refer to enum bkp_data_reg
+ * 	only one parameter can be selected which is shown as below:
+ * 		BKP_DATA_x(x = 0..41): bkp data register number x
+ *
+ * data: the data to be write in BKP data register
+ *
+ */
 void bkp_data_write(enum bkp_data_reg register_number, uint16_t data) {
-	if ((register_number >= BKP_DATA_10)
-	    && (register_number <= BKP_DATA_41)) {
+	if ((register_number >= BKP_DATA_10) &&
+			(register_number <= BKP_DATA_41)) {
 		BKP_DATA10_41(register_number - 1U) = data;
-	} else if ((register_number >= BKP_DATA_0)
-		   && (register_number <= BKP_DATA_9)) {
+	} else if ((register_number >= BKP_DATA_0) &&
+			(register_number <= BKP_DATA_9)) {
 		BKP_DATA0_9(register_number - 1U) = data;
 	} else {
 		/* illegal parameters */
 	}
 }
 
-/*!
-    \brief      read BKP data register
-    \param[in]  register_number: refer to enum bkp_data_reg
-                only one parameter can be selected which is shown as below:
-      \arg        BKP_DATA_x(x = 0..41): bkp data register number x
-    \param[out] none
-    \retval     data of BKP data register
-*/
+/*
+ * read BKP data register
+ * register_number: refer to enum bkp_data_reg
+ * 	only one parameter can be selected which is shown as below:
+ * 		BKP_DATA_x(x = 0..41): bkp data register number x
+ *
+ */
 uint16_t bkp_data_read(enum bkp_data_reg register_number) {
 	uint16_t data = 0U;
 
 	/* get the data from the BKP data register */
-	if ((register_number >= BKP_DATA_10)
-	    && (register_number <= BKP_DATA_41)) {
+	if ((register_number >= BKP_DATA_10) &&
+			(register_number <= BKP_DATA_41)) {
 		data = BKP_DATA10_41(register_number - 1U);
-	} else if ((register_number >= BKP_DATA_0)
-		   && (register_number <= BKP_DATA_9)) {
+	} else if ((register_number >= BKP_DATA_0) &&
+			(register_number <= BKP_DATA_9)) {
 		data = BKP_DATA0_9(register_number - 1U);
 	} else {
 		/* illegal parameters */
@@ -60,55 +55,45 @@ uint16_t bkp_data_read(enum bkp_data_reg register_number) {
 	return data;
 }
 
-/*!
-    \brief      enable RTC clock calibration output
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/*
+ * enable RTC clock calibration output
+ */
 void bkp_rtc_calibration_output_enable(void) {
 	BKP_OCTL |= (uint16_t) BKP_OCTL_COEN;
 }
 
-/*!
-    \brief      disable RTC clock calibration output
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/*
+ * disable RTC clock calibration output
+ */
 void bkp_rtc_calibration_output_disable(void) {
 	BKP_OCTL &= (uint16_t) ~ BKP_OCTL_COEN;
 }
 
-/*!
-    \brief      enable RTC alarm or second signal output
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/*
+ * enable RTC alarm or second signal output
+ */
 void bkp_rtc_signal_output_enable(void) {
 	BKP_OCTL |= (uint16_t) BKP_OCTL_ASOEN;
 }
 
-/*!
-    \brief      disable RTC alarm or second signal output
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/*
+ * disable RTC alarm or second signal output
+ */
 void bkp_rtc_signal_output_disable(void) {
 	BKP_OCTL &= (uint16_t) ~ BKP_OCTL_ASOEN;
 }
 
-/*!
-    \brief      select RTC output
-    \param[in]  outputsel: RTC output selection
-                only one parameter can be selected which is shown as below:
-      \arg        RTC_OUTPUT_ALARM_PULSE: RTC alarm pulse is selected as the RTC output
-      \arg        RTC_OUTPUT_SECOND_PULSE: RTC second pulse is selected as the RTC output
-    \param[out] none
-    \retval     none
-*/
+/*
+ * select RTC output
+ * outputsel: RTC output selection
+ * 	only one parameter can be selected which is shown as below:
+ * 		RTC_OUTPUT_ALARM_PULSE:
+ * 			RTC alarm pulse is selected as the RTC output
+ *
+ * 		RTC_OUTPUT_SECOND_PULSE:
+ * 			RTC second pulse is selected as the RTC output
+ *
+ */
 void bkp_rtc_output_select(uint16_t outputsel) {
 	uint16_t ctl = 0U;
 
@@ -119,13 +104,10 @@ void bkp_rtc_output_select(uint16_t outputsel) {
 	BKP_OCTL = ctl;
 }
 
-/*!
-    \brief      set RTC clock calibration value 
-    \param[in]  value: RTC clock calibration value
-      \arg        0x00 - 0x7F
-    \param[out] none
-    \retval     none
-*/
+/*
+ * set RTC clock calibration value
+ * value: RTC clock calibration value 0x00 - 0x7F
+ */
 void bkp_rtc_calibration_value_set(uint8_t value) {
 	uint16_t ctl;
 
@@ -136,35 +118,27 @@ void bkp_rtc_calibration_value_set(uint8_t value) {
 	BKP_OCTL = ctl;
 }
 
-/*!
-    \brief      enable tamper detection
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/*
+ * enable tamper detection
+ */
 void bkp_tamper_detection_enable(void) {
 	BKP_TPCTL |= (uint16_t) BKP_TPCTL_TPEN;
 }
 
-/*!
-    \brief      disable tamper detection
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/*
+ * disable tamper detection
+ */
 void bkp_tamper_detection_disable(void) {
 	BKP_TPCTL &= (uint16_t) ~ BKP_TPCTL_TPEN;
 }
 
-/*!
-    \brief      set tamper pin active level
-    \param[in]  level: tamper active level
-                only one parameter can be selected which is shown as below:
-      \arg        TAMPER_PIN_ACTIVE_HIGH: the tamper pin is active high
-      \arg        TAMPER_PIN_ACTIVE_LOW: the tamper pin is active low
-    \param[out] none
-    \retval     none
-*/
+/*
+ * set tamper pin active level
+ * level: tamper active level
+ * 	only one parameter can be selected which is shown as below:
+ * 		TAMPER_PIN_ACTIVE_HIGH: the tamper pin is active high
+ * 		TAMPER_PIN_ACTIVE_LOW: the tamper pin is active low
+ */
 void bkp_tamper_active_level_set(uint16_t level) {
 	uint16_t ctl = 0U;
 
@@ -175,70 +149,50 @@ void bkp_tamper_active_level_set(uint16_t level) {
 	BKP_TPCTL = ctl;
 }
 
-/*!
-    \brief      enable tamper interrupt
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/*
+ * enable tamper interrupt
+ */
 void bkp_interrupt_enable(void) {
 	BKP_TPCS |= (uint16_t) BKP_TPCS_TPIE;
 }
 
-/*!
-    \brief      disable tamper interrupt
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/*
+ * disable tamper interrupt
+ */
 void bkp_interrupt_disable(void) {
 	BKP_TPCS &= (uint16_t) ~ BKP_TPCS_TPIE;
 }
 
-/*!
-    \brief      get tamper flag state
-    \param[in]  none
-    \param[out] none
-    \retval     enum flag_status: SET or RESET
-*/
+/*
+ * get tamper flag state
+ */
 enum flag_status bkp_flag_get(void) {
-	if (RESET != (BKP_TPCS & BKP_FLAG_TAMPER)) {
+	if (RESET != (BKP_TPCS & BKP_FLAG_TAMPER))
 		return SET;
-	} else {
+	else
 		return RESET;
-	}
 }
 
-/*!
-    \brief      clear tamper flag state
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/*
+ * clear tamper flag state
+ */
 void bkp_flag_clear(void) {
 	BKP_TPCS |= (uint16_t) (BKP_FLAG_TAMPER >> BKP_TAMPER_BITS_OFFSET);
 }
 
-/*!
-    \brief      get tamper interrupt flag state
-    \param[in]  none
-    \param[out] none
-    \retval     enum flag_status: SET or RESET
-*/
+/*
+ * get tamper interrupt flag state
+ */
 enum flag_status bkp_interrupt_flag_get(void) {
-	if (RESET != (BKP_TPCS & BKP_INT_FLAG_TAMPER)) {
+	if (RESET != (BKP_TPCS & BKP_INT_FLAG_TAMPER))
 		return SET;
-	} else {
+	else
 		return RESET;
-	}
 }
 
-/*!
-    \brief      clear tamper interrupt flag state
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/*
+ * clear tamper interrupt flag state
+ */
 void bkp_interrupt_flag_clear(void) {
 	BKP_TPCS |= (uint16_t) (BKP_INT_FLAG_TAMPER >> BKP_TAMPER_BITS_OFFSET);
 }

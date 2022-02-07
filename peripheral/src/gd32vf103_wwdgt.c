@@ -1,37 +1,25 @@
 #include "gd32vf103_wwdgt.h"
 
 /* write value to WWDGT_CTL_CNT bit field */
-#define CTL_CNT(regval)             (BITS(0,6) & ((uint32_t)(regval) << 0))
+#define CTL_CNT(regval)		(BITS(0,6) & ((uint32_t)(regval) << 0))
 /* write value to WWDGT_CFG_WIN bit field */
-#define CFG_WIN(regval)             (BITS(0,6) & ((uint32_t)(regval) << 0))
+#define CFG_WIN(regval)		(BITS(0,6) & ((uint32_t)(regval) << 0))
 
-/*!
-    \brief      reset the window watchdog timer configuration
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/* reset the window watchdog timer configuration */
 void wwdgt_deinit(void) {
 	rcu_periph_reset_enable(RCU_WWDGTRST);
 	rcu_periph_reset_disable(RCU_WWDGTRST);
 }
 
-/*!
-    \brief      start the window watchdog timer counter
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/* start the window watchdog timer counter */
 void wwdgt_enable(void) {
 	WWDGT_CTL |= WWDGT_CTL_WDGTEN;
 }
 
-/*!
-    \brief      configure the window watchdog timer counter value
-    \param[in]  counter_value: 0x00 - 0x7F
-    \param[out] none
-    \retval     none
-*/
+/*
+ * configure the window watchdog timer counter value
+ * counter_value: 0x00 - 0x7F
+ */
 void wwdgt_counter_update(uint16_t counter_value) {
 	uint32_t reg = 0U;
 
@@ -41,19 +29,28 @@ void wwdgt_counter_update(uint16_t counter_value) {
 	WWDGT_CTL = reg;
 }
 
-/*!
-    \brief      configure counter value, window value, and prescaler divider value  
-    \param[in]  counter: 0x00 - 0x7F   
-    \param[in]  window: 0x00 - 0x7F
-    \param[in]  prescaler: wwdgt prescaler value
-                only one parameter can be selected which is shown as below:
-      \arg        WWDGT_CFG_PSC_DIV1: the time base of window watchdog counter = (PCLK1/4096)/1
-      \arg        WWDGT_CFG_PSC_DIV2: the time base of window watchdog counter = (PCLK1/4096)/2
-      \arg        WWDGT_CFG_PSC_DIV4: the time base of window watchdog counter = (PCLK1/4096)/4
-      \arg        WWDGT_CFG_PSC_DIV8: the time base of window watchdog counter = (PCLK1/4096)/8
-    \param[out] none
-    \retval     none
-*/
+/*
+ * configure counter value, window value, and prescaler divider value
+ * counter: 0x00 - 0x7F
+ * window: 0x00 - 0x7F
+ * prescaler: wwdgt prescaler value
+ * 	only one parameter can be selected which is shown as below:
+ * 		WWDGT_CFG_PSC_DIV1:
+ * 			the time base of window watchdog counter =
+ * 				(PCLK1/4096)/1
+ *
+ * 		WWDGT_CFG_PSC_DIV2:
+ * 			the time base of window watchdog counter =
+ * 				(PCLK1/4096)/2
+ *
+ * 		WWDGT_CFG_PSC_DIV4:
+ * 			the time base of window watchdog counter =
+ * 				(PCLK1/4096)/4
+ *
+ * 		WWDGT_CFG_PSC_DIV8:
+ * 			the time base of window watchdog counter =
+ * 				(PCLK1/4096)/8
+ */
 void wwdgt_config(uint16_t counter, uint16_t window, uint32_t prescaler) {
 	uint32_t reg_cfg = 0U, reg_ctl = 0U;
 
@@ -70,36 +67,20 @@ void wwdgt_config(uint16_t counter, uint16_t window, uint32_t prescaler) {
 	WWDGT_CFG = reg_cfg;
 }
 
-/*!
-    \brief      enable early wakeup interrupt of WWDGT
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/* enable early wakeup interrupt of WWDGT */
 void wwdgt_interrupt_enable(void) {
 	WWDGT_CFG |= WWDGT_CFG_EWIE;
 }
 
-/*!
-    \brief      check early wakeup interrupt state of WWDGT
-    \param[in]  none
-    \param[out] none
-    \retval     enum flag_status: SET or RESET
-*/
+/* check early wakeup interrupt state of WWDGT */
 enum flag_status wwdgt_flag_get(void) {
-	if (WWDGT_STAT & WWDGT_STAT_EWIF) {
+	if (WWDGT_STAT & WWDGT_STAT_EWIF)
 		return SET;
-	}
-
-	return RESET;
+	else
+		return RESET;
 }
 
-/*!
-    \brief      clear early wakeup interrupt state of WWDGT
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
+/* early wakeup interrupt state of WWDGT */
 void wwdgt_flag_clear(void) {
 	WWDGT_STAT &= (~WWDGT_STAT_EWIF);
 }

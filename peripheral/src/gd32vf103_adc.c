@@ -514,102 +514,94 @@ void adc_external_trigger_source_config(uint32_t adc_periph,
 	}
 }
 
-/*!
-    \brief      configure ADC external trigger 
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  adc_channel_group: select the channel group
-                one or more parameters can be selected which are shown as below:
-      \arg        ADC_REGULAR_CHANNEL: regular channel group
-      \arg        ADC_INSERTED_CHANNEL: inserted channel group
-    \param[in]  newvalue: ENABLE or DISABLE
-    \param[out] none
-    \retval     none
-*/
-void adc_external_trigger_config(uint32_t adc_periph, uint8_t adc_channel_group,
-				 enum control_status newvalue) {
+/*
+ * configure ADC external trigger 
+ * dc_periph: ADCx, x=0,1
+ *
+ * adc_channel_group: select the channel group
+ * 	one or more parameters can be selected which are shown as below:
+ * 		ADC_REGULAR_CHANNEL: regular channel group
+ * 		ADC_INSERTED_CHANNEL: inserted channel group
+ *
+ * newvalue: ENABLE or DISABLE
+ *
+ */
+void adc_external_trigger_config(uint32_t adc_periph,
+		uint8_t adc_channel_group, enum control_status newvalue) {
 	if (newvalue) {
 		if (0U != (adc_channel_group & ADC_REGULAR_CHANNEL)) {
-			/* enable ADC regular channel group external trigger */
+			// enable ADC regular channel group external trigger
 			ADC_CTL1(adc_periph) |= ADC_CTL1_ETERC;
 		}
 		if (0U != (adc_channel_group & ADC_INSERTED_CHANNEL)) {
-			/* enable ADC inserted channel group external trigger */
+			// enable ADC inserted channel group external trigger
 			ADC_CTL1(adc_periph) |= ADC_CTL1_ETEIC;
 		}
 	} else {
 		if (0U != (adc_channel_group & ADC_REGULAR_CHANNEL)) {
-			/* disable ADC regular channel group external trigger */
+			// disable ADC regular channel group external trigger
 			ADC_CTL1(adc_periph) &= ~ADC_CTL1_ETERC;
 		}
 		if (0U != (adc_channel_group & ADC_INSERTED_CHANNEL)) {
-			/* disable ADC regular channel group external trigger */
+			// disable ADC regular channel group external trigger
 			ADC_CTL1(adc_periph) &= ~ADC_CTL1_ETEIC;
 		}
 	}
 }
 
-/*!
-    \brief      enable ADC software trigger 
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  adc_channel_group: select the channel group
-                one or more parameters can be selected which are shown as below:
-      \arg        ADC_REGULAR_CHANNEL: regular channel group
-      \arg        ADC_INSERTED_CHANNEL: inserted channel group
-    \param[out] none
-    \retval     none
-*/
+/*
+ * enable ADC software trigger 
+ * dc_periph: ADCx, x=0,1
+ * adc_channel_group: select the channel group
+ * 	one or more parameters can be selected which are shown as below:
+ * 		ADC_REGULAR_CHANNEL: regular channel group
+ * 		ADC_INSERTED_CHANNEL: inserted channel group
+ *
+ */
 void adc_software_trigger_enable(uint32_t adc_periph, uint8_t adc_channel_group) {
-	if (0U != (adc_channel_group & ADC_REGULAR_CHANNEL)) {
-		/* enable ADC regular channel group software trigger */
+	if (0U != (adc_channel_group & ADC_REGULAR_CHANNEL))
+		// enable ADC regular channel group software trigger
 		ADC_CTL1(adc_periph) |= ADC_CTL1_SWRCST;
-	}
-	if (0U != (adc_channel_group & ADC_INSERTED_CHANNEL)) {
-		/* enable ADC inserted channel group software trigger */
+
+	if (0U != (adc_channel_group & ADC_INSERTED_CHANNEL))
+		// enable ADC inserted channel group software trigger
 		ADC_CTL1(adc_periph) |= ADC_CTL1_SWICST;
-	}
 }
 
-/*!
-    \brief      read ADC regular group data register 
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  none
-    \param[out] none
-    \retval     the conversion value
+/*
+ * read ADC regular group data register
+ * adc_periph: ADCx, x=0,1
 */
 uint16_t adc_regular_data_read(uint32_t adc_periph) {
 	return (uint16_t) (ADC_RDATA(adc_periph));
 }
 
-/*!
-    \brief      read ADC inserted group data register 
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  inserted_channel: insert channel select
-                only one parameter can be selected
-      \arg        ADC_INSERTED_CHANNEL_0: inserted Channel0
-      \arg        ADC_INSERTED_CHANNEL_1: inserted channel1
-      \arg        ADC_INSERTED_CHANNEL_2: inserted Channel2
-      \arg        ADC_INSERTED_CHANNEL_3: inserted Channel3
-    \param[out] none
-    \retval     the conversion value
-*/
+/*
+ * read ADC inserted group data register
+ * adc_periph: ADCx, x=0,1
+ *
+ * inserted_channel: insert channel select
+ * 	only one parameter can be selected
+ * 		ADC_INSERTED_CHANNEL_0: inserted Channel0
+ * 		ADC_INSERTED_CHANNEL_1: inserted channel1
+ * 		ADC_INSERTED_CHANNEL_2: inserted Channel2
+ * 		ADC_INSERTED_CHANNEL_3: inserted Channel3
+ *
+ */
 uint16_t adc_inserted_data_read(uint32_t adc_periph, uint8_t inserted_channel) {
 	uint32_t idata;
 	/* read the data of the selected channel */
 	switch (inserted_channel) {
 	case ADC_INSERTED_CHANNEL_0:
-		/* read the data of channel 0 */
 		idata = ADC_IDATA0(adc_periph);
 		break;
 	case ADC_INSERTED_CHANNEL_1:
-		/* read the data of channel 1 */
 		idata = ADC_IDATA1(adc_periph);
 		break;
 	case ADC_INSERTED_CHANNEL_2:
-		/* read the data of channel 2 */
 		idata = ADC_IDATA2(adc_periph);
 		break;
 	case ADC_INSERTED_CHANNEL_3:
-		/* read the data of channel 3 */
 		idata = ADC_IDATA3(adc_periph);
 		break;
 	default:
@@ -619,50 +611,45 @@ uint16_t adc_inserted_data_read(uint32_t adc_periph, uint8_t inserted_channel) {
 	return (uint16_t) idata;
 }
 
-/*!
-    \brief      read the last ADC0 and ADC1 conversion result data in sync mode
-    \param[in]  none
-    \param[out] none
-    \retval     the conversion value
-*/
+/*
+ * read the last ADC0 and ADC1 conversion result data in sync mode
+ */
 uint32_t adc_sync_mode_convert_value_read(void) {
-	/* return conversion value */
 	return ADC_RDATA(ADC0);
 }
 
-/*!
-    \brief      configure ADC analog watchdog single channel 
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  adc_channel: the selected ADC channel
-                only one parameter can be selected which is shown as below:
-      \arg        ADC_CHANNEL_x: ADC Channelx(x=0..17)(x=16 and x=17 are only for ADC0)
-    \param[out] none
-    \retval     none
-*/
+/*
+ * configure ADC analog watchdog single channel 
+ * dc_periph: ADCx, x=0,1
+ * adc_channel: the selected ADC channel
+ * 	only one parameter can be selected which is shown as below:
+ * 		ADC_CHANNEL_x:
+ * 			ADC Channelx(x=0..17)(x=16 and x=17 are only for ADC0)
+ *
+ */
 void adc_watchdog_single_channel_enable(uint32_t adc_periph,
-					uint8_t adc_channel) {
-	ADC_CTL0(adc_periph) &=
-	    (uint32_t) ~ (ADC_CTL0_RWDEN | ADC_CTL0_IWDEN | ADC_CTL0_WDSC |
-			  ADC_CTL0_WDCHSEL);
-	/* analog watchdog channel select */
+		uint8_t adc_channel) {
+	ADC_CTL0(adc_periph) &= (uint32_t) ~(ADC_CTL0_RWDEN | ADC_CTL0_IWDEN |
+					ADC_CTL0_WDSC | ADC_CTL0_WDCHSEL);
+	// analog watchdog channel select
 	ADC_CTL0(adc_periph) |= (uint32_t) adc_channel;
-	ADC_CTL0(adc_periph) |=
-	    (uint32_t) (ADC_CTL0_RWDEN | ADC_CTL0_IWDEN | ADC_CTL0_WDSC);
+	ADC_CTL0(adc_periph) |= (uint32_t) (ADC_CTL0_RWDEN | ADC_CTL0_IWDEN |
+						ADC_CTL0_WDSC);
 }
 
-/*!
-    \brief      configure ADC analog watchdog group channel 
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  adc_channel_group: the channel group use analog watchdog
-                only one parameter can be selected which is shown as below: 
-      \arg        ADC_REGULAR_CHANNEL: regular channel group
-      \arg        ADC_INSERTED_CHANNEL: inserted channel group
-      \arg        ADC_REGULAR_INSERTED_CHANNEL: both regular and inserted group
-    \param[out] none
-    \retval     none
-*/
+/*
+ * configure ADC analog watchdog group channel 
+ * dc_periph: ADCx, x=0,1
+ *
+ * adc_channel_group: the channel group use analog watchdog
+ * 	only one parameter can be selected which is shown as below: 
+ * 		ADC_REGULAR_CHANNEL: regular channel group
+ * 		ADC_INSERTED_CHANNEL: inserted channel group
+ * 		ADC_REGULAR_INSERTED_CHANNEL: both regular and inserted group
+ *
+ */
 void adc_watchdog_group_channel_enable(uint32_t adc_periph,
-				       uint8_t adc_channel_group) {
+		uint8_t adc_channel_group) {
 	ADC_CTL0(adc_periph) &=
 	    (uint32_t) ~ (ADC_CTL0_RWDEN | ADC_CTL0_IWDEN | ADC_CTL0_WDSC);
 	/* select the group */
@@ -677,145 +664,136 @@ void adc_watchdog_group_channel_enable(uint32_t adc_periph,
 		break;
 	case ADC_REGULAR_INSERTED_CHANNEL:
 		/* regular and inserted channel analog watchdog enable */
-		ADC_CTL0(adc_periph) |=
-		    (uint32_t) (ADC_CTL0_RWDEN | ADC_CTL0_IWDEN);
+		ADC_CTL0(adc_periph) |= (uint32_t) (ADC_CTL0_RWDEN |
+							ADC_CTL0_IWDEN);
 		break;
 	default:
 		break;
 	}
 }
 
-/*!
-    \brief      disable ADC analog watchdog 
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[out] none
-    \retval     none
-*/
+/*
+ * disable ADC analog watchdog 
+ * adc_periph: ADCx, x=0,1
+ */
 void adc_watchdog_disable(uint32_t adc_periph) {
 	ADC_CTL0(adc_periph) &=
-	    (uint32_t) ~ (ADC_CTL0_RWDEN | ADC_CTL0_IWDEN | ADC_CTL0_WDSC |
-			  ADC_CTL0_WDCHSEL);
+		(uint32_t) ~ (ADC_CTL0_RWDEN | ADC_CTL0_IWDEN | ADC_CTL0_WDSC |
+				ADC_CTL0_WDCHSEL);
 }
 
-/*!
-    \brief      configure ADC analog watchdog threshold 
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  low_threshold: analog watchdog low threshold, 0..4095
-    \param[in]  high_threshold: analog watchdog high threshold, 0..4095
-    \param[out] none
-    \retval     none
-*/
+/*
+ * configure ADC analog watchdog threshold 
+ * adc_periph: ADCx, x=0,1
+ *
+ * low_threshold: analog watchdog low threshold, 0..4095 
+ *
+ * high_threshold: analog watchdog high threshold, 0..4095
+ *
+ */
 void adc_watchdog_threshold_config(uint32_t adc_periph, uint16_t low_threshold,
-				   uint16_t high_threshold) {
+		uint16_t high_threshold) {
 	ADC_WDLT(adc_periph) = (uint32_t) WDLT_WDLT(low_threshold);
 	ADC_WDHT(adc_periph) = (uint32_t) WDHT_WDHT(high_threshold);
 }
 
-/*!
-    \brief      get the ADC flag bits
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  adc_flag: the adc flag bits
-                only one parameter can be selected which is shown as below:
-      \arg        ADC_FLAG_WDE: analog watchdog event flag
-      \arg        ADC_FLAG_EOC: end of group conversion flag
-      \arg        ADC_FLAG_EOIC: end of inserted group conversion flag
-      \arg        ADC_FLAG_STIC: start flag of inserted channel group
-      \arg        ADC_FLAG_STRC: start flag of regular channel group
-    \param[out] none
-    \retval     enum flag_status: SET or RESET
-*/
+/*
+ * get the ADC flag bits
+ * adc_periph: ADCx, x=0,1
+ * adc_flag: the adc flag bits
+ * 	only one parameter can be selected which is shown as below:
+ * 		ADC_FLAG_WDE: analog watchdog event flag
+ * 		ADC_FLAG_EOC: end of group conversion flag
+ * 		ADC_FLAG_EOIC: end of inserted group conversion flag
+ * 		ADC_FLAG_STIC: start flag of inserted channel group
+ * 		ADC_FLAG_STRC: start flag of regular channel group
+ *
+ */
 enum flag_status adc_flag_get(uint32_t adc_periph, uint32_t adc_flag) {
 	enum flag_status reval = RESET;
-	if (ADC_STAT(adc_periph) & adc_flag) {
+	if (ADC_STAT(adc_periph) & adc_flag)
 		reval = SET;
-	}
+
 	return reval;
 }
 
-/*!
-    \brief      clear the ADC flag bits
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  adc_flag: the adc flag bits
-                one or more parameters can be selected which are shown as below:
-      \arg        ADC_FLAG_WDE: analog watchdog event flag
-      \arg        ADC_FLAG_EOC: end of group conversion flag
-      \arg        ADC_FLAG_EOIC: end of inserted group conversion flag
-      \arg        ADC_FLAG_STIC: start flag of inserted channel group
-      \arg        ADC_FLAG_STRC: start flag of regular channel group
-    \param[out] none
-    \retval     none
-*/
+/*
+ * clear the ADC flag bits
+ * adc_periph: ADCx, x=0,1
+ *
+ * adc_flag: the adc flag bits
+ * 	one or more parameters can be selected which are shown as below:
+ * 		ADC_FLAG_WDE: analog watchdog event flag
+ * 		ADC_FLAG_EOC: end of group conversion flag
+ * 		ADC_FLAG_EOIC: end of inserted group conversion flag
+ * 		ADC_FLAG_STIC: start flag of inserted channel group
+ * 		ADC_FLAG_STRC: start flag of regular channel group
+ *
+ */
 void adc_flag_clear(uint32_t adc_periph, uint32_t adc_flag) {
 	ADC_STAT(adc_periph) &= ~((uint32_t) adc_flag);
 }
 
-/*!
-    \brief      get the bit state of ADCx software start conversion
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  none
-    \param[out] none
-    \retval     enum flag_status: SET or RESET
-*/
+/*
+ * get the bit state of ADCx software start conversion
+ * adc_periph: ADCx, x=0,1
+ *
+ */
 enum flag_status adc_regular_software_startconv_flag_get(uint32_t adc_periph) {
 	enum flag_status reval = RESET;
-	if ((uint32_t) RESET != (ADC_CTL1(adc_periph) & ADC_CTL1_SWRCST)) {
+	if ((uint32_t) RESET != (ADC_CTL1(adc_periph) & ADC_CTL1_SWRCST))
 		reval = SET;
-	}
+
 	return reval;
 }
 
-/*!
-    \brief      get the bit state of ADCx software inserted channel start conversion
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  none
-    \param[out] none
-    \retval     enum flag_status: SET or RESET
-*/
+/*
+ * get the bit state of ADCx software inserted channel start conversion
+ * adc_periph: ADCx, x=0,1
+ *
+ */
 enum flag_status adc_inserted_software_startconv_flag_get(uint32_t adc_periph) {
 	enum flag_status reval = RESET;
-	if ((uint32_t) RESET != (ADC_CTL1(adc_periph) & ADC_CTL1_SWICST)) {
+	if ((uint32_t) RESET != (ADC_CTL1(adc_periph) & ADC_CTL1_SWICST))
 		reval = SET;
-	}
+
 	return reval;
 }
 
-/*!
-    \brief      get the ADC interrupt bits
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  adc_interrupt: the adc interrupt bits
-                only one parameter can be selected which is shown as below:
-      \arg        ADC_INT_FLAG_WDE: analog watchdog interrupt
-      \arg        ADC_INT_FLAG_EOC: end of group conversion interrupt
-      \arg        ADC_INT_FLAG_EOIC: end of inserted group conversion interrupt
-    \param[out] none
-    \retval     enum flag_status: SET or RESET
-*/
+/*
+ * get the ADC interrupt bits
+ * adc_periph: ADCx, x=0,1
+ *
+ * adc_interrupt: the adc interrupt bits
+ * 	only one parameter can be selected which is shown as below:
+ * 		ADC_INT_FLAG_WDE: analog watchdog interrupt
+ * 		ADC_INT_FLAG_EOC: end of group conversion interrupt
+ * 		ADC_INT_FLAG_EOIC: end of inserted group conversion interrupt
+ *
+ */
 enum flag_status adc_interrupt_flag_get(uint32_t adc_periph,
-					uint32_t adc_interrupt) {
+		uint32_t adc_interrupt) {
 	enum flag_status interrupt_flag = RESET;
 	uint32_t state;
-	/* check the interrupt bits */
+
 	switch (adc_interrupt) {
 	case ADC_INT_FLAG_WDE:
-		/* get the ADC analog watchdog interrupt bits */
+		// get the ADC analog watchdog interrupt bits
 		state = ADC_STAT(adc_periph) & ADC_STAT_WDE;
-		if ((ADC_CTL0(adc_periph) & ADC_CTL0_WDEIE) && state) {
+		if ((ADC_CTL0(adc_periph) & ADC_CTL0_WDEIE) && state)
 			interrupt_flag = SET;
-		}
 		break;
 	case ADC_INT_FLAG_EOC:
-		/* get the ADC end of group conversion interrupt bits */
+		// get the ADC end of group conversion interrupt bits
 		state = ADC_STAT(adc_periph) & ADC_STAT_EOC;
-		if ((ADC_CTL0(adc_periph) & ADC_CTL0_EOCIE) && state) {
+		if ((ADC_CTL0(adc_periph) & ADC_CTL0_EOCIE) && state)
 			interrupt_flag = SET;
-		}
 		break;
 	case ADC_INT_FLAG_EOIC:
-		/* get the ADC end of inserted group conversion interrupt bits */
+		// get the ADC end of inserted group conversion interrupt bits
 		state = ADC_STAT(adc_periph) & ADC_STAT_EOIC;
-		if ((ADC_CTL0(adc_periph) & ADC_CTL0_EOICIE) && state) {
+		if ((ADC_CTL0(adc_periph) & ADC_CTL0_EOICIE) && state)
 			interrupt_flag = SET;
-		}
 		break;
 	default:
 		break;
@@ -823,151 +801,149 @@ enum flag_status adc_interrupt_flag_get(uint32_t adc_periph,
 	return interrupt_flag;
 }
 
-/*!
-    \brief      clear the ADC flag
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  adc_interrupt: the adc status flag
-                one or more parameters can be selected which are shown as below:
-      \arg        ADC_INT_FLAG_WDE: analog watchdog interrupt
-      \arg        ADC_INT_FLAG_EOC: end of group conversion interrupt
-      \arg        ADC_INT_FLAG_EOIC: end of inserted group conversion interrupt
-    \param[out] none
-    \retval     none
-*/
+/*
+ * clear the ADC flag
+ * adc_periph: ADCx, x=0,1
+ *
+ * adc_interrupt: the adc status flag
+ * 	one or more parameters can be selected which are shown as below:
+ * 		ADC_INT_FLAG_WDE: analog watchdog interrupt
+ * 		ADC_INT_FLAG_EOC: end of group conversion interrupt
+ * 		ADC_INT_FLAG_EOIC: end of inserted group conversion interrupt
+ *
+ */
 void adc_interrupt_flag_clear(uint32_t adc_periph, uint32_t adc_interrupt) {
 	ADC_STAT(adc_periph) &= ~((uint32_t) adc_interrupt);
 }
 
-/*!
-    \brief      enable ADC interrupt 
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  adc_interrupt: the adc interrupt
-                one or more parameters can be selected which are shown as below:
-      \arg        ADC_INT_WDE: analog watchdog interrupt flag
-      \arg        ADC_INT_EOC: end of group conversion interrupt flag
-      \arg        ADC_INT_EOIC: end of inserted group conversion interrupt flag
-    \param[out] none
-    \retval     none
-*/
+/*
+ * enable ADC interrupt
+ * adc_periph: ADCx, x=0,1
+ *
+ * adc_interrupt: the adc interrupt
+ * 	one or more parameters can be selected which are shown as below:
+ * 		ADC_INT_WDE: analog watchdog interrupt flag
+ * 		ADC_INT_EOC: end of group conversion interrupt flag
+ * 		ADC_INT_EOIC: end of inserted group conversion interrupt flag
+ *
+ */
 void adc_interrupt_enable(uint32_t adc_periph, uint32_t adc_interrupt) {
 	/* enable ADC analog watchdog interrupt */
-	if (0U != (adc_interrupt & ADC_INT_WDE)) {
+	if (0U != (adc_interrupt & ADC_INT_WDE))
 		ADC_CTL0(adc_periph) |= (uint32_t) ADC_CTL0_WDEIE;
-	}
+
 	/* enable ADC end of group conversion interrupt */
-	if (0U != (adc_interrupt & ADC_INT_EOC)) {
+	if (0U != (adc_interrupt & ADC_INT_EOC))
 		ADC_CTL0(adc_periph) |= (uint32_t) ADC_CTL0_EOCIE;
-	}
+
 	/* enable ADC end of inserted group conversion interrupt */
-	if (0U != (adc_interrupt & ADC_INT_EOIC)) {
+	if (0U != (adc_interrupt & ADC_INT_EOIC))
 		ADC_CTL0(adc_periph) |= (uint32_t) ADC_CTL0_EOICIE;
-	}
 }
 
-/*!
-    \brief      disable ADC interrupt 
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  adc_interrupt: the adc interrupt flag
-                one or more parameters can be selected which are shown as below:
-      \arg        ADC_INT_WDE: analog watchdog interrupt flag
-      \arg        ADC_INT_EOC: end of group conversion interrupt flag
-      \arg        ADC_INT_EOIC: end of inserted group conversion interrupt flag
-    \param[out] none
-    \retval     none
-*/
+/*
+ * disable ADC interrupt
+ * adc_periph: ADCx, x=0,1
+ *
+ * adc_interrupt: the adc interrupt flag
+ * 	one or more parameters can be selected which are shown as below:
+ * 		ADC_INT_WDE: analog watchdog interrupt flag
+ * 		ADC_INT_EOC: end of group conversion interrupt flag
+ * 		ADC_INT_EOIC: end of inserted group conversion interrupt flag
+ *
+ */
 void adc_interrupt_disable(uint32_t adc_periph, uint32_t adc_interrupt) {
 	/* disable ADC analog watchdog interrupt */
-	if (0U != (adc_interrupt & ADC_INT_WDE)) {
+	if (0U != (adc_interrupt & ADC_INT_WDE))
 		ADC_CTL0(adc_periph) &= ~(uint32_t) ADC_CTL0_WDEIE;
-	}
+
 	/* disable ADC end of group conversion interrupt */
-	if (0U != (adc_interrupt & ADC_INT_EOC)) {
+	if (0U != (adc_interrupt & ADC_INT_EOC))
 		ADC_CTL0(adc_periph) &= ~(uint32_t) ADC_CTL0_EOCIE;
-	}
+
 	/* disable ADC end of inserted group conversion interrupt */
-	if (0U != (adc_interrupt & ADC_INT_EOIC)) {
+	if (0U != (adc_interrupt & ADC_INT_EOIC))
 		ADC_CTL0(adc_periph) &= ~(uint32_t) ADC_CTL0_EOICIE;
-	}
 }
 
-/*!
-    \brief      adc resolution config
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  resolution: ADC resolution
-                only one parameter can be selected which is shown as below:
-      \arg        ADC_RESOLUTION_12B: 12-bit ADC resolution
-      \arg        ADC_RESOLUTION_10B: 10-bit ADC resolution
-      \arg        ADC_RESOLUTION_8B: 8-bit ADC resolution
-      \arg        ADC_RESOLUTION_6B: 6-bit ADC resolution
-    \param[out] none
-    \retval     none
-*/
+/*
+ * adc resolution config
+ * adc_periph: ADCx, x=0,1
+ * resolution: ADC resolution
+ * 	only one parameter can be selected which is shown as below:
+ * 		ADC_RESOLUTION_12B: 12-bit ADC resolution
+ * 		ADC_RESOLUTION_10B: 10-bit ADC resolution
+ * 		ADC_RESOLUTION_8B: 8-bit ADC resolution
+ * 		ADC_RESOLUTION_6B: 6-bit ADC resolution
+ *
+ */
 void adc_resolution_config(uint32_t adc_periph, uint32_t resolution) {
 	ADC_OVSCR(adc_periph) &= ~((uint32_t) ADC_OVSCR_DRES);
 	ADC_OVSCR(adc_periph) |= (uint32_t) resolution;
 }
 
-/*!
-    \brief      adc oversample mode config
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[in]  mode: ADC oversampling mode
-                only one parameter can be selected which is shown as below:
-      \arg        ADC_OVERSAMPLING_ALL_CONVERT: all oversampled conversions for a channel
-                are done consecutively after a trigger
-      \arg        ADC_OVERSAMPLING_ONE_CONVERT: each oversampled conversion for a channel
-                needs a trigger
-    \param[in]  shift: ADC oversampling shift
-                only one parameter can be selected which is shown as below:
-      \arg        ADC_OVERSAMPLING_SHIFT_NONE: no oversampling shift
-      \arg        ADC_OVERSAMPLING_SHIFT_1B: 1-bit oversampling shift
-      \arg        ADC_OVERSAMPLING_SHIFT_2B: 2-bit oversampling shift
-      \arg        ADC_OVERSAMPLING_SHIFT_3B: 3-bit oversampling shift
-      \arg        ADC_OVERSAMPLING_SHIFT_4B: 3-bit oversampling shift
-      \arg        ADC_OVERSAMPLING_SHIFT_5B: 5-bit oversampling shift
-      \arg        ADC_OVERSAMPLING_SHIFT_6B: 6-bit oversampling shift
-      \arg        ADC_OVERSAMPLING_SHIFT_7B: 7-bit oversampling shift
-      \arg        ADC_OVERSAMPLING_SHIFT_8B: 8-bit oversampling shift
-    \param[in]  ratio: ADC oversampling ratio
-                only one parameter can be selected which is shown as below:
-      \arg        ADC_OVERSAMPLING_RATIO_MUL2: oversampling ratio X2
-      \arg        ADC_OVERSAMPLING_RATIO_MUL4: oversampling ratio X4
-      \arg        ADC_OVERSAMPLING_RATIO_MUL8: oversampling ratio X8
-      \arg        ADC_OVERSAMPLING_RATIO_MUL16: oversampling ratio X16
-      \arg        ADC_OVERSAMPLING_RATIO_MUL32: oversampling ratio X32
-      \arg        ADC_OVERSAMPLING_RATIO_MUL64: oversampling ratio X64
-      \arg        ADC_OVERSAMPLING_RATIO_MUL128: oversampling ratio X128
-      \arg        ADC_OVERSAMPLING_RATIO_MUL256: oversampling ratio X256
-    \param[out] none
-    \retval     none
-*/
+/*
+ * adc oversample mode config
+ * adc_periph: ADCx, x=0,1
+ *
+ * mode: ADC oversampling mode
+ * 	only one parameter can be selected which is shown as below:
+ * 		ADC_OVERSAMPLING_ALL_CONVERT:
+ * 			all oversampled conversions for a channel are done
+ * 			consecutively after a trigger
+ *
+ * 		ADC_OVERSAMPLING_ONE_CONVERT:
+ * 			each oversampled conversion for a channel needs a
+ * 			trigger
+ *
+ * shift: ADC oversampling shift
+ * 	only one parameter can be selected which is shown as below:
+ * 		ADC_OVERSAMPLING_SHIFT_NONE: no oversampling shift
+ * 		ADC_OVERSAMPLING_SHIFT_1B: 1-bit oversampling shift
+ * 		ADC_OVERSAMPLING_SHIFT_2B: 2-bit oversampling shift
+ * 		ADC_OVERSAMPLING_SHIFT_3B: 3-bit oversampling shift
+ * 		ADC_OVERSAMPLING_SHIFT_4B: 3-bit oversampling shift
+ * 		ADC_OVERSAMPLING_SHIFT_5B: 5-bit oversampling shift
+ * 		ADC_OVERSAMPLING_SHIFT_6B: 6-bit oversampling shift
+ * 		ADC_OVERSAMPLING_SHIFT_7B: 7-bit oversampling shift
+ * 		ADC_OVERSAMPLING_SHIFT_8B: 8-bit oversampling shift
+ *
+ * ratio: ADC oversampling ratio
+ * 	only one parameter can be selected which is shown as below:
+ * 		ADC_OVERSAMPLING_RATIO_MUL2: oversampling ratio X2
+ * 		ADC_OVERSAMPLING_RATIO_MUL4: oversampling ratio X4
+ * 		ADC_OVERSAMPLING_RATIO_MUL8: oversampling ratio X8
+ * 		ADC_OVERSAMPLING_RATIO_MUL16: oversampling ratio X16
+ * 		ADC_OVERSAMPLING_RATIO_MUL32: oversampling ratio X32
+ * 		ADC_OVERSAMPLING_RATIO_MUL64: oversampling ratio X64
+ * 		ADC_OVERSAMPLING_RATIO_MUL128: oversampling ratio X128
+ * 	        ADC_OVERSAMPLING_RATIO_MUL256: oversampling ratio X256
+ *
+ */
 void adc_oversample_mode_config(uint32_t adc_periph, uint8_t mode,
-				uint16_t shift, uint8_t ratio) {
-	if (mode) {
+		uint16_t shift, uint8_t ratio) {
+	if (mode)
 		ADC_OVSCR(adc_periph) |= (uint32_t) ADC_OVSCR_TOVS;
-	} else {
+	else
 		ADC_OVSCR(adc_periph) &= ~((uint32_t) ADC_OVSCR_TOVS);
-	}
+
 	/* config the shift and ratio */
-	ADC_OVSCR(adc_periph) &=
-	    ~((uint32_t) (ADC_OVSCR_OVSR | ADC_OVSCR_OVSS));
+	ADC_OVSCR(adc_periph) &= ~((uint32_t) (ADC_OVSCR_OVSR |
+						ADC_OVSCR_OVSS));
 	ADC_OVSCR(adc_periph) |= ((uint32_t) shift | (uint32_t) ratio);
 }
 
-/*!
-    \brief      enable ADC oversample mode
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[out] none
-    \retval     none
+/*
+ * enable ADC oversample mode
+ * adc_periph: ADCx, x=0,1
 */
 void adc_oversample_mode_enable(uint32_t adc_periph) {
 	ADC_OVSCR(adc_periph) |= ADC_OVSCR_OVSEN;
 }
 
-/*!
-    \brief      disable ADC oversample mode
-    \param[in]  adc_periph: ADCx, x=0,1
-    \param[out] none
-    \retval     none
+/*
+ * disable ADC oversample mode
+ * adc_periph: ADCx, x=0,1
 */
 void adc_oversample_mode_disable(uint32_t adc_periph) {
 	ADC_OVSCR(adc_periph) &= ~((uint32_t) ADC_OVSCR_OVSEN);
