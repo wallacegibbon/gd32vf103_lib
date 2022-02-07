@@ -2,7 +2,7 @@
 #include "stub.h"
 
 void _exit(int code) {
-	const char message[] = "\nProgram has exited with code:";
+	const char message[] = "\nprogram has exited with code:";
 
 	write(STDERR_FILENO, message, sizeof(message) - 1);
 	write_hex(STDERR_FILENO, code);

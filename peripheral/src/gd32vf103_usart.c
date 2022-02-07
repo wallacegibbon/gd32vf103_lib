@@ -1,38 +1,3 @@
-/*!
-    \file    gd32vf103_usart.c
-    \brief   USART driver
-
-    \version 2019-06-05, V1.0.0, firmware for GD32VF103
-    \version 2019-09-18, V1.0.1, firmware for GD32VF103
-*/
-
-/*
-    Copyright (c) 2019, GigaDevice Semiconductor Inc.
-
-    Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice, this
-       list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice,
-       this list of conditions and the following disclaimer in the documentation
-       and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors
-       may be used to endorse or promote products derived from this software without
-       specific prior written permission.
-
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
-OF SUCH DAMAGE.
-*/
-
 #include "gd32vf103_usart.h"
 
 /*!
@@ -41,37 +6,36 @@ OF SUCH DAMAGE.
     \param[out] none
     \retval     none
 */
-void usart_deinit(uint32_t usart_periph)
-{
-    switch(usart_periph){
-    case USART0:
-        /* reset USART0 */
-        rcu_periph_reset_enable(RCU_USART0RST);
-        rcu_periph_reset_disable(RCU_USART0RST);
-        break;
-    case USART1:
-        /* reset USART1 */
-        rcu_periph_reset_enable(RCU_USART1RST);
-        rcu_periph_reset_disable(RCU_USART1RST);
-        break;
-    case USART2:
-        /* reset USART2 */
-        rcu_periph_reset_enable(RCU_USART2RST);
-        rcu_periph_reset_disable(RCU_USART2RST);
-        break;
-    case UART3:
-        /* reset UART3 */
-        rcu_periph_reset_enable(RCU_UART3RST);
-        rcu_periph_reset_disable(RCU_UART3RST);
-        break;
-    case UART4:
-        /* reset UART4 */
-        rcu_periph_reset_enable(RCU_UART4RST);
-        rcu_periph_reset_disable(RCU_UART4RST);
-        break;
-    default:
-        break;
-    }
+void usart_deinit(uint32_t usart_periph) {
+	switch (usart_periph) {
+	case USART0:
+		/* reset USART0 */
+		rcu_periph_reset_enable(RCU_USART0RST);
+		rcu_periph_reset_disable(RCU_USART0RST);
+		break;
+	case USART1:
+		/* reset USART1 */
+		rcu_periph_reset_enable(RCU_USART1RST);
+		rcu_periph_reset_disable(RCU_USART1RST);
+		break;
+	case USART2:
+		/* reset USART2 */
+		rcu_periph_reset_enable(RCU_USART2RST);
+		rcu_periph_reset_disable(RCU_USART2RST);
+		break;
+	case UART3:
+		/* reset UART3 */
+		rcu_periph_reset_enable(RCU_UART3RST);
+		rcu_periph_reset_disable(RCU_UART3RST);
+		break;
+	case UART4:
+		/* reset UART4 */
+		rcu_periph_reset_enable(RCU_UART4RST);
+		rcu_periph_reset_disable(RCU_UART4RST);
+		break;
+	default:
+		break;
+	}
 }
 
 /*!
@@ -80,40 +44,40 @@ void usart_deinit(uint32_t usart_periph)
     \param[in]  baudval: baud rate value
     \param[out] none
     \retval     none
-*/ 
-void usart_baudrate_set(uint32_t usart_periph, uint32_t baudval)
-{
-    uint32_t uclk=0U, intdiv=0U, fradiv=0U, udiv=0U;
-    switch(usart_periph){
-         /* get clock frequency */
-    case USART0:
-         /* get USART0 clock */
-         uclk=rcu_clock_freq_get(CK_APB2);
-         break;
-    case USART1:
-         /* get USART1 clock */
-         uclk=rcu_clock_freq_get(CK_APB1);
-         break;
-    case USART2:
-         /* get USART2 clock */
-         uclk=rcu_clock_freq_get(CK_APB1);
-         break;
-    case UART3:
-         /* get UART3 clock */
-         uclk=rcu_clock_freq_get(CK_APB1);
-         break;
-    case UART4:
-         /* get UART4 clock */
-         uclk=rcu_clock_freq_get(CK_APB1);
-         break;  
-    default:
-         break;
-    }
-    /* oversampling by 16, configure the value of USART_BAUD */
-    udiv = (uclk+baudval/2U)/baudval;
-    intdiv = udiv & (0x0000fff0U);
-    fradiv = udiv & (0x0000000fU);
-    USART_BAUD(usart_periph) = ((USART_BAUD_FRADIV | USART_BAUD_INTDIV) & (intdiv | fradiv));
+*/
+void usart_baudrate_set(uint32_t usart_periph, uint32_t baudval) {
+	uint32_t uclk = 0U, intdiv = 0U, fradiv = 0U, udiv = 0U;
+	switch (usart_periph) {
+		/* get clock frequency */
+	case USART0:
+		/* get USART0 clock */
+		uclk = rcu_clock_freq_get(CK_APB2);
+		break;
+	case USART1:
+		/* get USART1 clock */
+		uclk = rcu_clock_freq_get(CK_APB1);
+		break;
+	case USART2:
+		/* get USART2 clock */
+		uclk = rcu_clock_freq_get(CK_APB1);
+		break;
+	case UART3:
+		/* get UART3 clock */
+		uclk = rcu_clock_freq_get(CK_APB1);
+		break;
+	case UART4:
+		/* get UART4 clock */
+		uclk = rcu_clock_freq_get(CK_APB1);
+		break;
+	default:
+		break;
+	}
+	/* oversampling by 16, configure the value of USART_BAUD */
+	udiv = (uclk + baudval / 2U) / baudval;
+	intdiv = udiv & (0x0000fff0U);
+	fradiv = udiv & (0x0000000fU);
+	USART_BAUD(usart_periph) =
+	    ((USART_BAUD_FRADIV | USART_BAUD_INTDIV) & (intdiv | fradiv));
 }
 
 /*!
@@ -127,12 +91,11 @@ void usart_baudrate_set(uint32_t usart_periph, uint32_t baudval)
     \param[out] none
     \retval     none
 */
-void usart_parity_config(uint32_t usart_periph, uint32_t paritycfg)
-{
-    /* clear USART_CTL0 PM,PCEN bits */
-    USART_CTL0(usart_periph) &= ~(USART_CTL0_PM | USART_CTL0_PCEN);
-    /* configure USART parity mode */
-    USART_CTL0(usart_periph) |= paritycfg ;
+void usart_parity_config(uint32_t usart_periph, uint32_t paritycfg) {
+	/* clear USART_CTL0 PM,PCEN bits */
+	USART_CTL0(usart_periph) &= ~(USART_CTL0_PM | USART_CTL0_PCEN);
+	/* configure USART parity mode */
+	USART_CTL0(usart_periph) |= paritycfg;
 }
 
 /*!
@@ -145,12 +108,11 @@ void usart_parity_config(uint32_t usart_periph, uint32_t paritycfg)
     \param[out] none
     \retval     none
 */
-void usart_word_length_set(uint32_t usart_periph, uint32_t wlen)
-{
-    /* clear USART_CTL0 WL bit */
-    USART_CTL0(usart_periph) &= ~USART_CTL0_WL;
-    /* configure USART word length */
-    USART_CTL0(usart_periph) |= wlen;
+void usart_word_length_set(uint32_t usart_periph, uint32_t wlen) {
+	/* clear USART_CTL0 WL bit */
+	USART_CTL0(usart_periph) &= ~USART_CTL0_WL;
+	/* configure USART word length */
+	USART_CTL0(usart_periph) |= wlen;
 }
 
 /*!
@@ -165,12 +127,11 @@ void usart_word_length_set(uint32_t usart_periph, uint32_t wlen)
     \param[out] none
     \retval     none
 */
-void usart_stop_bit_set(uint32_t usart_periph, uint32_t stblen)
-{
-    /* clear USART_CTL1 STB bits */
-    USART_CTL1(usart_periph) &= ~USART_CTL1_STB; 
-    /* configure USART stop bits */
-    USART_CTL1(usart_periph) |= stblen;
+void usart_stop_bit_set(uint32_t usart_periph, uint32_t stblen) {
+	/* clear USART_CTL1 STB bits */
+	USART_CTL1(usart_periph) &= ~USART_CTL1_STB;
+	/* configure USART stop bits */
+	USART_CTL1(usart_periph) |= stblen;
 }
 
 /*!
@@ -179,9 +140,8 @@ void usart_stop_bit_set(uint32_t usart_periph, uint32_t stblen)
     \param[out] none
     \retval     none
 */
-void usart_enable(uint32_t usart_periph)
-{
-    USART_CTL0(usart_periph) |= USART_CTL0_UEN;
+void usart_enable(uint32_t usart_periph) {
+	USART_CTL0(usart_periph) |= USART_CTL0_UEN;
 }
 
 /*!
@@ -190,9 +150,8 @@ void usart_enable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_disable(uint32_t usart_periph)
-{
-    USART_CTL0(usart_periph) &= ~(USART_CTL0_UEN);
+void usart_disable(uint32_t usart_periph) {
+	USART_CTL0(usart_periph) &= ~(USART_CTL0_UEN);
 }
 
 /*!
@@ -205,15 +164,14 @@ void usart_disable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_transmit_config(uint32_t usart_periph, uint32_t txconfig)
-{
-    uint32_t ctl = 0U;
-    
-    ctl = USART_CTL0(usart_periph);
-    ctl &= ~USART_CTL0_TEN;
-    ctl |= txconfig;
-    /* configure transfer mode */
-    USART_CTL0(usart_periph) = ctl;
+void usart_transmit_config(uint32_t usart_periph, uint32_t txconfig) {
+	uint32_t ctl = 0U;
+
+	ctl = USART_CTL0(usart_periph);
+	ctl &= ~USART_CTL0_TEN;
+	ctl |= txconfig;
+	/* configure transfer mode */
+	USART_CTL0(usart_periph) = ctl;
 }
 
 /*!
@@ -226,15 +184,14 @@ void usart_transmit_config(uint32_t usart_periph, uint32_t txconfig)
     \param[out] none
     \retval     none
 */
-void usart_receive_config(uint32_t usart_periph, uint32_t rxconfig)
-{
-    uint32_t ctl = 0U;
-    
-    ctl = USART_CTL0(usart_periph);
-    ctl &= ~USART_CTL0_REN;
-    ctl |= rxconfig;
-    /* configure receiver mode */
-    USART_CTL0(usart_periph) = ctl;
+void usart_receive_config(uint32_t usart_periph, uint32_t rxconfig) {
+	uint32_t ctl = 0U;
+
+	ctl = USART_CTL0(usart_periph);
+	ctl &= ~USART_CTL0_REN;
+	ctl |= rxconfig;
+	/* configure receiver mode */
+	USART_CTL0(usart_periph) = ctl;
 }
 
 /*!
@@ -244,9 +201,8 @@ void usart_receive_config(uint32_t usart_periph, uint32_t rxconfig)
     \param[out] none
     \retval     none
 */
-void usart_data_transmit(uint32_t usart_periph, uint32_t data)
-{
-    USART_DATA(usart_periph) = USART_DATA_DATA & data;
+void usart_data_transmit(uint32_t usart_periph, uint32_t data) {
+	USART_DATA(usart_periph) = USART_DATA_DATA & data;
 }
 
 /*!
@@ -255,9 +211,8 @@ void usart_data_transmit(uint32_t usart_periph, uint32_t data)
     \param[out] none
     \retval     data of received
 */
-uint16_t usart_data_receive(uint32_t usart_periph)
-{
-    return (uint16_t)(GET_BITS(USART_DATA(usart_periph), 0U, 8U));
+uint16_t usart_data_receive(uint32_t usart_periph) {
+	return (uint16_t) (GET_BITS(USART_DATA(usart_periph), 0U, 8U));
 }
 
 /*!
@@ -267,10 +222,9 @@ uint16_t usart_data_receive(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_address_config(uint32_t usart_periph, uint8_t addr)
-{
-    USART_CTL1(usart_periph) &= ~(USART_CTL1_ADDR);
-    USART_CTL1(usart_periph) |= (USART_CTL1_ADDR & addr);
+void usart_address_config(uint32_t usart_periph, uint8_t addr) {
+	USART_CTL1(usart_periph) &= ~(USART_CTL1_ADDR);
+	USART_CTL1(usart_periph) |= (USART_CTL1_ADDR & addr);
 }
 
 /*!
@@ -279,9 +233,8 @@ void usart_address_config(uint32_t usart_periph, uint8_t addr)
     \param[out] none
     \retval     none
 */
-void usart_mute_mode_enable(uint32_t usart_periph)
-{
-    USART_CTL0(usart_periph) |= USART_CTL0_RWU;
+void usart_mute_mode_enable(uint32_t usart_periph) {
+	USART_CTL0(usart_periph) |= USART_CTL0_RWU;
 }
 
 /*!
@@ -290,9 +243,8 @@ void usart_mute_mode_enable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_mute_mode_disable(uint32_t usart_periph)
-{
-    USART_CTL0(usart_periph) &= ~(USART_CTL0_RWU);
+void usart_mute_mode_disable(uint32_t usart_periph) {
+	USART_CTL0(usart_periph) &= ~(USART_CTL0_RWU);
 }
 
 /*!
@@ -305,10 +257,9 @@ void usart_mute_mode_disable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_mute_mode_wakeup_config(uint32_t usart_periph, uint32_t wmethod)
-{
-    USART_CTL0(usart_periph) &= ~(USART_CTL0_WM);
-    USART_CTL0(usart_periph) |= wmethod;
+void usart_mute_mode_wakeup_config(uint32_t usart_periph, uint32_t wmethod) {
+	USART_CTL0(usart_periph) &= ~(USART_CTL0_WM);
+	USART_CTL0(usart_periph) |= wmethod;
 }
 
 /*!
@@ -317,9 +268,8 @@ void usart_mute_mode_wakeup_config(uint32_t usart_periph, uint32_t wmethod)
     \param[out] none
     \retval     none
 */
-void usart_lin_mode_enable(uint32_t usart_periph)
-{   
-    USART_CTL1(usart_periph) |= USART_CTL1_LMEN;
+void usart_lin_mode_enable(uint32_t usart_periph) {
+	USART_CTL1(usart_periph) |= USART_CTL1_LMEN;
 }
 
 /*!
@@ -328,9 +278,8 @@ void usart_lin_mode_enable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_lin_mode_disable(uint32_t usart_periph)
-{   
-    USART_CTL1(usart_periph) &= ~(USART_CTL1_LMEN);
+void usart_lin_mode_disable(uint32_t usart_periph) {
+	USART_CTL1(usart_periph) &= ~(USART_CTL1_LMEN);
 }
 
 /*!
@@ -343,10 +292,10 @@ void usart_lin_mode_disable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_lin_break_detection_length_config(uint32_t usart_periph, uint32_t lblen)
-{
-    USART_CTL1(usart_periph) &= ~(USART_CTL1_LBLEN);
-    USART_CTL1(usart_periph) |= (USART_CTL1_LBLEN & lblen);
+void usart_lin_break_detection_length_config(uint32_t usart_periph,
+					     uint32_t lblen) {
+	USART_CTL1(usart_periph) &= ~(USART_CTL1_LBLEN);
+	USART_CTL1(usart_periph) |= (USART_CTL1_LBLEN & lblen);
 }
 
 /*!
@@ -355,9 +304,8 @@ void usart_lin_break_detection_length_config(uint32_t usart_periph, uint32_t lbl
     \param[out] none
     \retval     none
 */
-void usart_send_break(uint32_t usart_periph)
-{
-    USART_CTL0(usart_periph) |= USART_CTL0_SBKCMD;
+void usart_send_break(uint32_t usart_periph) {
+	USART_CTL0(usart_periph) |= USART_CTL0_SBKCMD;
 }
 
 /*!
@@ -366,9 +314,8 @@ void usart_send_break(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_halfduplex_enable(uint32_t usart_periph)
-{   
-    USART_CTL2(usart_periph) |= USART_CTL2_HDEN;
+void usart_halfduplex_enable(uint32_t usart_periph) {
+	USART_CTL2(usart_periph) |= USART_CTL2_HDEN;
 }
 
 /*!
@@ -377,9 +324,8 @@ void usart_halfduplex_enable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_halfduplex_disable(uint32_t usart_periph)
-{  
-    USART_CTL2(usart_periph) &= ~(USART_CTL2_HDEN);
+void usart_halfduplex_disable(uint32_t usart_periph) {
+	USART_CTL2(usart_periph) &= ~(USART_CTL2_HDEN);
 }
 
 /*!
@@ -388,9 +334,8 @@ void usart_halfduplex_disable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_synchronous_clock_enable(uint32_t usart_periph)
-{
-    USART_CTL1(usart_periph) |= USART_CTL1_CKEN;
+void usart_synchronous_clock_enable(uint32_t usart_periph) {
+	USART_CTL1(usart_periph) |= USART_CTL1_CKEN;
 }
 
 /*!
@@ -399,9 +344,8 @@ void usart_synchronous_clock_enable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_synchronous_clock_disable(uint32_t usart_periph)
-{
-    USART_CTL1(usart_periph) &= ~(USART_CTL1_CKEN);
+void usart_synchronous_clock_disable(uint32_t usart_periph) {
+	USART_CTL1(usart_periph) &= ~(USART_CTL1_CKEN);
 }
 
 /*!
@@ -422,17 +366,19 @@ void usart_synchronous_clock_disable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_synchronous_clock_config(uint32_t usart_periph, uint32_t clen, uint32_t cph, uint32_t cpl)
-{
-    uint32_t ctl = 0U;
-    
-    /* read USART_CTL1 register */
-    ctl = USART_CTL1(usart_periph);
-    ctl &= ~(USART_CTL1_CLEN | USART_CTL1_CPH | USART_CTL1_CPL);
-    /* set CK length, CK phase, CK polarity */
-    ctl |= (USART_CTL1_CLEN & clen) | (USART_CTL1_CPH & cph) | (USART_CTL1_CPL & cpl);
+void usart_synchronous_clock_config(uint32_t usart_periph, uint32_t clen,
+				    uint32_t cph, uint32_t cpl) {
+	uint32_t ctl = 0U;
 
-    USART_CTL1(usart_periph) = ctl;
+	/* read USART_CTL1 register */
+	ctl = USART_CTL1(usart_periph);
+	ctl &= ~(USART_CTL1_CLEN | USART_CTL1_CPH | USART_CTL1_CPL);
+	/* set CK length, CK phase, CK polarity */
+	ctl |=
+	    (USART_CTL1_CLEN & clen) | (USART_CTL1_CPH & cph) | (USART_CTL1_CPL
+								 & cpl);
+
+	USART_CTL1(usart_periph) = ctl;
 }
 
 /*!
@@ -442,10 +388,9 @@ void usart_synchronous_clock_config(uint32_t usart_periph, uint32_t clen, uint32
     \param[out] none
     \retval     none
 */
-void usart_guard_time_config(uint32_t usart_periph,uint32_t gaut)
-{
-    USART_GP(usart_periph) &= ~(USART_GP_GUAT);
-    USART_GP(usart_periph) |= (USART_GP_GUAT & ((gaut)<<8));
+void usart_guard_time_config(uint32_t usart_periph, uint32_t gaut) {
+	USART_GP(usart_periph) &= ~(USART_GP_GUAT);
+	USART_GP(usart_periph) |= (USART_GP_GUAT & ((gaut) << 8));
 }
 
 /*!
@@ -454,9 +399,8 @@ void usart_guard_time_config(uint32_t usart_periph,uint32_t gaut)
     \param[out] none
     \retval     none
 */
-void usart_smartcard_mode_enable(uint32_t usart_periph)
-{
-    USART_CTL2(usart_periph) |= USART_CTL2_SCEN;
+void usart_smartcard_mode_enable(uint32_t usart_periph) {
+	USART_CTL2(usart_periph) |= USART_CTL2_SCEN;
 }
 
 /*!
@@ -465,9 +409,8 @@ void usart_smartcard_mode_enable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_smartcard_mode_disable(uint32_t usart_periph)
-{
-    USART_CTL2(usart_periph) &= ~(USART_CTL2_SCEN);
+void usart_smartcard_mode_disable(uint32_t usart_periph) {
+	USART_CTL2(usart_periph) &= ~(USART_CTL2_SCEN);
 }
 
 /*!
@@ -476,9 +419,8 @@ void usart_smartcard_mode_disable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_smartcard_mode_nack_enable(uint32_t usart_periph)
-{
-    USART_CTL2(usart_periph) |= USART_CTL2_NKEN;
+void usart_smartcard_mode_nack_enable(uint32_t usart_periph) {
+	USART_CTL2(usart_periph) |= USART_CTL2_NKEN;
 }
 
 /*!
@@ -487,9 +429,8 @@ void usart_smartcard_mode_nack_enable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_smartcard_mode_nack_disable(uint32_t usart_periph)
-{
-    USART_CTL2(usart_periph) &= ~(USART_CTL2_NKEN);
+void usart_smartcard_mode_nack_disable(uint32_t usart_periph) {
+	USART_CTL2(usart_periph) &= ~(USART_CTL2_NKEN);
 }
 
 /*!
@@ -498,9 +439,8 @@ void usart_smartcard_mode_nack_disable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_irda_mode_enable(uint32_t usart_periph)
-{
-    USART_CTL2(usart_periph) |= USART_CTL2_IREN;
+void usart_irda_mode_enable(uint32_t usart_periph) {
+	USART_CTL2(usart_periph) |= USART_CTL2_IREN;
 }
 
 /*!
@@ -509,9 +449,8 @@ void usart_irda_mode_enable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_irda_mode_disable(uint32_t usart_periph)
-{
-    USART_CTL2(usart_periph) &= ~(USART_CTL2_IREN);
+void usart_irda_mode_disable(uint32_t usart_periph) {
+	USART_CTL2(usart_periph) &= ~(USART_CTL2_IREN);
 }
 
 /*!
@@ -521,10 +460,9 @@ void usart_irda_mode_disable(uint32_t usart_periph)
     \param[out] none
     \retval     none
 */
-void usart_prescaler_config(uint32_t usart_periph, uint8_t psc)
-{
-    USART_GP(usart_periph) &= ~(USART_GP_PSC);
-    USART_GP(usart_periph) |= psc;
+void usart_prescaler_config(uint32_t usart_periph, uint8_t psc) {
+	USART_GP(usart_periph) &= ~(USART_GP_PSC);
+	USART_GP(usart_periph) |= psc;
 }
 
 /*!
@@ -537,10 +475,9 @@ void usart_prescaler_config(uint32_t usart_periph, uint8_t psc)
     \param[out] none
     \retval     none
 */
-void usart_irda_lowpower_config(uint32_t usart_periph, uint32_t irlp)
-{
-    USART_CTL2(usart_periph) &= ~(USART_CTL2_IRLP);
-    USART_CTL2(usart_periph) |= (USART_CTL2_IRLP & irlp);
+void usart_irda_lowpower_config(uint32_t usart_periph, uint32_t irlp) {
+	USART_CTL2(usart_periph) &= ~(USART_CTL2_IRLP);
+	USART_CTL2(usart_periph) |= (USART_CTL2_IRLP & irlp);
 }
 
 /*!
@@ -553,15 +490,14 @@ void usart_irda_lowpower_config(uint32_t usart_periph, uint32_t irlp)
     \param[out] none
     \retval     none
 */
-void usart_hardware_flow_rts_config(uint32_t usart_periph, uint32_t rtsconfig)
-{
-    uint32_t ctl = 0U;
-    
-    ctl = USART_CTL2(usart_periph);
-    ctl &= ~USART_CTL2_RTSEN;
-    ctl |= rtsconfig;
-    /* configure RTS */
-    USART_CTL2(usart_periph) = ctl;
+void usart_hardware_flow_rts_config(uint32_t usart_periph, uint32_t rtsconfig) {
+	uint32_t ctl = 0U;
+
+	ctl = USART_CTL2(usart_periph);
+	ctl &= ~USART_CTL2_RTSEN;
+	ctl |= rtsconfig;
+	/* configure RTS */
+	USART_CTL2(usart_periph) = ctl;
 }
 
 /*!
@@ -574,15 +510,14 @@ void usart_hardware_flow_rts_config(uint32_t usart_periph, uint32_t rtsconfig)
     \param[out] none
     \retval     none
 */
-void usart_hardware_flow_cts_config(uint32_t usart_periph, uint32_t ctsconfig)
-{
-    uint32_t ctl = 0U;
-    
-    ctl = USART_CTL2(usart_periph);
-    ctl &= ~USART_CTL2_CTSEN;
-    ctl |= ctsconfig;
-    /* configure CTS */
-    USART_CTL2(usart_periph) = ctl;
+void usart_hardware_flow_cts_config(uint32_t usart_periph, uint32_t ctsconfig) {
+	uint32_t ctl = 0U;
+
+	ctl = USART_CTL2(usart_periph);
+	ctl &= ~USART_CTL2_CTSEN;
+	ctl |= ctsconfig;
+	/* configure CTS */
+	USART_CTL2(usart_periph) = ctl;
 }
 
 /*!
@@ -595,15 +530,14 @@ void usart_hardware_flow_cts_config(uint32_t usart_periph, uint32_t ctsconfig)
     \param[out] none
     \retval     none
 */
-void usart_dma_receive_config(uint32_t usart_periph, uint32_t dmacmd)
-{
-    uint32_t ctl = 0U;
-    
-    ctl = USART_CTL2(usart_periph);
-    ctl &= ~USART_CTL2_DENR;
-    ctl |= dmacmd;
-    /* configure DMA reception */
-    USART_CTL2(usart_periph) = ctl;
+void usart_dma_receive_config(uint32_t usart_periph, uint32_t dmacmd) {
+	uint32_t ctl = 0U;
+
+	ctl = USART_CTL2(usart_periph);
+	ctl &= ~USART_CTL2_DENR;
+	ctl |= dmacmd;
+	/* configure DMA reception */
+	USART_CTL2(usart_periph) = ctl;
 }
 
 /*!
@@ -616,21 +550,20 @@ void usart_dma_receive_config(uint32_t usart_periph, uint32_t dmacmd)
     \param[out] none
     \retval     none
 */
-void usart_dma_transmit_config(uint32_t usart_periph, uint32_t dmacmd)
-{
-    uint32_t ctl = 0U;
-    
-    ctl = USART_CTL2(usart_periph);
-    ctl &= ~USART_CTL2_DENT;
-    ctl |= dmacmd;
-    /* configure DMA transmission */
-    USART_CTL2(usart_periph) = ctl;
+void usart_dma_transmit_config(uint32_t usart_periph, uint32_t dmacmd) {
+	uint32_t ctl = 0U;
+
+	ctl = USART_CTL2(usart_periph);
+	ctl &= ~USART_CTL2_DENT;
+	ctl |= dmacmd;
+	/* configure DMA transmission */
+	USART_CTL2(usart_periph) = ctl;
 }
 
 /*!
     \brief      get flag in STAT register
     \param[in]  usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
-    \param[in]  flag: USART flags, refer to usart_flag_enum
+    \param[in]  flag: USART flags, refer to enum usart_flag
                 only one parameter can be selected which is shown as below:
       \arg        USART_FLAG_CTS: CTS change flag
       \arg        USART_FLAG_LBD: LIN break detected flag 
@@ -643,21 +576,21 @@ void usart_dma_transmit_config(uint32_t usart_periph, uint32_t dmacmd)
       \arg        USART_FLAG_FERR: frame error flag 
       \arg        USART_FLAG_PERR: parity error flag 
     \param[out] none
-    \retval     FlagStatus: SET or RESET
+    \retval     enum flag_status: SET or RESET
 */
-FlagStatus usart_flag_get(uint32_t usart_periph, usart_flag_enum flag)
-{
-    if(RESET != (USART_REG_VAL(usart_periph, flag) & BIT(USART_BIT_POS(flag)))){
-        return SET;
-    }else{
-        return RESET;
-    }
+enum flag_status usart_flag_get(uint32_t usart_periph, enum usart_flag flag) {
+	if (RESET !=
+	    (USART_REG_VAL(usart_periph, flag) & BIT(USART_BIT_POS(flag)))) {
+		return SET;
+	} else {
+		return RESET;
+	}
 }
 
 /*!
     \brief      clear flag in STAT register
     \param[in]  usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
-    \param[in]  flag: USART flags, refer to usart_flag_enum
+    \param[in]  flag: USART flags, refer to enum usart_flag
                 only one parameter can be selected which is shown as below:
       \arg        USART_FLAG_CTS: CTS change flag
       \arg        USART_FLAG_LBD: LIN break detected flag
@@ -666,9 +599,8 @@ FlagStatus usart_flag_get(uint32_t usart_periph, usart_flag_enum flag)
     \param[out] none
     \retval     none
 */
-void usart_flag_clear(uint32_t usart_periph, usart_flag_enum flag)
-{
-    USART_REG_VAL(usart_periph, flag) &= ~BIT(USART_BIT_POS(flag));
+void usart_flag_clear(uint32_t usart_periph, enum usart_flag flag) {
+	USART_REG_VAL(usart_periph, flag) &= ~BIT(USART_BIT_POS(flag));
 }
 
 /*!
@@ -687,9 +619,8 @@ void usart_flag_clear(uint32_t usart_periph, usart_flag_enum flag)
     \param[out] none
     \retval     none
 */
-void usart_interrupt_enable(uint32_t usart_periph, uint32_t interrupt)
-{
-    USART_REG_VAL(usart_periph, interrupt) |= BIT(USART_BIT_POS(interrupt));
+void usart_interrupt_enable(uint32_t usart_periph, uint32_t interrupt) {
+	USART_REG_VAL(usart_periph, interrupt) |= BIT(USART_BIT_POS(interrupt));
 }
 
 /*!
@@ -708,9 +639,9 @@ void usart_interrupt_enable(uint32_t usart_periph, uint32_t interrupt)
     \param[out] none
     \retval     none
 */
-void usart_interrupt_disable(uint32_t usart_periph, uint32_t interrupt)
-{
-    USART_REG_VAL(usart_periph, interrupt) &= ~BIT(USART_BIT_POS(interrupt));
+void usart_interrupt_disable(uint32_t usart_periph, uint32_t interrupt) {
+	USART_REG_VAL(usart_periph, interrupt) &=
+	    ~BIT(USART_BIT_POS(interrupt));
 }
 
 /*!
@@ -730,21 +661,25 @@ void usart_interrupt_disable(uint32_t usart_periph, uint32_t interrupt)
       \arg        USART_INT_FLAG_ERR_NERR: error interrupt and noise error flag
       \arg        USART_INT_FLAG_ERR_FERR: error interrupt and frame error flag
     \param[out] none
-    \retval     FlagStatus: SET or RESET
+    \retval     enum flag_status: SET or RESET
 */
-FlagStatus usart_interrupt_flag_get(uint32_t usart_periph, uint32_t int_flag)
-{
-    uint32_t intenable = 0U, flagstatus = 0U;
-    /* get the interrupt enable bit status */
-    intenable = (USART_REG_VAL(usart_periph, int_flag) & BIT(USART_BIT_POS(int_flag)));
-    /* get the corresponding flag bit status */
-    flagstatus = (USART_REG_VAL2(usart_periph, int_flag) & BIT(USART_BIT_POS2(int_flag)));
+enum flag_status usart_interrupt_flag_get(uint32_t usart_periph,
+					  uint32_t int_flag) {
+	uint32_t intenable = 0U, enum flag_status = 0U;
+	/* get the interrupt enable bit status */
+	intenable =
+	    (USART_REG_VAL(usart_periph, int_flag) &
+	     BIT(USART_BIT_POS(int_flag)));
+	/* get the corresponding flag bit status */
+	enum flag_status =
+	    (USART_REG_VAL2(usart_periph, int_flag) &
+	     BIT(USART_BIT_POS2(int_flag)));
 
-    if(flagstatus && intenable){
-        return SET;
-    }else{
-        return RESET; 
-    }
+	if (enum flag_status && intenable) {
+		return SET;
+	} else {
+		return RESET;
+	}
 }
 
 /*!
@@ -759,7 +694,7 @@ FlagStatus usart_interrupt_flag_get(uint32_t usart_periph, uint32_t int_flag)
     \param[out] none
     \retval     none
 */
-void usart_interrupt_flag_clear(uint32_t usart_periph, uint32_t int_flag)
-{
-    USART_REG_VAL2(usart_periph, int_flag) &= ~BIT(USART_BIT_POS2(int_flag));
+void usart_interrupt_flag_clear(uint32_t usart_periph, uint32_t int_flag) {
+	USART_REG_VAL2(usart_periph, int_flag) &=
+	    ~BIT(USART_BIT_POS2(int_flag));
 }

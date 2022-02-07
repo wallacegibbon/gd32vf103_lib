@@ -1,5 +1,3 @@
-// See LICENSE for license details.
-
 #include "riscv_encoding.h"
 
 	.section .init
@@ -163,9 +161,9 @@ vector_base:
 	.type _start,@function
 
 _start:
-
 	csrc CSR_MSTATUS, MSTATUS_MIE
-	/* Jump to logical address first to ensure correct operation of RAM region  */
+	// Jump to logical address first to ensure correct operation of
+	// RAM region.
 	la a0, _start
 	li a1, 1
 	slli a1, a1, 29
@@ -178,37 +176,38 @@ _start:
 
 _start0800:
 
-	/* Set the the NMI base to share with mtvec by setting CSR_MMISC_CTL */
+	// Set the the NMI base to share with mtvec by setting CSR_MMISC_CTL
 	li t0, 0x200
 	csrs CSR_MMISC_CTL, t0
 
-	/* Intial the mtvt*/
+	// Intial the mtvt
 	la t0, vector_base
 	csrw CSR_MTVT, t0
 
-	/* Intial the mtvt2 and enable it*/
+	// Intial the mtvt2 and enable it
 	la t0, irq_entry
 	csrw CSR_MTVT2, t0
 	csrs CSR_MTVT2, 0x1
 
-	/* Intial the CSR MTVEC for the Trap ane NMI base addr*/
+	// Intial the CSR MTVEC for the Trap ane NMI base addr
 	la t0, trap_entry
 	csrw CSR_MTVEC, t0
 
 #ifdef __riscv_flen
-	/* Enable FPU */
+	// Enable FPU
 	li t0, MSTATUS_FS
 	csrs mstatus, t0
 	csrw fcsr, x0
 #endif
 
-.option push
-.option norelax
+	.option push
+	.option norelax
 	la gp, __global_pointer$
-.option pop
+
+	.option pop
 	la sp, _sp
 
-	/* Load data section */
+	// Load data section
 	la a0, _data_lma
 	la a1, _data
 	la a2, _edata
@@ -220,7 +219,7 @@ _start0800:
 	addi a1, a1, 4
 	bltu a1, a2, 1b
 2:
-	/* Clear bss section */
+	// Clear bss section
 	la a0, __bss_start
 	la a1, _end
 	bgeu a0, a1, 2f
@@ -229,15 +228,15 @@ _start0800:
 	addi a0, a0, 4
 	bltu a0, a1, 1b
 2:
-	/*enable mcycle_minstret*/
+	// enable mcycle_minstret
 	csrci CSR_MCOUNTINHIBIT, 0x5
-	/* Call global constructors */
+	// Call global constructors
 	la a0, __libc_fini_array
 	call atexit
 	call __libc_init_array
 
 
-	/* argc = argv = 0 */
+	// argc = 0, argv = NULL
 	li a0, 0
 	li a1, 0
 	call main

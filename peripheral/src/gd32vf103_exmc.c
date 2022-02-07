@@ -1,37 +1,3 @@
-/*!
-    \file    gd32vf103_exmc.c
-    \brief   EXMC driver
-
-    \version 2019-06-05, V1.0.0, firmware for GD32VF103
-*/
-
-/*
-    Copyright (c) 2019, GigaDevice Semiconductor Inc.
-
-    Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice, this
-       list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice,
-       this list of conditions and the following disclaimer in the documentation
-       and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors
-       may be used to endorse or promote products derived from this software without
-       specific prior written permission.
-
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
-OF SUCH DAMAGE.
-*/
-
 #include "gd32vf103_exmc.h"
 
 /* EXMC bank0 register reset value */
@@ -55,14 +21,13 @@ OF SUCH DAMAGE.
     \param[out] none
     \retval     none
 */
-void exmc_norsram_deinit(uint32_t norsram_region)
-{
-    /* reset the registers */
-    if(EXMC_BANK0_NORSRAM_REGION0 == norsram_region){
-        EXMC_SNCTL(norsram_region) = BANK0_SNCTL0_REGION_RESET;
-    }
+void exmc_norsram_deinit(uint32_t norsram_region) {
+	/* reset the registers */
+	if (EXMC_BANK0_NORSRAM_REGION0 == norsram_region) {
+		EXMC_SNCTL(norsram_region) = BANK0_SNCTL0_REGION_RESET;
+	}
 
-    EXMC_SNTCFG(norsram_region) = BANK0_SNTCFG_RESET;
+	EXMC_SNTCFG(norsram_region) = BANK0_SNTCFG_RESET;
 }
 
 /*!
@@ -71,23 +36,26 @@ void exmc_norsram_deinit(uint32_t norsram_region)
     \param[out] exmc_norsram_init_struct: the initialized structure exmc_norsram_parameter_struct pointer
     \retval     none
 */
-void exmc_norsram_struct_para_init(exmc_norsram_parameter_struct* exmc_norsram_init_struct)
-{
-    /* configure the structure with default value */
-    exmc_norsram_init_struct->norsram_region = EXMC_BANK0_NORSRAM_REGION0;
-    exmc_norsram_init_struct->address_data_mux = ENABLE;
-    exmc_norsram_init_struct->memory_type = EXMC_MEMORY_TYPE_SRAM;
-    exmc_norsram_init_struct->databus_width = EXMC_NOR_DATABUS_WIDTH_16B;
-    exmc_norsram_init_struct->nwait_polarity = EXMC_NWAIT_POLARITY_LOW;
-    exmc_norsram_init_struct->memory_write = ENABLE;
-    exmc_norsram_init_struct->nwait_signal = ENABLE;
-    exmc_norsram_init_struct->asyn_wait = DISABLE;
+void exmc_norsram_struct_para_init(exmc_norsram_parameter_struct *
+				   exmc_norsram_init_struct) {
+	/* configure the structure with default value */
+	exmc_norsram_init_struct->norsram_region = EXMC_BANK0_NORSRAM_REGION0;
+	exmc_norsram_init_struct->address_data_mux = ENABLE;
+	exmc_norsram_init_struct->memory_type = EXMC_MEMORY_TYPE_SRAM;
+	exmc_norsram_init_struct->databus_width = EXMC_NOR_DATABUS_WIDTH_16B;
+	exmc_norsram_init_struct->nwait_polarity = EXMC_NWAIT_POLARITY_LOW;
+	exmc_norsram_init_struct->memory_write = ENABLE;
+	exmc_norsram_init_struct->nwait_signal = ENABLE;
+	exmc_norsram_init_struct->asyn_wait = DISABLE;
 
-    /* read/write timing configure */
-    exmc_norsram_init_struct->read_write_timing->asyn_address_setuptime = 0xFU;
-    exmc_norsram_init_struct->read_write_timing->asyn_address_holdtime = 0xFU;
-    exmc_norsram_init_struct->read_write_timing->asyn_data_setuptime = 0xFFU;
-    exmc_norsram_init_struct->read_write_timing->bus_latency = 0xFU;
+	/* read/write timing configure */
+	exmc_norsram_init_struct->read_write_timing->asyn_address_setuptime =
+	    0xFU;
+	exmc_norsram_init_struct->read_write_timing->asyn_address_holdtime =
+	    0xFU;
+	exmc_norsram_init_struct->read_write_timing->asyn_data_setuptime =
+	    0xFFU;
+	exmc_norsram_init_struct->read_write_timing->bus_latency = 0xFU;
 }
 
 /*!
@@ -105,38 +73,53 @@ void exmc_norsram_struct_para_init(exmc_norsram_parameter_struct* exmc_norsram_i
     \param[out] none
     \retval     none
 */
-void exmc_norsram_init(exmc_norsram_parameter_struct* exmc_norsram_init_struct)
-{
-    uint32_t snctl = 0x00000000U, sntcfg = 0x00000000U;
+void exmc_norsram_init(exmc_norsram_parameter_struct * exmc_norsram_init_struct) {
+	uint32_t snctl = 0x00000000U, sntcfg = 0x00000000U;
 
-    /* get the register value */
-    snctl = EXMC_SNCTL(exmc_norsram_init_struct->norsram_region);
+	/* get the register value */
+	snctl = EXMC_SNCTL(exmc_norsram_init_struct->norsram_region);
 
-    /* clear relative bits */
-    snctl &= ((uint32_t)~(EXMC_SNCTL_NREN | EXMC_SNCTL_NRTP | EXMC_SNCTL_NRW | EXMC_SNCTL_NRWTPOL | 
-                          EXMC_SNCTL_WREN | EXMC_SNCTL_NRWTEN | EXMC_SNCTL_ASYNCWAIT | EXMC_SNCTL_NRMUX));
+	/* clear relative bits */
+	snctl &=
+	    ((uint32_t) ~
+	     (EXMC_SNCTL_NREN | EXMC_SNCTL_NRTP | EXMC_SNCTL_NRW |
+	      EXMC_SNCTL_NRWTPOL | EXMC_SNCTL_WREN | EXMC_SNCTL_NRWTEN |
+	      EXMC_SNCTL_ASYNCWAIT | EXMC_SNCTL_NRMUX));
 
-    snctl |= (uint32_t)(exmc_norsram_init_struct->address_data_mux << SNCTL_NRMUX_OFFSET) |
-                        exmc_norsram_init_struct->memory_type |
-                        exmc_norsram_init_struct->databus_width |
-                        exmc_norsram_init_struct->nwait_polarity |
-                       (exmc_norsram_init_struct->memory_write << SNCTL_WREN_OFFSET) |
-                       (exmc_norsram_init_struct->nwait_signal << SNCTL_NRWTEN_OFFSET) |
-                       (exmc_norsram_init_struct->asyn_wait << SNCTL_ASYNCWAIT_OFFSET);
+	snctl |=
+	    (uint32_t) (exmc_norsram_init_struct->
+			address_data_mux << SNCTL_NRMUX_OFFSET) |
+	    exmc_norsram_init_struct->memory_type | exmc_norsram_init_struct->
+	    databus_width | exmc_norsram_init_struct->
+	    nwait_polarity | (exmc_norsram_init_struct->
+			      memory_write << SNCTL_WREN_OFFSET) |
+	    (exmc_norsram_init_struct->
+	     nwait_signal << SNCTL_NRWTEN_OFFSET) | (exmc_norsram_init_struct->
+						     asyn_wait <<
+						     SNCTL_ASYNCWAIT_OFFSET);
 
-    sntcfg = (uint32_t)((exmc_norsram_init_struct->read_write_timing->asyn_address_setuptime - 1U ) & EXMC_SNTCFG_ASET )|
-                       (((exmc_norsram_init_struct->read_write_timing->asyn_address_holdtime - 1U ) << SNTCFG_AHLD_OFFSET ) & EXMC_SNTCFG_AHLD ) |
-                       (((exmc_norsram_init_struct->read_write_timing->asyn_data_setuptime - 1U ) << SNTCFG_DSET_OFFSET ) & EXMC_SNTCFG_DSET ) |
-                       (((exmc_norsram_init_struct->read_write_timing->bus_latency - 1U ) << SNTCFG_BUSLAT_OFFSET ) & EXMC_SNTCFG_BUSLAT );
+	sntcfg =
+	    (uint32_t) ((exmc_norsram_init_struct->read_write_timing->
+			 asyn_address_setuptime -
+			 1U) & EXMC_SNTCFG_ASET) | (((exmc_norsram_init_struct->
+						      read_write_timing->
+						      asyn_address_holdtime -
+						      1U) << SNTCFG_AHLD_OFFSET)
+						    & EXMC_SNTCFG_AHLD) |
+	    (((exmc_norsram_init_struct->read_write_timing->
+	       asyn_data_setuptime -
+	       1U) << SNTCFG_DSET_OFFSET) & EXMC_SNTCFG_DSET) |
+	    (((exmc_norsram_init_struct->read_write_timing->bus_latency -
+	       1U) << SNTCFG_BUSLAT_OFFSET) & EXMC_SNTCFG_BUSLAT);
 
-    /* nor flash access enable */
-    if(EXMC_MEMORY_TYPE_NOR == exmc_norsram_init_struct->memory_type){
-        snctl |= (uint32_t)EXMC_SNCTL_NREN;
-    }
+	/* nor flash access enable */
+	if (EXMC_MEMORY_TYPE_NOR == exmc_norsram_init_struct->memory_type) {
+		snctl |= (uint32_t) EXMC_SNCTL_NREN;
+	}
 
-    /* configure the registers */
-    EXMC_SNCTL(exmc_norsram_init_struct->norsram_region) = snctl;
-    EXMC_SNTCFG(exmc_norsram_init_struct->norsram_region) = sntcfg;
+	/* configure the registers */
+	EXMC_SNCTL(exmc_norsram_init_struct->norsram_region) = snctl;
+	EXMC_SNTCFG(exmc_norsram_init_struct->norsram_region) = sntcfg;
 }
 
 /*!
@@ -146,9 +129,8 @@ void exmc_norsram_init(exmc_norsram_parameter_struct* exmc_norsram_init_struct)
     \param[out] none
     \retval     none
 */
-void exmc_norsram_enable(uint32_t norsram_region)
-{
-    EXMC_SNCTL(norsram_region) |= (uint32_t)EXMC_SNCTL_NRBKEN;
+void exmc_norsram_enable(uint32_t norsram_region) {
+	EXMC_SNCTL(norsram_region) |= (uint32_t) EXMC_SNCTL_NRBKEN;
 }
 
 /*!
@@ -158,7 +140,6 @@ void exmc_norsram_enable(uint32_t norsram_region)
     \param[out] none
     \retval     none
 */
-void exmc_norsram_disable(uint32_t norsram_region)
-{
-    EXMC_SNCTL(norsram_region) &= ~(uint32_t)EXMC_SNCTL_NRBKEN;
+void exmc_norsram_disable(uint32_t norsram_region) {
+	EXMC_SNCTL(norsram_region) &= ~(uint32_t) EXMC_SNCTL_NRBKEN;
 }

@@ -19,10 +19,8 @@ ssize_t _write(int fd, const void *ptr, size_t len) {
 	{
 		for (size_t jj = 0; jj < len; jj++) {
 			_put_char(current[jj]);
-
-			if (current[jj] == '\n') {
+			if (current[jj] == '\n')
 				_put_char('\r');
-			}
 		}
 		return len;
 	}
@@ -38,6 +36,5 @@ int _put_char(int ch) {
 	usart_data_transmit(USART0, (uint8_t) ch);
 	while (usart_flag_get(USART0, USART_FLAG_TBE) == RESET) {
 	}
-
 	return ch;
 }

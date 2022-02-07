@@ -1,33 +1,26 @@
-// See LICENSE for license details
-
-#ifndef ENTRY_S
-#define ENTRY_S
+#ifndef __ENTRY_S__
+#define __ENTRY_S__
 
 #include "riscv_encoding.h"
 #include "riscv_bits.h"
 #include "n200_eclic.h"
 #include "n200_timer.h"
 
-###############################################
-###############################################
 # Disable Interrupt
-#
 .macro DISABLE_MIE
 	csrc CSR_MSTATUS, MSTATUS_MIE  
 .endm
 
 
-###############################################
-###############################################
 #Save caller registers
 .macro SAVE_CONTEXT
 
 #ifdef __riscv_flen
-  #if (__riscv_flen==64 )
+	#if (__riscv_flen==64 )
 	addi sp, sp, -20*REGBYTES - 20*FPREGBYTES
-  #else
+	#else
 	addi sp, sp, -20*REGBYTES
-  #endif
+	#endif
 #else
 	addi sp, sp, -20*REGBYTES
 #endif
@@ -52,7 +45,7 @@
 #endif
 
 #ifdef __riscv_flen
-  #if (__riscv_flen == 64)
+	#if (__riscv_flen == 64)
 	FPSTORE f0, (20*REGBYTES + 0*FPREGBYTES)(sp)
 	FPSTORE f1, (20*REGBYTES + 1*FPREGBYTES)(sp)
 	FPSTORE f2, (20*REGBYTES + 2*FPREGBYTES)(sp)
@@ -73,15 +66,13 @@
 	FPSTORE f29, (20*REGBYTES + 17*FPREGBYTES)(sp)
 	FPSTORE f30, (20*REGBYTES + 18*FPREGBYTES)(sp)
 	FPSTORE f31, (20*REGBYTES + 19*FPREGBYTES)(sp)   
-  #endif    
+	#endif    
 #endif
 
 
 .endm
 
 
-###############################################
-###############################################
 #restore caller registers
 .macro RESTORE_CONTEXT
 	LOAD x1, 0*REGBYTES(sp)
@@ -106,7 +97,7 @@
 
 
 #ifdef __riscv_flen
-  #if (__riscv_flen==64)
+	#if (__riscv_flen==64)
 /* Restore fp caller registers */
 	FPLOAD f0, (20*REGBYTES + 0*FPREGBYTES)(sp)
 	FPLOAD f1, (20*REGBYTES + 1*FPREGBYTES)(sp)
@@ -128,24 +119,22 @@
 	FPLOAD f29, (20*REGBYTES + 17*FPREGBYTES)(sp)
 	FPLOAD f30, (20*REGBYTES + 18*FPREGBYTES)(sp)
 	FPLOAD f31, (20*REGBYTES + 19*FPREGBYTES)(sp)
-  #endif
+	#endif
 #endif
 
 
 #ifdef __riscv_flen
-  #if(__riscv_flen == 64 )
+	#if(__riscv_flen == 64 )
 	addi sp, sp, 20*REGBYTES  + 20*FPREGBYTES
-  #else
+	#else
 	addi sp, sp, 20*REGBYTES
-  #endif
+	#endif
 #else
-// De-allocate the stack space
+	// De-allocate the stack space
 	addi sp, sp, 20*REGBYTES
 #endif
 .endm
 
-###############################################
-###############################################
 #restore caller registers
 .macro RESTORE_CONTEXT_EXCPT_X5
 	LOAD x1,  0*REGBYTES(sp)
@@ -167,17 +156,12 @@
 #endif
 .endm
 
-###############################################
-###############################################
 #restore caller registers
 .macro RESTORE_CONTEXT_ONLY_X5
 	LOAD x5,  1*REGBYTES(sp)
 .endm
 
-###############################################
-###############################################
 # Save the mepc and mstatus
-#
 .macro SAVE_EPC_STATUS
 	csrr x5, CSR_MEPC  
 	STORE x5,  16*REGBYTES(sp)
@@ -187,10 +171,7 @@
 	STORE x5,  18*REGBYTES(sp)
 .endm
 
-###############################################
-###############################################
 # Restore the mepc and mstatus
-#
 .macro RESTORE_EPC_STATUS
 	LOAD x5,  16*REGBYTES(sp)
 	csrw CSR_MEPC, x5  
@@ -202,12 +183,9 @@
 
 
 
-###############################################
-###############################################
-// Trap entry point
-//
+	// Trap entry point
 	.section      .text.trap	
-	.align 6// In CLIC mode, the trap entry must be 64bytes aligned
+	.align 6 // In CLIC mode, the trap entry must be 64bytes aligned
 	.global trap_entry
 	.weak trap_entry
 trap_entry:
@@ -227,45 +205,47 @@ trap_entry:
 
 	// Restore the MEPC/Mstatus/Msubm reg
 	RESTORE_EPC_STATUS
+
 	// Restore the caller saving registers (context)
 	RESTORE_CONTEXT
 
 	// De-allocate the stack space
 	// addi sp, sp, 19*REGBYTES
+
 	// Return to regular code
 	mret
 
 
-###############################################
-###############################################
-// IRQ entry point
-//
-	.section      .text.irq	
+	// IRQ entry point
+	.section .text.irq	
 	.align 2
 	.global irq_entry
 	.weak irq_entry
-irq_entry: // -------------> This label will be set to MTVT2 register
+
+irq_entry: // -> This label will be set to MTVT2 register
 	// Allocate the stack space
-  
+	SAVE_CONTEXT // Save 16 regs
 
-	SAVE_CONTEXT// Save 16 regs
-
-	//------This special CSR read operation, which is actually use mcause as operand to directly store it to memory
+	// This special CSR read operation, which is actually use mcause as
+	// operand to directly store it to memory
 	csrrwi  x0, CSR_PUSHMCAUSE, 17
-	//------This special CSR read operation, which is actually use mepc as operand to directly store it to memory
+	// This special CSR read operation, which is actually use mepc as
+	// operand to directly store it to memory
 	csrrwi  x0, CSR_PUSHMEPC, 18
-	//------This special CSR read operation, which is actually use Msubm as operand to directly store it to memory
+	// This special CSR read operation, which is actually use Msubm as
+	// operand to directly store it to memory
 	csrrwi  x0, CSR_PUSHMSUBM, 19
  
 service_loop:
-	//------This special CSR read/write operation, which is actually Claim the CLIC to find its pending highest
-	// ID, if the ID is not 0, then automatically enable the mstatus.MIE, and jump to its vector-entry-label, and
-	// update the link register 
+	// This special CSR read/write operation, which is actually Claim the
+	// CLIC to find its pending highest ID, if the ID is not 0,
+	// then automatically enable the mstatus.MIE,
+	// and jump to its vector-entry-label, and update the link register 
 	csrrw ra, CSR_JALMNXTI, ra 
   
 	//RESTORE_CONTEXT_EXCPT_X5
 
-	#---- Critical section with interrupts disabled -----------------------
+	# Critical section with interrupts disabled
 	DISABLE_MIE # Disable interrupts 
 
 	LOAD x5, 19*REGBYTES(sp)
@@ -275,12 +255,9 @@ service_loop:
 	LOAD x5,  17*REGBYTES(sp)
 	csrw CSR_MCAUSE, x5  
 
-
 	RESTORE_CONTEXT
 
-  
 	// Return to regular code
 	mret
-
 
 #endif

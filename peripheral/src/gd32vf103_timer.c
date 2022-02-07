@@ -1,42 +1,9 @@
-/*!
-    \file  gd32vf103_timer.c
-    \brief TIMER driver
-    
-    \version 2019-06-05, V1.0.1, firmware for GD32VF103
-*/
-
-/*
-    Copyright (c) 2019, GigaDevice Semiconductor Inc.
-
-    Redistribution and use in source and binary forms, with or without modification, 
-are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice, this 
-       list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice, 
-       this list of conditions and the following disclaimer in the documentation 
-       and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors 
-       may be used to endorse or promote products derived from this software without 
-       specific prior written permission.
-
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, 
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT 
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
-OF SUCH DAMAGE.
-*/
 #include "gd32vf103_timer.h"
 
 /* TIMER init parameter mask */
-#define ALIGNEDMODE_MASK            ((uint32_t)0x00000060U)	/*!< TIMER init parameter aligne dmode mask */
-#define COUNTERDIRECTION_MASK       ((uint32_t)0x00000010U)	/*!< TIMER init parameter counter direction mask */
-#define CLOCKDIVISION_MASK          ((uint32_t)0x00000300U)	/*!< TIMER init parameter clock division value mask */
+#define ALIGNEDMODE_MASK            ((uint32_t)0x00000060U)	/* TIMER init parameter aligne dmode mask */
+#define COUNTERDIRECTION_MASK       ((uint32_t)0x00000010U)	/* TIMER init parameter counter direction mask */
+#define CLOCKDIVISION_MASK          ((uint32_t)0x00000300U)	/* TIMER init parameter clock division value mask */
 
 /*!
     \brief      deinit a timer
@@ -130,13 +97,13 @@ void timer_init(uint32_t timer_periph, timer_parameter_struct * initpara) {
 		TIMER_CTL0(timer_periph) |=
 		    (uint32_t) (initpara->alignedmode & ALIGNEDMODE_MASK);
 		TIMER_CTL0(timer_periph) |=
-		    (uint32_t) (initpara->
-				counterdirection & COUNTERDIRECTION_MASK);
+		    (uint32_t) (initpara->counterdirection &
+				COUNTERDIRECTION_MASK);
 	} else {
 		TIMER_CTL0(timer_periph) &= (uint32_t) (~TIMER_CTL0_DIR);
 		TIMER_CTL0(timer_periph) |=
-		    (uint32_t) (initpara->
-				counterdirection & COUNTERDIRECTION_MASK);
+		    (uint32_t) (initpara->counterdirection &
+				COUNTERDIRECTION_MASK);
 	}
 
 	/* configure the autoreload value */
@@ -580,7 +547,8 @@ void timer_automatic_output_disable(uint32_t timer_periph) {
     \param[out] none
     \retval     none
 */
-void timer_primary_output_config(uint32_t timer_periph, ControlStatus newvalue) {
+void timer_primary_output_config(uint32_t timer_periph,
+				 enum control_status newvalue) {
 	if (ENABLE == newvalue) {
 		TIMER_CCHP(timer_periph) |= (uint32_t) TIMER_CCHP_POEN;
 	} else {
@@ -596,7 +564,7 @@ void timer_primary_output_config(uint32_t timer_periph, ControlStatus newvalue) 
     \retval     none
 */
 void timer_channel_control_shadow_config(uint32_t timer_periph,
-					 ControlStatus newvalue) {
+					 enum control_status newvalue) {
 	if (ENABLE == newvalue) {
 		TIMER_CTL1(timer_periph) |= (uint32_t) TIMER_CTL1_CCSE;
 	} else {
@@ -1372,8 +1340,8 @@ void timer_input_capture_config(uint32_t timer_periph, uint16_t channel,
 	}
 	/* configure TIMER channel input capture prescaler value */
 	timer_channel_input_capture_prescaler_config(timer_periph, channel,
-						     (uint16_t) (icpara->
-								 icprescaler));
+						     (uint16_t)
+						     (icpara->icprescaler));
 }
 
 /*!
@@ -1523,8 +1491,8 @@ void timer_input_pwm_capture_config(uint32_t timer_periph, uint16_t channel,
 		/* configure TIMER channel input capture prescaler value */
 		timer_channel_input_capture_prescaler_config(timer_periph,
 							     TIMER_CH_0,
-							     (uint16_t) (icpwm->
-									 icprescaler));
+							     (uint16_t)
+							     (icpwm->icprescaler));
 
 		/* reset the CH1EN bit */
 		TIMER_CHCTL2(timer_periph) &= (~(uint32_t) TIMER_CHCTL2_CH1EN);
@@ -1550,8 +1518,8 @@ void timer_input_pwm_capture_config(uint32_t timer_periph, uint16_t channel,
 		/* configure TIMER channel input capture prescaler value */
 		timer_channel_input_capture_prescaler_config(timer_periph,
 							     TIMER_CH_1,
-							     (uint16_t) (icpwm->
-									 icprescaler));
+							     (uint16_t)
+							     (icpwm->icprescaler));
 	} else {
 		/* reset the CH1EN bit */
 		TIMER_CHCTL2(timer_periph) &= (~(uint32_t) TIMER_CHCTL2_CH1EN);
@@ -1577,8 +1545,8 @@ void timer_input_pwm_capture_config(uint32_t timer_periph, uint16_t channel,
 		/* configure TIMER channel input capture prescaler value */
 		timer_channel_input_capture_prescaler_config(timer_periph,
 							     TIMER_CH_1,
-							     (uint16_t) (icpwm->
-									 icprescaler));
+							     (uint16_t)
+							     (icpwm->icprescaler));
 
 		/* reset the CH0EN bit */
 		TIMER_CHCTL2(timer_periph) &= (~(uint32_t) TIMER_CHCTL2_CH0EN);
@@ -1602,8 +1570,8 @@ void timer_input_pwm_capture_config(uint32_t timer_periph, uint16_t channel,
 		/* configure TIMER channel input capture prescaler value */
 		timer_channel_input_capture_prescaler_config(timer_periph,
 							     TIMER_CH_0,
-							     (uint16_t) (icpwm->
-									 icprescaler));
+							     (uint16_t)
+							     (icpwm->icprescaler));
 	}
 }
 
@@ -1732,9 +1700,9 @@ void timer_master_slave_mode_config(uint32_t timer_periph, uint32_t masterslave)
 */
 void timer_external_trigger_config(uint32_t timer_periph, uint32_t extprescaler,
 				   uint32_t extpolarity, uint32_t extfilter) {
-	TIMER_SMCFG(timer_periph) &=
-	    (~(uint32_t)
-	     (TIMER_SMCFG_ETP | TIMER_SMCFG_ETPSC | TIMER_SMCFG_ETFC));
+	TIMER_SMCFG(timer_periph) &= (~(uint32_t)
+				      (TIMER_SMCFG_ETP | TIMER_SMCFG_ETPSC |
+				       TIMER_SMCFG_ETFC));
 	TIMER_SMCFG(timer_periph) |= (uint32_t) (extprescaler | extpolarity);
 	TIMER_SMCFG(timer_periph) |= (uint32_t) (extfilter << 8U);
 }
@@ -2003,9 +1971,10 @@ void timer_interrupt_disable(uint32_t timer_periph, uint32_t interrupt) {
       \arg        TIMER_INT_FLAG_TRG: trigger interrupt flag, TIMERx(x=0)
       \arg        TIMER_INT_FLAG_BRK: break interrupt flag, TIMERx(x=0)
     \param[out] none
-    \retval     FlagStatus: SET or RESET
+    \retval     enum flag_status: SET or RESET
 */
-FlagStatus timer_interrupt_flag_get(uint32_t timer_periph, uint32_t interrupt) {
+enum flag_status timer_interrupt_flag_get(uint32_t timer_periph,
+					  uint32_t interrupt) {
 	uint32_t val;
 	val = (TIMER_DMAINTEN(timer_periph) & interrupt);
 	if ((RESET != (TIMER_INTF(timer_periph) & interrupt)) && (RESET != val)) {
@@ -2053,9 +2022,9 @@ void timer_interrupt_flag_clear(uint32_t timer_periph, uint32_t interrupt) {
       \arg        TIMER_FLAG_CH2O: channel 2 overcapture flag, TIMERx(x=0..4)
       \arg        TIMER_FLAG_CH3O: channel 3 overcapture flag, TIMERx(x=0..4)
     \param[out] none
-    \retval     FlagStatus: SET or RESET
+    \retval     enum flag_status: SET or RESET
 */
-FlagStatus timer_flag_get(uint32_t timer_periph, uint32_t flag) {
+enum flag_status timer_flag_get(uint32_t timer_periph, uint32_t flag) {
 	if (RESET != (TIMER_INTF(timer_periph) & flag)) {
 		return SET;
 	} else {

@@ -1,12 +1,12 @@
-#ifndef _RISCV_CONST_H
-#define _RISCV_CONST_H
+#ifndef __RISCV_CONST_H__
+#define __RISCV_CONST_H__
 
 #ifdef __ASSEMBLER__
 #define _AC(X,Y)	X
 #define _AT(T,X)	X
 #else
 #define _AC(X,Y)	(X##Y)
-#define _AT(T,X)	((T)(X))
+#define _AT(T,X)	((T) (X))
 #endif
 
 #define _BITUL(x)	(_AC(1, UL) << (x))

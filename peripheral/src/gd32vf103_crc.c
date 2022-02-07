@@ -1,37 +1,3 @@
-/*!
-    \file  gd32vf103_crc.c
-    \brief CRC driver
-
-    \version 2019-06-05, V1.0.0, firmware for GD32VF103
-*/
-
-/*
-    Copyright (c) 2019, GigaDevice Semiconductor Inc.
-
-    Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
-
-    1. Redistributions of source code must retain the above copyright notice, this
-       list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright notice,
-       this list of conditions and the following disclaimer in the documentation
-       and/or other materials provided with the distribution.
-    3. Neither the name of the copyright holder nor the names of its contributors
-       may be used to endorse or promote products derived from this software without
-       specific prior written permission.
-
-    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY
-OF SUCH DAMAGE.
-*/
-
 #include "gd32vf103_crc.h"
 
 #define CRC_DATA_RESET_VALUE      ((uint32_t)0xFFFFFFFFU)
@@ -43,11 +9,10 @@ OF SUCH DAMAGE.
     \param[out] none
     \retval     none
 */
-void crc_deinit(void)
-{
-    CRC_DATA = CRC_DATA_RESET_VALUE;
-    CRC_FDATA = CRC_FDATA_RESET_VALUE;
-    CRC_CTL = (uint32_t)CRC_CTL_RST;
+void crc_deinit(void) {
+	CRC_DATA = CRC_DATA_RESET_VALUE;
+	CRC_FDATA = CRC_FDATA_RESET_VALUE;
+	CRC_CTL = (uint32_t) CRC_CTL_RST;
 }
 
 /*!
@@ -56,9 +21,8 @@ void crc_deinit(void)
     \param[out] none
     \retval     none
 */
-void crc_data_register_reset(void)
-{
-    CRC_CTL |= (uint32_t)CRC_CTL_RST;
+void crc_data_register_reset(void) {
+	CRC_CTL |= (uint32_t) CRC_CTL_RST;
 }
 
 /*!
@@ -67,11 +31,10 @@ void crc_data_register_reset(void)
     \param[out] none
     \retval     32-bit value of the data register
 */
-uint32_t crc_data_register_read(void)
-{
-    uint32_t data;
-    data = CRC_DATA;
-    return (data);
+uint32_t crc_data_register_read(void) {
+	uint32_t data;
+	data = CRC_DATA;
+	return (data);
 }
 
 /*!
@@ -80,11 +43,10 @@ uint32_t crc_data_register_read(void)
     \param[out] none
     \retval     8-bit value of the free data register
 */
-uint8_t crc_free_data_register_read(void)
-{
-    uint8_t fdata;
-    fdata = (uint8_t)CRC_FDATA;
-    return (fdata);
+uint8_t crc_free_data_register_read(void) {
+	uint8_t fdata;
+	fdata = (uint8_t) CRC_FDATA;
+	return (fdata);
 }
 
 /*!
@@ -93,9 +55,8 @@ uint8_t crc_free_data_register_read(void)
     \param[out] none
     \retval     none
 */
-void crc_free_data_register_write(uint8_t free_data)
-{
-    CRC_FDATA = (uint32_t)free_data;
+void crc_free_data_register_write(uint8_t free_data) {
+	CRC_FDATA = (uint32_t) free_data;
 }
 
 /*!
@@ -104,10 +65,9 @@ void crc_free_data_register_write(uint8_t free_data)
     \param[out] none
     \retval     32-bit value calculated by CRC
 */
-uint32_t crc_single_data_calculate(uint32_t sdata)
-{
-    CRC_DATA = sdata;
-    return (CRC_DATA);
+uint32_t crc_single_data_calculate(uint32_t sdata) {
+	CRC_DATA = sdata;
+	return (CRC_DATA);
 }
 
 /*!
@@ -117,11 +77,10 @@ uint32_t crc_single_data_calculate(uint32_t sdata)
     \param[out] none
     \retval     32-bit value calculated by CRC
 */
-uint32_t crc_block_data_calculate(uint32_t array[], uint32_t size)
-{
-    uint32_t index;
-    for(index = 0U; index < size; index++){
-        CRC_DATA = array[index];
-    }
-    return (CRC_DATA);
+uint32_t crc_block_data_calculate(uint32_t array[], uint32_t size) {
+	uint32_t index;
+	for (index = 0U; index < size; index++) {
+		CRC_DATA = array[index];
+	}
+	return (CRC_DATA);
 }
