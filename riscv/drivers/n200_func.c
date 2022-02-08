@@ -102,9 +102,6 @@ uint32_t get_cpu_freq() {
 // parameter values.
 
 void eclic_init(uint32_t num_irq) {
-
-	typedef volatile uint32_t vuint32_t;
-
 	//clear cfg register 
 	*(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_CFG_OFFSET) = 0;
 
@@ -112,14 +109,15 @@ void eclic_init(uint32_t num_irq) {
 	*(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_MTH_OFFSET) = 0;
 
 	//clear all IP/IE/ATTR/CTRL bits for all interrupt sources
-	vuint32_t *ptr;
+
+	typedef volatile uint32_t vuint32_t;
 
 	vuint32_t *base =
 		(vuint32_t *) (ECLIC_ADDR_BASE + ECLIC_INT_IP_OFFSET);
 
 	vuint32_t *upper = (vuint32_t *) (base + num_irq * 4);
 
-	for (ptr = base; ptr < upper; ptr = ptr + 4)
+	for (vuint32_t *ptr = base; ptr < upper; ptr = ptr + 4)
 		*ptr = 0;
 }
 
@@ -187,8 +185,8 @@ void eclic_set_nlbits(uint8_t nlbits) {
 	//read the current cliccfg 
 	uint8_t old_cliccfg = eclic_get_cliccfg();
 	uint8_t new_cliccfg =
-	    (old_cliccfg & (~ECLIC_CFG_NLBITS_MASK)) |
-	    	(ECLIC_CFG_NLBITS_MASK & nlbits_shifted);
+		(old_cliccfg & (~ECLIC_CFG_NLBITS_MASK)) |
+		(ECLIC_CFG_NLBITS_MASK & nlbits_shifted);
 
 	eclic_set_cliccfg(new_cliccfg);
 }
