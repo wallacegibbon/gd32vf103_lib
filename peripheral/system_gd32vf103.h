@@ -7,9 +7,9 @@
 extern uint32_t sys_core_clk;
 
 // initialize the system and update the sys_core_clk variable
-extern void system_init(void);
+extern void system_init();
 
 // update `sys_core_clk` with current core clock retrieved from cpu registers
-extern void sys_core_clk_update(void);
+extern void sys_core_clk_update();
 
 #endif
