@@ -1,28 +1,26 @@
 #include "gd32vf103_adc.h"
 
-/* discontinuous mode macro*/
-#define  ADC_CHANNEL_LENGTH_SUBTRACT_ONE            ((uint8_t)1U)
+// discontinuous mode macro
+#define ADC_CHANNEL_LENGTH_SUBTRACT_ONE		((uint8_t) 1U)
 
-/* ADC regular channel macro */
-#define  ADC_REGULAR_CHANNEL_RANK_SIX               ((uint8_t)6U)
-#define  ADC_REGULAR_CHANNEL_RANK_TWELVE            ((uint8_t)12U)
-#define  ADC_REGULAR_CHANNEL_RANK_SIXTEEN           ((uint8_t)16U)
-#define  ADC_REGULAR_CHANNEL_RANK_LENGTH            ((uint8_t)5U)
+#define ADC_REGULAR_CHANNEL_RANK_SIX		((uint8_t) 6U)
+#define ADC_REGULAR_CHANNEL_RANK_TWELVE		((uint8_t) 12U)
+#define ADC_REGULAR_CHANNEL_RANK_SIXTEEN	((uint8_t) 16U)
+#define ADC_REGULAR_CHANNEL_RANK_LENGTH		((uint8_t) 5U)
 
-/* ADC sampling time macro */
-#define  ADC_CHANNEL_SAMPLE_TEN                     ((uint8_t)10U)
-#define  ADC_CHANNEL_SAMPLE_EIGHTEEN                ((uint8_t)18U)
-#define  ADC_CHANNEL_SAMPLE_LENGTH                  ((uint8_t)3U)
+// ADC sampling time macro
+#define ADC_CHANNEL_SAMPLE_TEN			((uint8_t) 10U)
+#define ADC_CHANNEL_SAMPLE_EIGHTEEN		((uint8_t) 18U)
+#define ADC_CHANNEL_SAMPLE_LENGTH		((uint8_t) 3U)
 
-/* ADC inserted channel macro */
-#define  ADC_INSERTED_CHANNEL_RANK_LENGTH           ((uint8_t)5U)
-#define  ADC_INSERTED_CHANNEL_SHIFT_LENGTH          ((uint8_t)15U)
+// ADC inserted channel macro
+#define ADC_INSERTED_CHANNEL_RANK_LENGTH	((uint8_t) 5U)
+#define ADC_INSERTED_CHANNEL_SHIFT_LENGTH	((uint8_t) 15U)
 
-/* ADC inserted channel offset macro */
-#define  ADC_OFFSET_LENGTH                          ((uint8_t)3U)
-#define  ADC_OFFSET_SHIFT_LENGTH                    ((uint8_t)4U)
+// ADC inserted channel offset macro
+#define ADC_OFFSET_LENGTH			((uint8_t) 3U)
+#define ADC_OFFSET_SHIFT_LENGTH			((uint8_t) 4U)
 
-/* reset ADC */
 void adc_deinit(uint32_t adc_periph) {
 	switch (adc_periph) {
 	case ADC0:
@@ -97,31 +95,25 @@ void adc_mode_config(uint32_t mode) {
 void adc_special_function_config(uint32_t adc_periph, uint32_t function,
 		enum control_status newvalue) {
 	if (newvalue) {
-		if (0U != (function & ADC_SCAN_MODE)) {
+		if (function & ADC_SCAN_MODE)
 			// enable scan mode
 			ADC_CTL0(adc_periph) |= ADC_SCAN_MODE;
-		}
-		if (0U != (function & ADC_INSERTED_CHANNEL_AUTO)) {
+		if (function & ADC_INSERTED_CHANNEL_AUTO)
 			// enable inserted channel group convert automatically
 			ADC_CTL0(adc_periph) |= ADC_INSERTED_CHANNEL_AUTO;
-		}
-		if (0U != (function & ADC_CONTINUOUS_MODE)) {
+		if (function & ADC_CONTINUOUS_MODE)
 			// enable continuous mode
 			ADC_CTL1(adc_periph) |= ADC_CONTINUOUS_MODE;
-		}
 	} else {
-		if (0U != (function & ADC_SCAN_MODE)) {
+		if (function & ADC_SCAN_MODE)
 			// disable scan mode
 			ADC_CTL0(adc_periph) &= ~ADC_SCAN_MODE;
-		}
-		if (0U != (function & ADC_INSERTED_CHANNEL_AUTO)) {
+		if (function & ADC_INSERTED_CHANNEL_AUTO)
 			// disable inserted channel group convert automatically
 			ADC_CTL0(adc_periph) &= ~ADC_INSERTED_CHANNEL_AUTO;
-		}
-		if (0U != (function & ADC_CONTINUOUS_MODE)) {
-			/* disable continuous mode */
+		if (function & ADC_CONTINUOUS_MODE)
+			// disable continuous mode
 			ADC_CTL1(adc_periph) &= ~ADC_CONTINUOUS_MODE;
-		}
 	}
 }
 
@@ -141,59 +133,49 @@ void adc_data_alignment_config(uint32_t adc_periph, uint32_t data_alignment) {
 		ADC_CTL1(adc_periph) |= ADC_CTL1_DAL;
 	else
 		// LSB alignment
-		ADC_CTL1(adc_periph) &= ~((uint32_t) ADC_CTL1_DAL);
+		ADC_CTL1(adc_periph) &= ~ADC_CTL1_DAL;
 }
 
 void adc_enable(uint32_t adc_periph) {
 	if (RESET == (ADC_CTL1(adc_periph) & ADC_CTL1_ADCON))
-		ADC_CTL1(adc_periph) |= (uint32_t) ADC_CTL1_ADCON;
+		ADC_CTL1(adc_periph) |= ADC_CTL1_ADCON;
 }
 
 void adc_disable(uint32_t adc_periph) {
-	ADC_CTL1(adc_periph) &= ~((uint32_t) ADC_CTL1_ADCON);
+	ADC_CTL1(adc_periph) &= ~ADC_CTL1_ADCON;
 }
 
 /*
  * ADC calibration and reset calibration
  */
 void adc_calibration_enable(uint32_t adc_periph) {
-	/* reset the selected ADC1 calibration registers */
-	ADC_CTL1(adc_periph) |= (uint32_t) ADC_CTL1_RSTCLB;
+	// reset the selected ADC1 calibration registers
+	ADC_CTL1(adc_periph) |= ADC_CTL1_RSTCLB;
 
-	/* check the RSTCLB bit state */
+	// check the RSTCLB bit state
 	while (RESET != (ADC_CTL1(adc_periph) & ADC_CTL1_RSTCLB));
 
-	/* enable ADC calibration process */
+	// enable ADC calibration process
 	ADC_CTL1(adc_periph) |= ADC_CTL1_CLB;
 
-	/* check the CLB bit state */
+	// check the CLB bit state
 	while (RESET != (ADC_CTL1(adc_periph) & ADC_CTL1_CLB));
 }
 
-/*
- * enable the temperature sensor and Vrefint channel
- */
-void adc_tempsensor_vrefint_enable(void) {
-	/* enable the temperature sensor and Vrefint channel */
+void adc_tempsensor_vrefint_enable() {
 	ADC_CTL1(ADC0) |= ADC_CTL1_TSVREN;
 }
 
-/*
- * disable the temperature sensor and Vrefint channel
- */
-void adc_tempsensor_vrefint_disable(void) {
-	/* disable the temperature sensor and Vrefint channel */
+void adc_tempsensor_vrefint_disable() {
 	ADC_CTL1(ADC0) &= ~ADC_CTL1_TSVREN;
 }
 
 void adc_dma_mode_enable(uint32_t adc_periph) {
-	/* enable DMA request */
-	ADC_CTL1(adc_periph) |= (uint32_t) (ADC_CTL1_DMA);
+	ADC_CTL1(adc_periph) |= ADC_CTL1_DMA;
 }
 
 void adc_dma_mode_disable(uint32_t adc_periph) {
-	/* disable DMA request */
-	ADC_CTL1(adc_periph) &= ~((uint32_t) ADC_CTL1_DMA);
+	ADC_CTL1(adc_periph) &= ~ADC_CTL1_DMA;
 }
 
 /*
@@ -216,23 +198,25 @@ void adc_dma_mode_disable(uint32_t adc_periph) {
  */
 void adc_discontinuous_mode_config(uint32_t adc_periph,
 		uint8_t adc_channel_group, uint8_t length) {
-	/* disable discontinuous mode of regular & inserted channel */
-	ADC_CTL0(adc_periph) &= ~((uint32_t) (ADC_CTL0_DISRC | ADC_CTL0_DISIC));
+	// disable discontinuous mode of regular & inserted channel
+	ADC_CTL0(adc_periph) &= ~(ADC_CTL0_DISRC | ADC_CTL0_DISIC);
+
 	switch (adc_channel_group) {
 	case ADC_REGULAR_CHANNEL:
-		/* config the number of conversions in discontinuous mode */
-		ADC_CTL0(adc_periph) &= ~((uint32_t) ADC_CTL0_DISNUM);
-		ADC_CTL0(adc_periph) |= CTL0_DISNUM(((uint32_t) length -
-					ADC_CHANNEL_LENGTH_SUBTRACT_ONE));
-		/* enable regular channel group discontinuous mode */
-		ADC_CTL0(adc_periph) |= (uint32_t) ADC_CTL0_DISRC;
+		// config the number of conversions in discontinuous mode
+		ADC_CTL0(adc_periph) &= ~ADC_CTL0_DISNUM;
+		ADC_CTL0(adc_periph) |=
+			CTL0_DISNUM(length - ADC_CHANNEL_LENGTH_SUBTRACT_ONE);
+
+		// enable regular channel group discontinuous mode
+		ADC_CTL0(adc_periph) |= ADC_CTL0_DISRC;
 		break;
 	case ADC_INSERTED_CHANNEL:
-		/* enable inserted channel group discontinuous mode */
-		ADC_CTL0(adc_periph) |= (uint32_t) ADC_CTL0_DISIC;
+		// enable inserted channel group discontinuous mode
+		ADC_CTL0(adc_periph) |= ADC_CTL0_DISIC;
 		break;
 	case ADC_CHANNEL_DISCON_DISABLE:
-		/* disable discontinuous mode of regular & inserted channel */
+		// disable discontinuous mode of regular & inserted channel
 	default:
 		break;
 	}
@@ -256,18 +240,16 @@ void adc_channel_length_config(uint32_t adc_periph, uint8_t adc_channel_group,
 		uint32_t length) {
 	switch (adc_channel_group) {
 	case ADC_REGULAR_CHANNEL:
-		/* configure the length of regular channel group */
-		ADC_RSQ0(adc_periph) &= ~((uint32_t) ADC_RSQ0_RL);
+		// configure the length of regular channel group
+		ADC_RSQ0(adc_periph) &= ~ADC_RSQ0_RL;
 		ADC_RSQ0(adc_periph) |=
-			RSQ0_RL((uint32_t) (length -
-						ADC_CHANNEL_LENGTH_SUBTRACT_ONE));
+			RSQ0_RL(length - ADC_CHANNEL_LENGTH_SUBTRACT_ONE);
 		break;
 	case ADC_INSERTED_CHANNEL:
-		/* configure the length of inserted channel group */
-		ADC_ISQ(adc_periph) &= ~((uint32_t) ADC_ISQ_IL);
+		// configure the length of inserted channel group
+		ADC_ISQ(adc_periph) &= ~ADC_ISQ_IL;
 		ADC_ISQ(adc_periph) |=
-		    ISQ_IL((uint32_t) (length -
-					    ADC_CHANNEL_LENGTH_SUBTRACT_ONE));
+			ISQ_IL(length - ADC_CHANNEL_LENGTH_SUBTRACT_ONE);
 		break;
 	default:
 		break;
@@ -300,66 +282,76 @@ void adc_channel_length_config(uint32_t adc_periph, uint8_t adc_channel_group,
  */
 void adc_regular_channel_config(uint32_t adc_periph, uint8_t rank,
 		uint8_t adc_channel, uint32_t sample_time) {
-	uint32_t rsq, sampt;
-
 	// ADC regular sequence config
 	if (rank < ADC_REGULAR_CHANNEL_RANK_SIX) {
 		// the regular group sequence rank is smaller than six
-		rsq = ADC_RSQ2(adc_periph);
-		rsq &= ~((uint32_t) (ADC_RSQX_RSQN <<
-					(ADC_REGULAR_CHANNEL_RANK_LENGTH * rank)));
+		uint32_t rsq = ADC_RSQ2(adc_periph);
+
+		rsq &= ~(ADC_RSQX_RSQN <<
+				(ADC_REGULAR_CHANNEL_RANK_LENGTH * rank));
+
 		// the channel number is written to these bits to select
 		// a channel as the nth conversion in the regular channel group
-		rsq |= ((uint32_t) adc_channel <<
-				(ADC_REGULAR_CHANNEL_RANK_LENGTH * rank));
+		rsq |= adc_channel << (ADC_REGULAR_CHANNEL_RANK_LENGTH * rank);
+
 		ADC_RSQ2(adc_periph) = rsq;
 	} else if (rank < ADC_REGULAR_CHANNEL_RANK_TWELVE) {
 		// the regular group sequence rank is smaller than twelve
-		rsq = ADC_RSQ1(adc_periph);
-		rsq &= ~((uint32_t) (ADC_RSQX_RSQN <<
-					(ADC_REGULAR_CHANNEL_RANK_LENGTH *
-					 (rank - ADC_REGULAR_CHANNEL_RANK_SIX))));
-		// the channel number is written to these bits to select
-		// a channel as the nth conversion in the regular channel group
-		rsq |= ((uint32_t) adc_channel <<
+		uint32_t rsq = ADC_RSQ1(adc_periph);
+
+		rsq &= ~(ADC_RSQX_RSQN <<
 				(ADC_REGULAR_CHANNEL_RANK_LENGTH *
 				 (rank - ADC_REGULAR_CHANNEL_RANK_SIX)));
+
+		// the channel number is written to these bits to select
+		// a channel as the nth conversion in the regular channel group
+		rsq |= adc_channel <<
+			(ADC_REGULAR_CHANNEL_RANK_LENGTH *
+			 (rank - ADC_REGULAR_CHANNEL_RANK_SIX));
+
 		ADC_RSQ1(adc_periph) = rsq;
 	} else if (rank < ADC_REGULAR_CHANNEL_RANK_SIXTEEN) {
 		// the regular group sequence rank is smaller than sixteen
-		rsq = ADC_RSQ0(adc_periph);
-		rsq &= ~((uint32_t) (ADC_RSQX_RSQN <<
-					(ADC_REGULAR_CHANNEL_RANK_LENGTH *
-					 (rank - ADC_REGULAR_CHANNEL_RANK_TWELVE))));
-		// the channel number is written to these bits to select
-		// a channel as the nth conversion in the regular channel group
-		rsq |= ((uint32_t) adc_channel <<
+		uint32_t rsq = ADC_RSQ0(adc_periph);
+
+		rsq &= ~(ADC_RSQX_RSQN <<
 				(ADC_REGULAR_CHANNEL_RANK_LENGTH *
 				 (rank - ADC_REGULAR_CHANNEL_RANK_TWELVE)));
+
+		// the channel number is written to these bits to select
+		// a channel as the nth conversion in the regular channel group
+		rsq |= adc_channel <<
+			(ADC_REGULAR_CHANNEL_RANK_LENGTH *
+			 (rank - ADC_REGULAR_CHANNEL_RANK_TWELVE));
+
 		ADC_RSQ0(adc_periph) = rsq;
 	} else {
 	}
 
-	/* ADC sampling time config */
+	// ADC sampling time config
 	if (adc_channel < ADC_CHANNEL_SAMPLE_TEN) {
 		// the regular group sequence rank is smaller than ten
-		sampt = ADC_SAMPT1(adc_periph);
-		sampt &= ~((uint32_t) (ADC_SAMPTX_SPTN <<
-					(ADC_CHANNEL_SAMPLE_LENGTH * adc_channel)));
-		// channel sample time set
-		sampt |= (uint32_t) (sample_time <<
+		uint32_t sampt = ADC_SAMPT1(adc_periph);
+		sampt &= ~(ADC_SAMPTX_SPTN <<
 				(ADC_CHANNEL_SAMPLE_LENGTH * adc_channel));
+
+		// channel sample time set
+		sampt |= sample_time <<
+			(ADC_CHANNEL_SAMPLE_LENGTH * adc_channel);
+
 		ADC_SAMPT1(adc_periph) = sampt;
 	} else if (adc_channel < ADC_CHANNEL_SAMPLE_EIGHTEEN) {
 		// the regular group sequence rank is smaller than eighteen
 		sampt = ADC_SAMPT0(adc_periph);
-		sampt &= ~((uint32_t) (ADC_SAMPTX_SPTN <<
-					(ADC_CHANNEL_SAMPLE_LENGTH *
-					 (adc_channel - ADC_CHANNEL_SAMPLE_TEN))));
-		// channel sample time set
-		sampt |= (uint32_t) (sample_time <<
+		sampt &= ~(ADC_SAMPTX_SPTN <<
 				(ADC_CHANNEL_SAMPLE_LENGTH *
 				 (adc_channel - ADC_CHANNEL_SAMPLE_TEN)));
+
+		// channel sample time set
+		sampt |= sample_time <<
+			(ADC_CHANNEL_SAMPLE_LENGTH *
+			 (adc_channel - ADC_CHANNEL_SAMPLE_TEN));
+
 		ADC_SAMPT0(adc_periph) = sampt;
 	} else {
 	}
@@ -391,42 +383,48 @@ void adc_regular_channel_config(uint32_t adc_periph, uint8_t rank,
  */
 void adc_inserted_channel_config(uint32_t adc_periph, uint8_t rank,
 		uint8_t adc_channel, uint32_t sample_time) {
-	uint8_t inserted_length;
-	uint32_t isq, sampt;
-	/* get inserted channel group length */
-	inserted_length = (uint8_t) GET_BITS(ADC_ISQ(adc_periph), 20U, 21U);
+
+	// get inserted channel group length
+	uint8_t inserted_length = GET_BITS(ADC_ISQ(adc_periph), 20, 21);
+
 	// the channel number is written to these bits to select a channel
 	// as the nth conversion in the inserted channel group
-	isq = ADC_ISQ(adc_periph);
-	isq &= ~((uint32_t) (ADC_ISQ_ISQN <<
-				(ADC_INSERTED_CHANNEL_SHIFT_LENGTH -
-				 (inserted_length - rank) * ADC_INSERTED_CHANNEL_RANK_LENGTH)));
-	isq |= ((uint32_t) adc_channel <<
+	uint32_t isq = ADC_ISQ(adc_periph);
+	isq &= ~(ADC_ISQ_ISQN <<
 			(ADC_INSERTED_CHANNEL_SHIFT_LENGTH -
-			 (inserted_length - rank) * ADC_INSERTED_CHANNEL_RANK_LENGTH));
+			 (inserted_length - rank) *
+			 ADC_INSERTED_CHANNEL_RANK_LENGTH));
+
+	isq |= adc_channel <<
+		(ADC_INSERTED_CHANNEL_SHIFT_LENGTH -
+		 (inserted_length - rank) * ADC_INSERTED_CHANNEL_RANK_LENGTH);
 
 	ADC_ISQ(adc_periph) = isq;
 
-	/* ADC sampling time config */
+	// ADC sampling time config
 	if (adc_channel < ADC_CHANNEL_SAMPLE_TEN) {
-		/* the inserted group sequence rank is smaller than ten */
-		sampt = ADC_SAMPT1(adc_periph);
-		sampt &= ~((uint32_t) (ADC_SAMPTX_SPTN <<
-					(ADC_CHANNEL_SAMPLE_LENGTH * adc_channel)));
-		/* channel sample time set */
-		sampt |= (uint32_t) sample_time <<
+		// the inserted group sequence rank is smaller than ten
+		uint32_t sampt = ADC_SAMPT1(adc_periph);
+		sampt &= ~(ADC_SAMPTX_SPTN <<
+				(ADC_CHANNEL_SAMPLE_LENGTH * adc_channel));
+
+		// channel sample time set
+		sampt |= sample_time <<
 			(ADC_CHANNEL_SAMPLE_LENGTH * adc_channel);
+
 		ADC_SAMPT1(adc_periph) = sampt;
 	} else if (adc_channel < ADC_CHANNEL_SAMPLE_EIGHTEEN) {
-		/* the inserted group sequence rank is smaller than eighteen */
-		sampt = ADC_SAMPT0(adc_periph);
-		sampt &= ~((uint32_t) (ADC_SAMPTX_SPTN <<
-					(ADC_CHANNEL_SAMPLE_LENGTH *
-					 (adc_channel - ADC_CHANNEL_SAMPLE_TEN))));
-		/* channel sample time set */
-		sampt |= ((uint32_t) sample_time <<
+		// the inserted group sequence rank is smaller than eighteen
+		uint32_t sampt = ADC_SAMPT0(adc_periph);
+		sampt &= ~(ADC_SAMPTX_SPTN <<
 				(ADC_CHANNEL_SAMPLE_LENGTH *
 				 (adc_channel - ADC_CHANNEL_SAMPLE_TEN)));
+
+		// channel sample time set
+		sampt |= sample_time <<
+			(ADC_CHANNEL_SAMPLE_LENGTH *
+			 (adc_channel - ADC_CHANNEL_SAMPLE_TEN));
+
 		ADC_SAMPT0(adc_periph) = sampt;
 	} else {
 	}
@@ -447,20 +445,15 @@ void adc_inserted_channel_config(uint32_t adc_periph, uint8_t rank,
  */
 void adc_inserted_channel_offset_config(uint32_t adc_periph,
 		uint8_t inserted_channel, uint16_t offset) {
-	uint8_t inserted_length;
-	uint32_t num = 0U;
 
-	inserted_length = (uint8_t) GET_BITS(ADC_ISQ(adc_periph), 20U, 21U);
-	num = ((uint32_t) ADC_OFFSET_LENGTH -
-			((uint32_t) inserted_length -
-			 (uint32_t) inserted_channel));
+	uint8_t inserted_length = GET_BITS(ADC_ISQ(adc_periph), 20, 21);
+	uint32_t num = ADC_OFFSET_LENGTH - (inserted_length - inserted_channel);
 
 	if (num <= ADC_OFFSET_LENGTH) {
-		/* calculate the offset of the register */
+		// calculate the offset of the register
 		num = num * ADC_OFFSET_SHIFT_LENGTH;
-		/* config the offset of the selected channels */
-		REG32((adc_periph) + 0x14U + num) =
-			IOFFX_IOFF((uint32_t) offset);
+		// config the offset of the selected channels
+		REG32((adc_periph) + 0x14 + num) = IOFFX_IOFF(offset);
 	}
 }
 
@@ -500,14 +493,14 @@ void adc_external_trigger_source_config(uint32_t adc_periph,
 		uint8_t adc_channel_group, uint32_t external_trigger_source) {
 	switch (adc_channel_group) {
 	case ADC_REGULAR_CHANNEL:
-		/* configure ADC regular group external trigger source */
-		ADC_CTL1(adc_periph) &= ~((uint32_t) ADC_CTL1_ETSRC);
-		ADC_CTL1(adc_periph) |= (uint32_t) external_trigger_source;
+		// configure ADC regular group external trigger source
+		ADC_CTL1(adc_periph) &= ~ADC_CTL1_ETSRC;
+		ADC_CTL1(adc_periph) |= external_trigger_source;
 		break;
 	case ADC_INSERTED_CHANNEL:
-		/* configure ADC inserted group external trigger source */
-		ADC_CTL1(adc_periph) &= ~((uint32_t) ADC_CTL1_ETSIC);
-		ADC_CTL1(adc_periph) |= (uint32_t) external_trigger_source;
+		// configure ADC inserted group external trigger source
+		ADC_CTL1(adc_periph) &= ~ADC_CTL1_ETSIC;
+		ADC_CTL1(adc_periph) |= external_trigger_source;
 		break;
 	default:
 		break;
@@ -529,23 +522,19 @@ void adc_external_trigger_source_config(uint32_t adc_periph,
 void adc_external_trigger_config(uint32_t adc_periph,
 		uint8_t adc_channel_group, enum control_status newvalue) {
 	if (newvalue) {
-		if (0U != (adc_channel_group & ADC_REGULAR_CHANNEL)) {
+		if (adc_channel_group & ADC_REGULAR_CHANNEL)
 			// enable ADC regular channel group external trigger
 			ADC_CTL1(adc_periph) |= ADC_CTL1_ETERC;
-		}
-		if (0U != (adc_channel_group & ADC_INSERTED_CHANNEL)) {
+		if (adc_channel_group & ADC_INSERTED_CHANNEL)
 			// enable ADC inserted channel group external trigger
 			ADC_CTL1(adc_periph) |= ADC_CTL1_ETEIC;
-		}
 	} else {
-		if (0U != (adc_channel_group & ADC_REGULAR_CHANNEL)) {
+		if (adc_channel_group & ADC_REGULAR_CHANNEL)
 			// disable ADC regular channel group external trigger
 			ADC_CTL1(adc_periph) &= ~ADC_CTL1_ETERC;
-		}
-		if (0U != (adc_channel_group & ADC_INSERTED_CHANNEL)) {
+		if (adc_channel_group & ADC_INSERTED_CHANNEL)
 			// disable ADC regular channel group external trigger
 			ADC_CTL1(adc_periph) &= ~ADC_CTL1_ETEIC;
-		}
 	}
 }
 
@@ -558,12 +547,13 @@ void adc_external_trigger_config(uint32_t adc_periph,
  * 		ADC_INSERTED_CHANNEL: inserted channel group
  *
  */
-void adc_software_trigger_enable(uint32_t adc_periph, uint8_t adc_channel_group) {
-	if (0U != (adc_channel_group & ADC_REGULAR_CHANNEL))
+void adc_software_trigger_enable(uint32_t adc_periph,
+		uint8_t adc_channel_group) {
+	if (adc_channel_group & ADC_REGULAR_CHANNEL)
 		// enable ADC regular channel group software trigger
 		ADC_CTL1(adc_periph) |= ADC_CTL1_SWRCST;
 
-	if (0U != (adc_channel_group & ADC_INSERTED_CHANNEL))
+	if (adc_channel_group & ADC_INSERTED_CHANNEL)
 		// enable ADC inserted channel group software trigger
 		ADC_CTL1(adc_periph) |= ADC_CTL1_SWICST;
 }
@@ -573,7 +563,7 @@ void adc_software_trigger_enable(uint32_t adc_periph, uint8_t adc_channel_group)
  * adc_periph: ADCx, x=0,1
 */
 uint16_t adc_regular_data_read(uint32_t adc_periph) {
-	return (uint16_t) (ADC_RDATA(adc_periph));
+	return ADC_RDATA(adc_periph);
 }
 
 /*
@@ -589,32 +579,24 @@ uint16_t adc_regular_data_read(uint32_t adc_periph) {
  *
  */
 uint16_t adc_inserted_data_read(uint32_t adc_periph, uint8_t inserted_channel) {
-	uint32_t idata;
-	/* read the data of the selected channel */
 	switch (inserted_channel) {
 	case ADC_INSERTED_CHANNEL_0:
-		idata = ADC_IDATA0(adc_periph);
-		break;
+		return ADC_IDATA0(adc_periph);
 	case ADC_INSERTED_CHANNEL_1:
-		idata = ADC_IDATA1(adc_periph);
-		break;
+		return ADC_IDATA1(adc_periph);
 	case ADC_INSERTED_CHANNEL_2:
-		idata = ADC_IDATA2(adc_periph);
-		break;
+		return ADC_IDATA2(adc_periph);
 	case ADC_INSERTED_CHANNEL_3:
-		idata = ADC_IDATA3(adc_periph);
-		break;
+		return ADC_IDATA3(adc_periph);
 	default:
-		idata = 0U;
-		break;
+		return 0;
 	}
-	return (uint16_t) idata;
 }
 
 /*
  * read the last ADC0 and ADC1 conversion result data in sync mode
  */
-uint32_t adc_sync_mode_convert_value_read(void) {
+uint32_t adc_sync_mode_convert_value_read() {
 	return ADC_RDATA(ADC0);
 }
 
@@ -629,12 +611,14 @@ uint32_t adc_sync_mode_convert_value_read(void) {
  */
 void adc_watchdog_single_channel_enable(uint32_t adc_periph,
 		uint8_t adc_channel) {
-	ADC_CTL0(adc_periph) &= (uint32_t) ~(ADC_CTL0_RWDEN | ADC_CTL0_IWDEN |
-					ADC_CTL0_WDSC | ADC_CTL0_WDCHSEL);
+	ADC_CTL0(adc_periph) &=
+		~(ADC_CTL0_RWDEN | ADC_CTL0_IWDEN | ADC_CTL0_WDSC |
+				ADC_CTL0_WDCHSEL);
+
 	// analog watchdog channel select
-	ADC_CTL0(adc_periph) |= (uint32_t) adc_channel;
-	ADC_CTL0(adc_periph) |= (uint32_t) (ADC_CTL0_RWDEN | ADC_CTL0_IWDEN |
-						ADC_CTL0_WDSC);
+	ADC_CTL0(adc_periph) |= adc_channel;
+	ADC_CTL0(adc_periph) |=
+		ADC_CTL0_RWDEN | ADC_CTL0_IWDEN | ADC_CTL0_WDSC;
 }
 
 /*
@@ -651,34 +635,26 @@ void adc_watchdog_single_channel_enable(uint32_t adc_periph,
 void adc_watchdog_group_channel_enable(uint32_t adc_periph,
 		uint8_t adc_channel_group) {
 	ADC_CTL0(adc_periph) &=
-	    (uint32_t) ~ (ADC_CTL0_RWDEN | ADC_CTL0_IWDEN | ADC_CTL0_WDSC);
-	/* select the group */
+		~(ADC_CTL0_RWDEN | ADC_CTL0_IWDEN | ADC_CTL0_WDSC);
+
 	switch (adc_channel_group) {
 	case ADC_REGULAR_CHANNEL:
-		/* regular channel analog watchdog enable */
-		ADC_CTL0(adc_periph) |= (uint32_t) ADC_CTL0_RWDEN;
+		ADC_CTL0(adc_periph) |= ADC_CTL0_RWDEN;
 		break;
 	case ADC_INSERTED_CHANNEL:
-		/* inserted channel analog watchdog enable */
-		ADC_CTL0(adc_periph) |= (uint32_t) ADC_CTL0_IWDEN;
+		ADC_CTL0(adc_periph) |= ADC_CTL0_IWDEN;
 		break;
 	case ADC_REGULAR_INSERTED_CHANNEL:
-		/* regular and inserted channel analog watchdog enable */
-		ADC_CTL0(adc_periph) |= (uint32_t) (ADC_CTL0_RWDEN |
-							ADC_CTL0_IWDEN);
+		ADC_CTL0(adc_periph) |= ADC_CTL0_RWDEN | ADC_CTL0_IWDEN;
 		break;
 	default:
 		break;
 	}
 }
 
-/*
- * disable ADC analog watchdog 
- * adc_periph: ADCx, x=0,1
- */
 void adc_watchdog_disable(uint32_t adc_periph) {
 	ADC_CTL0(adc_periph) &=
-		(uint32_t) ~ (ADC_CTL0_RWDEN | ADC_CTL0_IWDEN | ADC_CTL0_WDSC |
+		~(ADC_CTL0_RWDEN | ADC_CTL0_IWDEN | ADC_CTL0_WDSC |
 				ADC_CTL0_WDCHSEL);
 }
 
@@ -693,8 +669,8 @@ void adc_watchdog_disable(uint32_t adc_periph) {
  */
 void adc_watchdog_threshold_config(uint32_t adc_periph, uint16_t low_threshold,
 		uint16_t high_threshold) {
-	ADC_WDLT(adc_periph) = (uint32_t) WDLT_WDLT(low_threshold);
-	ADC_WDHT(adc_periph) = (uint32_t) WDHT_WDHT(high_threshold);
+	ADC_WDLT(adc_periph) = WDLT_WDLT(low_threshold);
+	ADC_WDHT(adc_periph) = WDHT_WDHT(high_threshold);
 }
 
 /*
@@ -710,11 +686,10 @@ void adc_watchdog_threshold_config(uint32_t adc_periph, uint16_t low_threshold,
  *
  */
 enum flag_status adc_flag_get(uint32_t adc_periph, uint32_t adc_flag) {
-	enum flag_status reval = RESET;
 	if (ADC_STAT(adc_periph) & adc_flag)
-		reval = SET;
-
-	return reval;
+		return SET;
+	else
+		return RESET;
 }
 
 /*
@@ -731,33 +706,21 @@ enum flag_status adc_flag_get(uint32_t adc_periph, uint32_t adc_flag) {
  *
  */
 void adc_flag_clear(uint32_t adc_periph, uint32_t adc_flag) {
-	ADC_STAT(adc_periph) &= ~((uint32_t) adc_flag);
+	ADC_STAT(adc_periph) &= ~adc_flag;
 }
 
-/*
- * get the bit state of ADCx software start conversion
- * adc_periph: ADCx, x=0,1
- *
- */
 enum flag_status adc_regular_software_startconv_flag_get(uint32_t adc_periph) {
-	enum flag_status reval = RESET;
-	if ((uint32_t) RESET != (ADC_CTL1(adc_periph) & ADC_CTL1_SWRCST))
-		reval = SET;
-
-	return reval;
+	if ((ADC_CTL1(adc_periph) & ADC_CTL1_SWRCST) != RESET)
+		return SET;
+	else
+		return RESET;
 }
 
-/*
- * get the bit state of ADCx software inserted channel start conversion
- * adc_periph: ADCx, x=0,1
- *
- */
 enum flag_status adc_inserted_software_startconv_flag_get(uint32_t adc_periph) {
-	enum flag_status reval = RESET;
-	if ((uint32_t) RESET != (ADC_CTL1(adc_periph) & ADC_CTL1_SWICST))
-		reval = SET;
-
-	return reval;
+	if ((ADC_CTL1(adc_periph) & ADC_CTL1_SWICST) != RESET)
+		return SET;
+	else
+		return RESET;
 }
 
 /*
@@ -773,7 +736,6 @@ enum flag_status adc_inserted_software_startconv_flag_get(uint32_t adc_periph) {
  */
 enum flag_status adc_interrupt_flag_get(uint32_t adc_periph,
 		uint32_t adc_interrupt) {
-	enum flag_status interrupt_flag = RESET;
 	uint32_t state;
 
 	switch (adc_interrupt) {
@@ -781,24 +743,27 @@ enum flag_status adc_interrupt_flag_get(uint32_t adc_periph,
 		// get the ADC analog watchdog interrupt bits
 		state = ADC_STAT(adc_periph) & ADC_STAT_WDE;
 		if ((ADC_CTL0(adc_periph) & ADC_CTL0_WDEIE) && state)
-			interrupt_flag = SET;
-		break;
+			return SET;
+		else
+			return RESET;
 	case ADC_INT_FLAG_EOC:
 		// get the ADC end of group conversion interrupt bits
 		state = ADC_STAT(adc_periph) & ADC_STAT_EOC;
 		if ((ADC_CTL0(adc_periph) & ADC_CTL0_EOCIE) && state)
 			interrupt_flag = SET;
-		break;
+		else
+			return RESET;
 	case ADC_INT_FLAG_EOIC:
 		// get the ADC end of inserted group conversion interrupt bits
 		state = ADC_STAT(adc_periph) & ADC_STAT_EOIC;
 		if ((ADC_CTL0(adc_periph) & ADC_CTL0_EOICIE) && state)
-			interrupt_flag = SET;
-		break;
+			return SET;
+		else
+			return RESET;
 	default:
-		break;
+		// is this okay?
+		return RESET;
 	}
-	return interrupt_flag;
 }
 
 /*
@@ -813,7 +778,7 @@ enum flag_status adc_interrupt_flag_get(uint32_t adc_periph,
  *
  */
 void adc_interrupt_flag_clear(uint32_t adc_periph, uint32_t adc_interrupt) {
-	ADC_STAT(adc_periph) &= ~((uint32_t) adc_interrupt);
+	ADC_STAT(adc_periph) &= ~adc_interrupt;
 }
 
 /*
@@ -828,17 +793,17 @@ void adc_interrupt_flag_clear(uint32_t adc_periph, uint32_t adc_interrupt) {
  *
  */
 void adc_interrupt_enable(uint32_t adc_periph, uint32_t adc_interrupt) {
-	/* enable ADC analog watchdog interrupt */
-	if (0U != (adc_interrupt & ADC_INT_WDE))
-		ADC_CTL0(adc_periph) |= (uint32_t) ADC_CTL0_WDEIE;
+	// enable ADC analog watchdog interrupt
+	if (adc_interrupt & ADC_INT_WDE)
+		ADC_CTL0(adc_periph) |= ADC_CTL0_WDEIE;
 
-	/* enable ADC end of group conversion interrupt */
-	if (0U != (adc_interrupt & ADC_INT_EOC))
-		ADC_CTL0(adc_periph) |= (uint32_t) ADC_CTL0_EOCIE;
+	// enable ADC end of group conversion interrupt
+	if (adc_interrupt & ADC_INT_EOC)
+		ADC_CTL0(adc_periph) |= ADC_CTL0_EOCIE;
 
-	/* enable ADC end of inserted group conversion interrupt */
-	if (0U != (adc_interrupt & ADC_INT_EOIC))
-		ADC_CTL0(adc_periph) |= (uint32_t) ADC_CTL0_EOICIE;
+	// enable ADC end of inserted group conversion interrupt
+	if (adc_interrupt & ADC_INT_EOIC)
+		ADC_CTL0(adc_periph) |= ADC_CTL0_EOICIE;
 }
 
 /*
@@ -853,17 +818,17 @@ void adc_interrupt_enable(uint32_t adc_periph, uint32_t adc_interrupt) {
  *
  */
 void adc_interrupt_disable(uint32_t adc_periph, uint32_t adc_interrupt) {
-	/* disable ADC analog watchdog interrupt */
-	if (0U != (adc_interrupt & ADC_INT_WDE))
-		ADC_CTL0(adc_periph) &= ~(uint32_t) ADC_CTL0_WDEIE;
+	// disable ADC analog watchdog interrupt
+	if (adc_interrupt & ADC_INT_WDE)
+		ADC_CTL0(adc_periph) &= ~ADC_CTL0_WDEIE;
 
-	/* disable ADC end of group conversion interrupt */
-	if (0U != (adc_interrupt & ADC_INT_EOC))
-		ADC_CTL0(adc_periph) &= ~(uint32_t) ADC_CTL0_EOCIE;
+	// disable ADC end of group conversion interrupt
+	if (adc_interrupt & ADC_INT_EOC)
+		ADC_CTL0(adc_periph) &= ~ADC_CTL0_EOCIE;
 
-	/* disable ADC end of inserted group conversion interrupt */
-	if (0U != (adc_interrupt & ADC_INT_EOIC))
-		ADC_CTL0(adc_periph) &= ~(uint32_t) ADC_CTL0_EOICIE;
+	// disable ADC end of inserted group conversion interrupt
+	if (adc_interrupt & ADC_INT_EOIC)
+		ADC_CTL0(adc_periph) &= ~ADC_CTL0_EOICIE;
 }
 
 /*
@@ -878,8 +843,8 @@ void adc_interrupt_disable(uint32_t adc_periph, uint32_t adc_interrupt) {
  *
  */
 void adc_resolution_config(uint32_t adc_periph, uint32_t resolution) {
-	ADC_OVSCR(adc_periph) &= ~((uint32_t) ADC_OVSCR_DRES);
-	ADC_OVSCR(adc_periph) |= (uint32_t) resolution;
+	ADC_OVSCR(adc_periph) &= ~ADC_OVSCR_DRES;
+	ADC_OVSCR(adc_periph) |= resolution;
 }
 
 /*
@@ -923,28 +888,19 @@ void adc_resolution_config(uint32_t adc_periph, uint32_t resolution) {
 void adc_oversample_mode_config(uint32_t adc_periph, uint8_t mode,
 		uint16_t shift, uint8_t ratio) {
 	if (mode)
-		ADC_OVSCR(adc_periph) |= (uint32_t) ADC_OVSCR_TOVS;
+		ADC_OVSCR(adc_periph) |= ADC_OVSCR_TOVS;
 	else
-		ADC_OVSCR(adc_periph) &= ~((uint32_t) ADC_OVSCR_TOVS);
+		ADC_OVSCR(adc_periph) &= ~ADC_OVSCR_TOVS;
 
-	/* config the shift and ratio */
-	ADC_OVSCR(adc_periph) &= ~((uint32_t) (ADC_OVSCR_OVSR |
-						ADC_OVSCR_OVSS));
-	ADC_OVSCR(adc_periph) |= ((uint32_t) shift | (uint32_t) ratio);
+	// config the shift and ratio
+	ADC_OVSCR(adc_periph) &= ~(ADC_OVSCR_OVSR | ADC_OVSCR_OVSS);
+	ADC_OVSCR(adc_periph) |= shift | ratio;
 }
 
-/*
- * enable ADC oversample mode
- * adc_periph: ADCx, x=0,1
-*/
 void adc_oversample_mode_enable(uint32_t adc_periph) {
 	ADC_OVSCR(adc_periph) |= ADC_OVSCR_OVSEN;
 }
 
-/*
- * disable ADC oversample mode
- * adc_periph: ADCx, x=0,1
-*/
 void adc_oversample_mode_disable(uint32_t adc_periph) {
-	ADC_OVSCR(adc_periph) &= ~((uint32_t) ADC_OVSCR_OVSEN);
+	ADC_OVSCR(adc_periph) &= ~ADC_OVSCR_OVSEN;
 }

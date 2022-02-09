@@ -52,7 +52,7 @@ void dbg_low_power_disable(uint32_t dbg_low_power) {
  * 			hold TIMERx counter when core is halted
  */
 void dbg_periph_enable(enum dbg_periph dbg_periph) {
-	DBG_CTL |= (uint32_t) dbg_periph;
+	DBG_CTL |= dbg_periph;
 }
 
 /*
@@ -71,5 +71,5 @@ void dbg_periph_enable(enum dbg_periph dbg_periph) {
  * 			hold TIMERx counter when core is halted
  */
 void dbg_periph_disable(enum dbg_periph dbg_periph) {
-	DBG_CTL &= ~(uint32_t) dbg_periph;
+	DBG_CTL &= ~dbg_periph;
 }

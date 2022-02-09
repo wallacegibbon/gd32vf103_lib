@@ -125,10 +125,10 @@
 	(((uint32_t) (val) & (0x001F0000U)) >> 16)
 
 
-#define USART_STAT_REG_OFFSET		0x00000000U
-#define USART_CTL0_REG_OFFSET		0x0000000CU
-#define USART_CTL1_REG_OFFSET		0x00000010U
-#define USART_CTL2_REG_OFFSET		0x00000014U
+#define USART_STAT_REG_OFFSET	0x00000000U
+#define USART_CTL0_REG_OFFSET	0x0000000CU
+#define USART_CTL1_REG_OFFSET	0x00000010U
+#define USART_CTL2_REG_OFFSET	0x00000014U
 
 
 // USART flags
@@ -264,14 +264,14 @@ enum usart_interrupt {
 };
 
 // USART receiver configure
-#define CTL0_REN(regval)  		(BIT(2) & ((uint32_t)(regval) << 2))
-#define USART_RECEIVE_ENABLE		CTL0_REN(1) // enable receiver
-#define USART_RECEIVE_DISABLE		CTL0_REN(0) // disable receiver
+#define CTL0_REN(regval)  	(BIT(2) & ((uint32_t)(regval) << 2))
+#define USART_RECEIVE_ENABLE	CTL0_REN(1) // enable receiver
+#define USART_RECEIVE_DISABLE	CTL0_REN(0) // disable receiver
 
 // USART transmitter configure
-#define CTL0_TEN(regval)     		(BIT(3) & ((uint32_t)(regval) << 3))
-#define USART_TRANSMIT_ENABLE		CTL0_TEN(1) // enable transmitter
-#define USART_TRANSMIT_DISABLE		CTL0_TEN(0) // disable transmitter
+#define CTL0_TEN(regval)     	(BIT(3) & ((uint32_t)(regval) << 3))
+#define USART_TRANSMIT_ENABLE	CTL0_TEN(1) // enable transmitter
+#define USART_TRANSMIT_DISABLE	CTL0_TEN(0) // disable transmitter
 
 // USART parity bits definitions
 #define CTL0_PM(regval)		(BITS(9, 10) & ((uint32_t)(regval) << 9))
@@ -290,51 +290,51 @@ enum usart_interrupt {
 #define USART_WL_9BIT		CTL0_WL(1) // 9 bits
 
 // USART stop bits definitions
-#define CTL1_STB(regval)		(BITS(12, 13) & ((uint32_t)(regval) << 12))
+#define CTL1_STB(regval)	(BITS(12, 13) & ((uint32_t)(regval) << 12))
 #define USART_STB_1BIT		CTL1_STB(0) // 1 bit
-#define USART_STB_0_5BIT		CTL1_STB(1) // 0.5 bit
+#define USART_STB_0_5BIT	CTL1_STB(1) // 0.5 bit
 #define USART_STB_2BIT		CTL1_STB(2) // 2 bits
-#define USART_STB_1_5BIT		CTL1_STB(3) // 1.5 bits
+#define USART_STB_1_5BIT	CTL1_STB(3) // 1.5 bits
 
 // USART LIN break frame length
-#define CTL1_LBLEN(regval)		(BIT(5) & ((uint32_t)(regval) << 5))
+#define CTL1_LBLEN(regval)	(BIT(5) & ((uint32_t)(regval) << 5))
 #define USART_LBLEN_10B		CTL1_LBLEN(0) // 10 bits
 #define USART_LBLEN_11B		CTL1_LBLEN(1) // 11 bits
 
 // USART CK length
-#define CTL1_CLEN(regval)		(BIT(8) & ((uint32_t)(regval) << 8))
+#define CTL1_CLEN(regval)	(BIT(8) & ((uint32_t)(regval) << 8))
 #define USART_CLEN_NONE		CTL1_CLEN(0) // there are 7 CK pulses for an 8 bit frame and 8 CK pulses for a 9 bit frame
 #define USART_CLEN_EN		CTL1_CLEN(1) // there are 8 CK pulses for an 8 bit frame and 9 CK pulses for a 9 bit frame
 
 // USART clock phase
-#define CTL1_CPH(regval)		(BIT(9) & ((uint32_t)(regval) << 9))
+#define CTL1_CPH(regval)	(BIT(9) & ((uint32_t)(regval) << 9))
 #define USART_CPH_1CK		CTL1_CPH(0) // first clock transition is the first data capture edge
 #define USART_CPH_2CK		CTL1_CPH(1) // second clock transition is the first data capture edge
 
 // USART clock polarity
-#define CTL1_CPL(regval)		(BIT(10) & ((uint32_t)(regval) << 10))
+#define CTL1_CPL(regval)	(BIT(10) & ((uint32_t)(regval) << 10))
 #define USART_CPL_LOW		CTL1_CPL(0) // steady low value on CK pin
 #define USART_CPL_HIGH		CTL1_CPL(1) // steady high value on CK pin
 
 // USART DMA request for receive configure
-#define CLT2_DENR(regval)		(BIT(6) & ((uint32_t)(regval) << 6))
-#define USART_DENR_ENABLE		CLT2_DENR(1) // DMA request enable for reception
-#define USART_DENR_DISABLE		CLT2_DENR(0) // DMA request disable for reception
+#define CLT2_DENR(regval)	(BIT(6) & ((uint32_t)(regval) << 6))
+#define USART_DENR_ENABLE	CLT2_DENR(1) // DMA request enable for reception
+#define USART_DENR_DISABLE	CLT2_DENR(0) // DMA request disable for reception
 
 // USART DMA request for transmission configure
-#define CLT2_DENT(regval)		(BIT(7) & ((uint32_t)(regval) << 7))
-#define USART_DENT_ENABLE		CLT2_DENT(1) // DMA request enable for transmission
-#define USART_DENT_DISABLE		CLT2_DENT(0) // DMA request disable for transmission
+#define CLT2_DENT(regval)	(BIT(7) & ((uint32_t)(regval) << 7))
+#define USART_DENT_ENABLE	CLT2_DENT(1) // DMA request enable for transmission
+#define USART_DENT_DISABLE	CLT2_DENT(0) // DMA request disable for transmission
 
 // USART RTS configure
-#define CLT2_RTSEN(regval)		(BIT(8) & ((uint32_t)(regval) << 8))
-#define USART_RTS_ENABLE		CLT2_RTSEN(1) // RTS enable
-#define USART_RTS_DISABLE		CLT2_RTSEN(0) // RTS disable
+#define CLT2_RTSEN(regval)	(BIT(8) & ((uint32_t)(regval) << 8))
+#define USART_RTS_ENABLE	CLT2_RTSEN(1) // RTS enable
+#define USART_RTS_DISABLE	CLT2_RTSEN(0) // RTS disable
 
 // USART CTS configure
-#define CLT2_CTSEN(regval)		(BIT(9) & ((uint32_t)(regval) << 9))
-#define USART_CTS_ENABLE		CLT2_CTSEN(1) // CTS enable
-#define USART_CTS_DISABLE		CLT2_CTSEN(0) // CTS disable
+#define CLT2_CTSEN(regval)	(BIT(9) & ((uint32_t)(regval) << 9))
+#define USART_CTS_ENABLE	CLT2_CTSEN(1) // CTS enable
+#define USART_CTS_DISABLE	CLT2_CTSEN(0) // CTS disable
 
 // USART IrDA low-power enable
 #define CTL2_IRLP(regval)	(BIT(2) & ((uint32_t)(regval) << 2))

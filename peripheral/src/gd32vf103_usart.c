@@ -63,7 +63,7 @@ void usart_baudrate_set(uint32_t usart_periph, uint32_t baudval) {
 	intdiv = udiv & (0x0000fff0U);
 	fradiv = udiv & (0x0000000fU);
 	USART_BAUD(usart_periph) =
-	    ((USART_BAUD_FRADIV | USART_BAUD_INTDIV) & (intdiv | fradiv));
+		((USART_BAUD_FRADIV | USART_BAUD_INTDIV) & (intdiv | fradiv));
 }
 
 /*
