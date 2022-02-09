@@ -70,7 +70,7 @@ void timer_struct_para_init(struct timer_param * initpara) {
  * 		TIMER_CKDIV_DIV1, TIMER_CKDIV_DIV2, TIMER_CKDIV_DIV4
  * 	repetitioncounter:
  * 		counter repetition value, 0~255
-*/
+ */
 void timer_init(uint32_t timer_periph, struct timer_param * initpara) {
 	TIMER_PSC(timer_periph) = initpara->prescaler;
 
@@ -678,7 +678,7 @@ void timer_channel_output_pulse_value_config(uint32_t timer_periph,
  * 	only one parameter can be selected which is shown as below:
  * 		TIMER_OC_SHADOW_ENABLE: channel output shadow state enable
  * 		TIMER_OC_SHADOW_DISABLE: channel output shadow state disable
-*/
+ */
 void timer_channel_output_shadow_config(uint32_t timer_periph, uint16_t channel,
 		uint16_t ocshadow) {
 
@@ -740,7 +740,7 @@ void timer_channel_output_fast_config(uint32_t timer_periph, uint16_t channel,
  * 	only one parameter can be selected which is shown as below:
  * 		TIMER_OC_CLEAR_ENABLE: channel output clear function enable
  * 		TIMER_OC_CLEAR_DISABLE: channel output clear function disable
-*/
+ */
 void timer_channel_output_clear_config(uint32_t timer_periph, uint16_t channel,
 		uint16_t occlear) {
 
@@ -871,7 +871,7 @@ void timer_channel_output_state_config(uint32_t timer_periph, uint16_t channel,
  * 	only one parameter can be selected which is shown as below:
  * 		TIMER_CCXN_ENABLE: channel complementary enable
  * 		TIMER_CCXN_DISABLE: channel complementary disable 
-*/
+ */
 void timer_channel_complementary_output_state_config(uint32_t timer_periph,
 		uint16_t channel, uint16_t ocnstate) {
 
@@ -922,7 +922,7 @@ void timer_input_capture_config(uint32_t timer_periph, uint16_t channel,
 		TIMER_CHCTL2(timer_periph) &= ~TIMER_CHCTL2_CH0EN;
 		// reset the CH0P and CH0NP bits
 		TIMER_CHCTL2(timer_periph) &=
-		    ~(TIMER_CHCTL2_CH0P | TIMER_CHCTL2_CH0NP);
+			~(TIMER_CHCTL2_CH0P | TIMER_CHCTL2_CH0NP);
 		TIMER_CHCTL2(timer_periph) |= icpara->icpolarity;
 		// reset the CH0MS bit
 		TIMER_CHCTL0(timer_periph) &= ~TIMER_CHCTL0_CH0MS;
@@ -941,7 +941,7 @@ void timer_input_capture_config(uint32_t timer_periph, uint16_t channel,
 
 		// reset the CH1P and CH1NP bits
 		TIMER_CHCTL2(timer_periph) &=
-		    ~(TIMER_CHCTL2_CH1P | TIMER_CHCTL2_CH1NP);
+			~(TIMER_CHCTL2_CH1P | TIMER_CHCTL2_CH1NP);
 		TIMER_CHCTL2(timer_periph) |= icpara->icpolarity << 4;
 		// reset the CH1MS bit
 		TIMER_CHCTL0(timer_periph) &= ~TIMER_CHCTL0_CH1MS;
@@ -959,7 +959,7 @@ void timer_input_capture_config(uint32_t timer_periph, uint16_t channel,
 
 		// reset the CH2P and CH2NP bits
 		TIMER_CHCTL2(timer_periph) &=
-		    ~(TIMER_CHCTL2_CH2P | TIMER_CHCTL2_CH2NP);
+			~(TIMER_CHCTL2_CH2P | TIMER_CHCTL2_CH2NP);
 		TIMER_CHCTL2(timer_periph) |= icpara->icpolarity << 8;
 
 		// reset the CH2MS bit
@@ -1000,321 +1000,261 @@ void timer_input_capture_config(uint32_t timer_periph, uint16_t channel,
 			timer_periph, channel, icpara->icprescaler);
 }
 
-/*!
-    \brief      configure TIMER channel input capture prescaler value
-    \param[in]  timer_periph: TIMERx(x=0..4)
-    \param[in]  channel:
-                only one parameter can be selected which is shown as below: 
-      \arg        TIMER_CH_0: TIMER channel 0(TIMERx(x=0..4))
-      \arg        TIMER_CH_1: TIMER channel 1(TIMERx(x=0..4))
-      \arg        TIMER_CH_2: TIMER channel 2(TIMERx(x=0..4))
-      \arg        TIMER_CH_3: TIMER channel 3(TIMERx(x=0..4))
-    \param[in]  prescaler: channel input capture prescaler value
-                only one parameter can be selected which is shown as below:
-      \arg        TIMER_IC_PSC_DIV1: no prescaler
-      \arg        TIMER_IC_PSC_DIV2: divided by 2
-      \arg        TIMER_IC_PSC_DIV4: divided by 4
-      \arg        TIMER_IC_PSC_DIV8: divided by 8
-    \param[out] none
-    \retval     none
-*/
+/*
+ * prescaler: channel input capture prescaler value
+ * 	only one parameter can be selected which is shown as below:
+ * 		TIMER_IC_PSC_DIV1: no prescaler
+ * 		TIMER_IC_PSC_DIV2: divided by 2
+ * 		TIMER_IC_PSC_DIV4: divided by 4
+ * 		TIMER_IC_PSC_DIV8: divided by 8
+ */
 void timer_channel_input_capture_prescaler_config(uint32_t timer_periph,
-						  uint16_t channel,
-						  uint16_t prescaler) {
+		uint16_t channel, uint16_t prescaler) {
+
 	switch (channel) {
-		/* configure TIMER_CH_0 */
 	case TIMER_CH_0:
-		TIMER_CHCTL0(timer_periph) &=
-		    (~(uint32_t) TIMER_CHCTL0_CH0CAPPSC);
-		TIMER_CHCTL0(timer_periph) |= (uint32_t) prescaler;
+		TIMER_CHCTL0(timer_periph) &= ~TIMER_CHCTL0_CH0CAPPSC;
+		TIMER_CHCTL0(timer_periph) |= prescaler;
 		break;
-		/* configure TIMER_CH_1 */
 	case TIMER_CH_1:
-		TIMER_CHCTL0(timer_periph) &=
-		    (~(uint32_t) TIMER_CHCTL0_CH1CAPPSC);
-		TIMER_CHCTL0(timer_periph) |= ((uint32_t) prescaler << 8U);
+		TIMER_CHCTL0(timer_periph) &= ~TIMER_CHCTL0_CH1CAPPSC;
+		TIMER_CHCTL0(timer_periph) |= prescaler << 8;
 		break;
-		/* configure TIMER_CH_2 */
 	case TIMER_CH_2:
-		TIMER_CHCTL1(timer_periph) &=
-		    (~(uint32_t) TIMER_CHCTL1_CH2CAPPSC);
-		TIMER_CHCTL1(timer_periph) |= (uint32_t) prescaler;
+		TIMER_CHCTL1(timer_periph) &= ~TIMER_CHCTL1_CH2CAPPSC;
+		TIMER_CHCTL1(timer_periph) |=  prescaler;
 		break;
-		/* configure TIMER_CH_3 */
 	case TIMER_CH_3:
-		TIMER_CHCTL1(timer_periph) &=
-		    (~(uint32_t) TIMER_CHCTL1_CH3CAPPSC);
-		TIMER_CHCTL1(timer_periph) |= ((uint32_t) prescaler << 8U);
+		TIMER_CHCTL1(timer_periph) &= ~TIMER_CHCTL1_CH3CAPPSC;
+		TIMER_CHCTL1(timer_periph) |= prescaler << 8;
 		break;
 	default:
 		break;
 	}
 }
 
-/*!
-    \brief      read TIMER channel capture compare register value
-    \param[in]  timer_periph: please refer to the following parameters
-    \param[in]  channel:
-                only one parameter can be selected which is shown as below: 
-      \arg        TIMER_CH_0: TIMER channel 0(TIMERx(x=0..4))
-      \arg        TIMER_CH_1: TIMER channel 1(TIMERx(x=0..4))
-      \arg        TIMER_CH_2: TIMER channel 2(TIMERx(x=0..4))
-      \arg        TIMER_CH_3: TIMER channel 3(TIMERx(x=0..4))
-    \param[out] none
-    \retval     channel capture compare register value
-*/
 uint32_t timer_channel_capture_value_register_read(uint32_t timer_periph,
-						   uint16_t channel) {
-	uint32_t count_value = 0U;
-
+		uint16_t channel) {
 	switch (channel) {
 	case TIMER_CH_0:
-		/* read TIMER channel 0 capture compare register value */
-		count_value = TIMER_CH0CV(timer_periph);
-		break;
+		// read TIMER channel 0 capture compare register value
+		return TIMER_CH0CV(timer_periph);
 	case TIMER_CH_1:
-		/* read TIMER channel 1 capture compare register value */
-		count_value = TIMER_CH1CV(timer_periph);
-		break;
+		return TIMER_CH1CV(timer_periph);
 	case TIMER_CH_2:
-		/* read TIMER channel 2 capture compare register value */
-		count_value = TIMER_CH2CV(timer_periph);
-		break;
+		return TIMER_CH2CV(timer_periph);
 	case TIMER_CH_3:
-		/* read TIMER channel 3 capture compare register value */
-		count_value = TIMER_CH3CV(timer_periph);
-		break;
+		return TIMER_CH3CV(timer_periph);
 	default:
-		break;
+		return 0;
 	}
-	return (count_value);
 }
 
-/*!
-    \brief      configure TIMER input pwm capture function 
-    \param[in]  timer_periph: TIMERx(x=0..4)
-    \param[in]  channel:
-                only one parameter can be selected which is shown as below: 
-      \arg        TIMER_CH_0: TIMER channel 0
-      \arg        TIMER_CH_1: TIMER channel 1
-     \param[in] icpwm: TIMER channel intput pwm parameter struct
-                  icpolarity: TIMER_IC_POLARITY_RISING, TIMER_IC_POLARITY_FALLING
-                  icselection: TIMER_IC_SELECTION_DIRECTTI, TIMER_IC_SELECTION_INDIRECTTI
-                  icprescaler: TIMER_IC_PSC_DIV1, TIMER_IC_PSC_DIV2, TIMER_IC_PSC_DIV4, 
-                               TIMER_IC_PSC_DIV8
-                  icfilter: 0~15
-    \param[out] none
-    \retval     none
-*/
+/*
+ * channel:
+ * 	only one parameter can be selected which is shown as below:
+ * 		TIMER_CH_0: TIMER channel 0
+ * 		TIMER_CH_1: TIMER channel 1
+ *
+ * icpwm: TIMER channel intput pwm parameter struct
+ * 	icpolarity: TIMER_IC_POLARITY_RISING, TIMER_IC_POLARITY_FALLING
+ * 	icselection: TIMER_IC_SELECTION_DIRECTTI, TIMER_IC_SELECTION_INDIRECTTI
+ * 	icprescaler: TIMER_IC_PSC_DIV1, TIMER_IC_PSC_DIV2, TIMER_IC_PSC_DIV4,
+ * 			TIMER_IC_PSC_DIV8
+ * 	icfilter: 0~15
+ */
 void timer_input_pwm_capture_config(uint32_t timer_periph, uint16_t channel,
-				    struct timer_ic_param * icpwm) {
-	uint16_t icpolarity = 0x0U;
-	uint16_t icselection = 0x0U;
+		struct timer_ic_param * icpwm) {
+	uint16_t icpolarity = 0;
+	uint16_t icselection = 0;
 
-	/* Set channel input polarity */
-	if (TIMER_IC_POLARITY_RISING == icpwm->icpolarity) {
+	// Set channel input polarity
+	if (icpwm->icpolarity == TIMER_IC_POLARITY_RISING)
 		icpolarity = TIMER_IC_POLARITY_FALLING;
-	} else {
+	else
 		icpolarity = TIMER_IC_POLARITY_RISING;
-	}
-	/* Set channel input mode selection */
-	if (TIMER_IC_SELECTION_DIRECTTI == icpwm->icselection) {
+
+	// Set channel input mode selection
+	if (icpwm->icselection == TIMER_IC_SELECTION_DIRECTTI)
 		icselection = TIMER_IC_SELECTION_INDIRECTTI;
-	} else {
+	else
 		icselection = TIMER_IC_SELECTION_DIRECTTI;
-	}
 
 	if (TIMER_CH_0 == channel) {
-		/* reset the CH0EN bit */
-		TIMER_CHCTL2(timer_periph) &= (~(uint32_t) TIMER_CHCTL2_CH0EN);
-		/* reset the CH0P and CH0NP bits */
+		// reset the CH0EN bit
+		TIMER_CHCTL2(timer_periph) &= ~TIMER_CHCTL2_CH0EN;
+		// reset the CH0P and CH0NP bits
 		TIMER_CHCTL2(timer_periph) &=
-		    (~(uint32_t) (TIMER_CHCTL2_CH0P | TIMER_CHCTL2_CH0NP));
-		/* set the CH0P and CH0NP bits */
-		TIMER_CHCTL2(timer_periph) |= (uint32_t) (icpwm->icpolarity);
-		/* reset the CH0MS bit */
-		TIMER_CHCTL0(timer_periph) &= (~(uint32_t) TIMER_CHCTL0_CH0MS);
-		/* set the CH0MS bit */
-		TIMER_CHCTL0(timer_periph) |= (uint32_t) (icpwm->icselection);
-		/* reset the CH0CAPFLT bit */
-		TIMER_CHCTL0(timer_periph) &=
-		    (~(uint32_t) TIMER_CHCTL0_CH0CAPFLT);
-		/* set the CH0CAPFLT bit */
-		TIMER_CHCTL0(timer_periph) |=
-		    ((uint32_t) (icpwm->icfilter) << 4U);
-		/* set the CH0EN bit */
-		TIMER_CHCTL2(timer_periph) |= (uint32_t) TIMER_CHCTL2_CH0EN;
-		/* configure TIMER channel input capture prescaler value */
-		timer_channel_input_capture_prescaler_config(timer_periph,
-							     TIMER_CH_0,
-							     (uint16_t)
-							     (icpwm->icprescaler));
+			~(TIMER_CHCTL2_CH0P | TIMER_CHCTL2_CH0NP);
+		// set the CH0P and CH0NP bits
+		TIMER_CHCTL2(timer_periph) |= icpwm->icpolarity;
+		// reset the CH0MS bit
+		TIMER_CHCTL0(timer_periph) &= ~TIMER_CHCTL0_CH0MS;
+		// set the CH0MS bit
+		TIMER_CHCTL0(timer_periph) |= icpwm->icselection;
+		// reset the CH0CAPFLT bit
+		TIMER_CHCTL0(timer_periph) &= ~TIMER_CHCTL0_CH0CAPFLT;
+		// set the CH0CAPFLT bit
+		TIMER_CHCTL0(timer_periph) |= icpwm->icfilter << 4;
+		// set the CH0EN bit
+		TIMER_CHCTL2(timer_periph) |= TIMER_CHCTL2_CH0EN;
 
-		/* reset the CH1EN bit */
-		TIMER_CHCTL2(timer_periph) &= (~(uint32_t) TIMER_CHCTL2_CH1EN);
-		/* reset the CH1P and CH1NP bits */
+		timer_channel_input_capture_prescaler_config(
+				timer_periph, TIMER_CH_0, icpwm->icprescaler);
+
+		// reset the CH1EN bit
+		TIMER_CHCTL2(timer_periph) &= ~TIMER_CHCTL2_CH1EN;
+		// reset the CH1P and CH1NP bits
 		TIMER_CHCTL2(timer_periph) &=
-		    (~(uint32_t) (TIMER_CHCTL2_CH1P | TIMER_CHCTL2_CH1NP));
-		/* set the CH1P and CH1NP bits */
-		TIMER_CHCTL2(timer_periph) |=
-		    (uint32_t) ((uint32_t) icpolarity << 4U);
-		/* reset the CH1MS bit */
-		TIMER_CHCTL0(timer_periph) &= (~(uint32_t) TIMER_CHCTL0_CH1MS);
-		/* set the CH1MS bit */
-		TIMER_CHCTL0(timer_periph) |=
-		    (uint32_t) ((uint32_t) icselection << 8U);
-		/* reset the CH1CAPFLT bit */
-		TIMER_CHCTL0(timer_periph) &=
-		    (~(uint32_t) TIMER_CHCTL0_CH1CAPFLT);
-		/* set the CH1CAPFLT bit */
-		TIMER_CHCTL0(timer_periph) |=
-		    (uint32_t) ((uint32_t) (icpwm->icfilter) << 12U);
-		/* set the CH1EN bit */
-		TIMER_CHCTL2(timer_periph) |= (uint32_t) TIMER_CHCTL2_CH1EN;
-		/* configure TIMER channel input capture prescaler value */
-		timer_channel_input_capture_prescaler_config(timer_periph,
-							     TIMER_CH_1,
-							     (uint16_t)
-							     (icpwm->icprescaler));
+			~(TIMER_CHCTL2_CH1P | TIMER_CHCTL2_CH1NP);
+		// set the CH1P and CH1NP bits
+		TIMER_CHCTL2(timer_periph) |= icpolarity << 4;
+		// reset the CH1MS bit
+		TIMER_CHCTL0(timer_periph) &= ~TIMER_CHCTL0_CH1MS;
+		// set the CH1MS bit
+		TIMER_CHCTL0(timer_periph) |= icselection << 8;
+		// reset the CH1CAPFLT bit
+		TIMER_CHCTL0(timer_periph) &= ~TIMER_CHCTL0_CH1CAPFLT;
+		// set the CH1CAPFLT bit
+		TIMER_CHCTL0(timer_periph) |= icpwm->icfilter << 12;
+		// set the CH1EN bit
+		TIMER_CHCTL2(timer_periph) |= TIMER_CHCTL2_CH1EN;
+
+		timer_channel_input_capture_prescaler_config(
+				timer_periph, TIMER_CH_1, icpwm->icprescaler);
 	} else {
-		/* reset the CH1EN bit */
-		TIMER_CHCTL2(timer_periph) &= (~(uint32_t) TIMER_CHCTL2_CH1EN);
-		/* reset the CH1P and CH1NP bits */
+		// reset the CH1EN bit
+		TIMER_CHCTL2(timer_periph) &= ~TIMER_CHCTL2_CH1EN;
+		// reset the CH1P and CH1NP bits
 		TIMER_CHCTL2(timer_periph) &=
-		    (~(uint32_t) (TIMER_CHCTL2_CH1P | TIMER_CHCTL2_CH1NP));
-		/* set the CH1P and CH1NP bits */
-		TIMER_CHCTL2(timer_periph) |=
-		    (uint32_t) ((uint32_t) (icpwm->icpolarity) << 4U);
-		/* reset the CH1MS bit */
-		TIMER_CHCTL0(timer_periph) &= (~(uint32_t) TIMER_CHCTL0_CH1MS);
-		/* set the CH1MS bit */
-		TIMER_CHCTL0(timer_periph) |=
-		    (uint32_t) ((uint32_t) (icpwm->icselection) << 8U);
-		/* reset the CH1CAPFLT bit */
-		TIMER_CHCTL0(timer_periph) &=
-		    (~(uint32_t) TIMER_CHCTL0_CH1CAPFLT);
-		/* set the CH1CAPFLT bit */
-		TIMER_CHCTL0(timer_periph) |=
-		    (uint32_t) ((uint32_t) (icpwm->icfilter) << 12U);
-		/* set the CH1EN bit */
-		TIMER_CHCTL2(timer_periph) |= (uint32_t) TIMER_CHCTL2_CH1EN;
-		/* configure TIMER channel input capture prescaler value */
-		timer_channel_input_capture_prescaler_config(timer_periph,
-							     TIMER_CH_1,
-							     (uint16_t)
-							     (icpwm->icprescaler));
+		    ~(TIMER_CHCTL2_CH1P | TIMER_CHCTL2_CH1NP);
+		// set the CH1P and CH1NP bits
+		TIMER_CHCTL2(timer_periph) |= icpwm->icpolarity << 4;
+		// reset the CH1MS bit
+		TIMER_CHCTL0(timer_periph) &= ~TIMER_CHCTL0_CH1MS;
+		// set the CH1MS bit
+		TIMER_CHCTL0(timer_periph) |= icpwm->icselection << 8;
+		// reset the CH1CAPFLT bit
+		TIMER_CHCTL0(timer_periph) &= ~TIMER_CHCTL0_CH1CAPFLT;
+		// set the CH1CAPFLT bit
+		TIMER_CHCTL0(timer_periph) |= icpwm->icfilter << 12;
+		// set the CH1EN bit
+		TIMER_CHCTL2(timer_periph) |= TIMER_CHCTL2_CH1EN;
 
-		/* reset the CH0EN bit */
-		TIMER_CHCTL2(timer_periph) &= (~(uint32_t) TIMER_CHCTL2_CH0EN);
-		/* reset the CH0P and CH0NP bits */
+		timer_channel_input_capture_prescaler_config(
+				timer_periph, TIMER_CH_1, icpwm->icprescaler);
+
+		// reset the CH0EN bit
+		TIMER_CHCTL2(timer_periph) &= ~TIMER_CHCTL2_CH0EN;
+		// reset the CH0P and CH0NP bits
 		TIMER_CHCTL2(timer_periph) &=
-		    (~(uint32_t) (TIMER_CHCTL2_CH0P | TIMER_CHCTL2_CH0NP));
-		/* set the CH0P and CH0NP bits */
-		TIMER_CHCTL2(timer_periph) |= (uint32_t) icpolarity;
-		/* reset the CH0MS bit */
-		TIMER_CHCTL0(timer_periph) &= (~(uint32_t) TIMER_CHCTL0_CH0MS);
-		/* set the CH0MS bit */
-		TIMER_CHCTL0(timer_periph) |= (uint32_t) icselection;
-		/* reset the CH0CAPFLT bit */
-		TIMER_CHCTL0(timer_periph) &=
-		    (~(uint32_t) TIMER_CHCTL0_CH0CAPFLT);
-		/* set the CH0CAPFLT bit */
-		TIMER_CHCTL0(timer_periph) |=
-		    ((uint32_t) (icpwm->icfilter) << 4U);
-		/* set the CH0EN bit */
-		TIMER_CHCTL2(timer_periph) |= (uint32_t) TIMER_CHCTL2_CH0EN;
-		/* configure TIMER channel input capture prescaler value */
-		timer_channel_input_capture_prescaler_config(timer_periph,
-							     TIMER_CH_0,
-							     (uint16_t)
-							     (icpwm->icprescaler));
+		    ~(TIMER_CHCTL2_CH0P | TIMER_CHCTL2_CH0NP);
+		// set the CH0P and CH0NP bits
+		TIMER_CHCTL2(timer_periph) |= icpolarity;
+		// reset the CH0MS bit
+		TIMER_CHCTL0(timer_periph) &= ~TIMER_CHCTL0_CH0MS;
+		// set the CH0MS bit
+		TIMER_CHCTL0(timer_periph) |= icselection;
+		// reset the CH0CAPFLT bit
+		TIMER_CHCTL0(timer_periph) &= ~TIMER_CHCTL0_CH0CAPFLT;
+		// set the CH0CAPFLT bit
+		TIMER_CHCTL0(timer_periph) |= icpwm->icfilter << 4;
+		TIMER_CHCTL2(timer_periph) |= TIMER_CHCTL2_CH0EN;
+
+		timer_channel_input_capture_prescaler_config(
+				timer_periph, TIMER_CH_0, icpwm->icprescaler);
 	}
 }
 
-/*!
-    \brief      configure TIMER hall sensor mode
-    \param[in]  timer_periph: TIMERx(x=0..4)
-    \param[in]  hallmode:
-                only one parameter can be selected which is shown as below: 
-      \arg        TIMER_HALLINTERFACE_ENABLE: TIMER hall sensor mode enable
-      \arg        TIMER_HALLINTERFACE_DISABLE: TIMER hall sensor mode disable
-    \param[out] none
-    \retval     none
-*/
+/*
+ * hallmode:
+ * 	only one parameter can be selected which is shown as below:
+ * 		TIMER_HALLINTERFACE_ENABLE: TIMER hall sensor mode enable
+ * 		TIMER_HALLINTERFACE_DISABLE: TIMER hall sensor mode disable
+ */
 void timer_hall_mode_config(uint32_t timer_periph, uint32_t hallmode) {
-	if (TIMER_HALLINTERFACE_ENABLE == hallmode) {
-		TIMER_CTL1(timer_periph) |= (uint32_t) TIMER_CTL1_TI0S;
-	} else if (TIMER_HALLINTERFACE_DISABLE == hallmode) {
-		TIMER_CTL1(timer_periph) &= ~(uint32_t) TIMER_CTL1_TI0S;
+	if (hallmode == TIMER_HALLINTERFACE_ENABLE) {
+		TIMER_CTL1(timer_periph) |= TIMER_CTL1_TI0S;
+	} else if (hallmode == TIMER_HALLINTERFACE_DISABLE) {
+		TIMER_CTL1(timer_periph) &= ~TIMER_CTL1_TI0S;
 	} else {
 		// illegal parameters
 	}
 }
 
-/*!
-    \brief      select TIMER input trigger source 
-    \param[in]  timer_periph: TIMERx(x=0..4)
-    \param[in]  intrigger:
-                only one parameter can be selected which is shown as below: 
-      \arg        TIMER_SMCFG_TRGSEL_ITI0: internal trigger 0(TIMERx(x=0..4))
-      \arg        TIMER_SMCFG_TRGSEL_ITI1: internal trigger 1(TIMERx(x=0..4))
-      \arg        TIMER_SMCFG_TRGSEL_ITI2: internal trigger 2(TIMERx(x=0..4))
-      \arg        TIMER_SMCFG_TRGSEL_ITI3: internal trigger 3(TIMERx(x=0..4))
-      \arg        TIMER_SMCFG_TRGSEL_CI0F_ED: TI0 edge detector(TIMERx(x=0..4))
-      \arg        TIMER_SMCFG_TRGSEL_CI0FE0: filtered TIMER input 0(TIMERx(x=0..4))
-      \arg        TIMER_SMCFG_TRGSEL_CI1FE1: filtered TIMER input 1(TIMERx(x=0..4))
-      \arg        TIMER_SMCFG_TRGSEL_ETIFP: filtered external trigger input(TIMERx(x=0..4))
-    \param[out] none
-    \retval     none
-*/
+/*
+ * intrigger:
+ * 	only one parameter can be selected which is shown as below:
+ * 		TIMER_SMCFG_TRGSEL_ITI0:
+ * 			internal trigger 0(TIMERx(x=0..4))
+ * 		TIMER_SMCFG_TRGSEL_ITI1:
+ * 			internal trigger 1(TIMERx(x=0..4))
+ * 		TIMER_SMCFG_TRGSEL_ITI2:
+ * 			internal trigger 2(TIMERx(x=0..4))
+ * 		TIMER_SMCFG_TRGSEL_ITI3:
+ * 			internal trigger 3(TIMERx(x=0..4))
+ * 		TIMER_SMCFG_TRGSEL_CI0F_ED:
+ * 			TI0 edge detector(TIMERx(x=0..4))
+ * 		TIMER_SMCFG_TRGSEL_CI0FE0:
+ * 			filtered TIMER input 0(TIMERx(x=0..4))
+ * 		TIMER_SMCFG_TRGSEL_CI1FE1:
+ * 			filtered TIMER input 1(TIMERx(x=0..4))
+ * 		TIMER_SMCFG_TRGSEL_ETIFP:
+ * 			filtered external trigger input(TIMERx(x=0..4))
+ */
 void timer_input_trigger_source_select(uint32_t timer_periph,
-				       uint32_t intrigger) {
-	TIMER_SMCFG(timer_periph) &= (~(uint32_t) TIMER_SMCFG_TRGS);
-	TIMER_SMCFG(timer_periph) |= (uint32_t) intrigger;
+		uint32_t intrigger) {
+
+	TIMER_SMCFG(timer_periph) &= ~TIMER_SMCFG_TRGS;
+	TIMER_SMCFG(timer_periph) |= intrigger;
 }
 
-/*!
-    \brief      select TIMER master mode output trigger source 
-    \param[in]  timer_periph: TIMERx(x=0..6)
-    \param[in]  outrigger:
-                only one parameter can be selected which is shown as below: 
-      \arg        TIMER_TRI_OUT_SRC_RESET: the UPG bit as trigger output(TIMERx(x=0..6))
-      \arg        TIMER_TRI_OUT_SRC_ENABLE: the counter enable signal TIMER_CTL0_CEN as trigger output(TIMERx(x=0..6))
-      \arg        TIMER_TRI_OUT_SRC_UPDATE: update event as trigger output(TIMERx(x=0..6))
-      \arg        TIMER_TRI_OUT_SRC_CH0: a capture or a compare match occurred in channel 0 as trigger output TRGO(TIMERx(x=0..4))
-      \arg        TIMER_TRI_OUT_SRC_O0CPRE: O0CPRE as trigger output(TIMERx(x=0..4))
-      \arg        TIMER_TRI_OUT_SRC_O1CPRE: O1CPRE as trigger output(TIMERx(x=0..4))
-      \arg        TIMER_TRI_OUT_SRC_O2CPRE: O2CPRE as trigger output(TIMERx(x=0..4))
-      \arg        TIMER_TRI_OUT_SRC_O3CPRE: O3CPRE as trigger output(TIMERx(x=0..4))
-    \param[out] none
-    \retval     none
-*/
+/*
+ * timer_periph: TIMERx(x=0..6)
+ * outrigger:
+ * 	only one parameter can be selected which is shown as below:
+ * 		TIMER_TRI_OUT_SRC_RESET:
+ * 			the UPG bit as trigger output(TIMERx(x=0..6))
+ * 		TIMER_TRI_OUT_SRC_ENABLE:
+ * 			the counter enable signal TIMER_CTL0_CEN as trigger
+ * 			output(TIMERx(x=0..6))
+ * 		TIMER_TRI_OUT_SRC_UPDATE:
+ * 			update event as trigger output(TIMERx(x=0..6))
+ * 		TIMER_TRI_OUT_SRC_CH0:
+ * 			a capture or a compare match occurred in channel 0 as
+ * 			trigger output TRGO(TIMERx(x=0..4))
+ * 		TIMER_TRI_OUT_SRC_O0CPRE:
+ * 			O0CPRE as trigger output(TIMERx(x=0..4))
+ * 		TIMER_TRI_OUT_SRC_O1CPRE:
+ * 			O1CPRE as trigger output(TIMERx(x=0..4))
+ * 		TIMER_TRI_OUT_SRC_O2CPRE:
+ * 			O2CPRE as trigger output(TIMERx(x=0..4))
+ * 		TIMER_TRI_OUT_SRC_O3CPRE:
+ * 			O3CPRE as trigger output(TIMERx(x=0..4))
+ */
 void timer_master_output_trigger_source_select(uint32_t timer_periph,
-					       uint32_t outrigger) {
-	TIMER_CTL1(timer_periph) &= (~(uint32_t) TIMER_CTL1_MMC);
-	TIMER_CTL1(timer_periph) |= (uint32_t) outrigger;
+		uint32_t outrigger) {
+
+	TIMER_CTL1(timer_periph) &= ~TIMER_CTL1_MMC;
+	TIMER_CTL1(timer_periph) |= outrigger;
 }
 
-/*!
-    \brief      select TIMER slave mode 
-    \param[in]  timer_periph: TIMERx(x=0..4)
-    \param[in]  slavemode:
-                only one parameter can be selected which is shown as below: 
-      \arg        TIMER_SLAVE_MODE_DISABLE: slave mode disable
-      \arg        TIMER_ENCODER_MODE0: encoder mode 0
-      \arg        TIMER_ENCODER_MODE1: encoder mode 1
-      \arg        TIMER_ENCODER_MODE2: encoder mode 2
-      \arg        TIMER_SLAVE_MODE_RESTART: restart mode
-      \arg        TIMER_SLAVE_MODE_PAUSE: pause mode
-      \arg        TIMER_SLAVE_MODE_EVENT: event mode
-      \arg        TIMER_SLAVE_MODE_EXTERNAL0: external clock mode 0
-    \param[out] none
-    \retval     none
-*/
+/*
+ * slavemode:
+ * 	only one parameter can be selected which is shown as below:
+ * 		TIMER_SLAVE_MODE_DISABLE: slave mode disable
+ * 		TIMER_ENCODER_MODE0: encoder mode 0
+ * 		TIMER_ENCODER_MODE1: encoder mode 1
+ * 		TIMER_ENCODER_MODE2: encoder mode 2
+ * 		TIMER_SLAVE_MODE_RESTART: restart mode
+ * 		TIMER_SLAVE_MODE_PAUSE: pause mode
+ * 		TIMER_SLAVE_MODE_EVENT: event mode
+ * 		TIMER_SLAVE_MODE_EXTERNAL0: external clock mode 0
+ */
 
 void timer_slave_mode_select(uint32_t timer_periph, uint32_t slavemode) {
-	TIMER_SMCFG(timer_periph) &= (~(uint32_t) TIMER_SMCFG_SMC);
-	TIMER_SMCFG(timer_periph) |= (uint32_t) slavemode;
+	TIMER_SMCFG(timer_periph) &= ~TIMER_SMCFG_SMC;
+	TIMER_SMCFG(timer_periph) |= slavemode;
 }
 
 /*!
@@ -1326,41 +1266,44 @@ void timer_slave_mode_select(uint32_t timer_periph, uint32_t slavemode) {
       \arg        TIMER_MASTER_SLAVE_MODE_DISABLE: master slave mode disable
     \param[out] none
     \retval     none
-*/
-void timer_master_slave_mode_config(uint32_t timer_periph, uint32_t masterslave) {
-	if (TIMER_MASTER_SLAVE_MODE_ENABLE == masterslave) {
-		TIMER_SMCFG(timer_periph) |= (uint32_t) TIMER_SMCFG_MSM;
-	} else if (TIMER_MASTER_SLAVE_MODE_DISABLE == masterslave) {
-		TIMER_SMCFG(timer_periph) &= ~(uint32_t) TIMER_SMCFG_MSM;
+ */
+void timer_master_slave_mode_config(uint32_t timer_periph,
+		uint32_t masterslave) {
+
+	if (masterslave == TIMER_MASTER_SLAVE_MODE_ENABLE) {
+		TIMER_SMCFG(timer_periph) |= TIMER_SMCFG_MSM;
+	} else if (masterslave == TIMER_MASTER_SLAVE_MODE_DISABLE) {
+		TIMER_SMCFG(timer_periph) &= ~TIMER_SMCFG_MSM;
 	} else {
 		// illegal parameters
 	}
 }
 
-/*!
-    \brief      configure TIMER external trigger input
-    \param[in]  timer_periph: TIMERx(x=0..4)
-    \param[in]  extprescaler:
-                only one parameter can be selected which is shown as below: 
-      \arg        TIMER_EXT_TRI_PSC_OFF: no divided
-      \arg        TIMER_EXT_TRI_PSC_DIV2: divided by 2
-      \arg        TIMER_EXT_TRI_PSC_DIV4: divided by 4
-      \arg        TIMER_EXT_TRI_PSC_DIV8: divided by 8
-    \param[in]  extpolarity:
-                only one parameter can be selected which is shown as below: 
-      \arg        TIMER_ETP_FALLING: active low or falling edge active
-      \arg        TIMER_ETP_RISING: active high or rising edge active
-    \param[in]  extfilter: a value between 0 and 15
-    \param[out] none
-    \retval     none
-*/
-void timer_external_trigger_config(uint32_t timer_periph, uint32_t extprescaler,
-				   uint32_t extpolarity, uint32_t extfilter) {
-	TIMER_SMCFG(timer_periph) &= (~(uint32_t)
-				      (TIMER_SMCFG_ETP | TIMER_SMCFG_ETPSC |
-				       TIMER_SMCFG_ETFC));
-	TIMER_SMCFG(timer_periph) |= (uint32_t) (extprescaler | extpolarity);
-	TIMER_SMCFG(timer_periph) |= (uint32_t) (extfilter << 8U);
+/*
+ * configure TIMER external trigger input
+ * timer_periph: TIMERx(x=0..4)
+ * extprescaler:
+ * 	only one parameter can be selected which is shown as below:
+ * 		TIMER_EXT_TRI_PSC_OFF: no divided
+ * 		TIMER_EXT_TRI_PSC_DIV2: divided by 2
+ * 		TIMER_EXT_TRI_PSC_DIV4: divided by 4
+ * 		TIMER_EXT_TRI_PSC_DIV8: divided by 8
+ * extpolarity:
+ * 	only one parameter can be selected which is shown as below:
+ * 		TIMER_ETP_FALLING: active low or falling edge active
+ * 		TIMER_ETP_RISING: active high or rising edge active
+ * extfilter:
+ * 	a value between 0 and 15
+ */
+void timer_external_trigger_config(uint32_t timer_periph,
+		uint32_t extprescaler, uint32_t extpolarity,
+		uint32_t extfilter) {
+
+	TIMER_SMCFG(timer_periph) &=
+		~(TIMER_SMCFG_ETP | TIMER_SMCFG_ETPSC | TIMER_SMCFG_ETFC);
+
+	TIMER_SMCFG(timer_periph) |= extprescaler | extpolarity;
+	TIMER_SMCFG(timer_periph) |= extfilter << 8;
 }
 
 /*!
@@ -1381,7 +1324,7 @@ void timer_external_trigger_config(uint32_t timer_periph, uint32_t extprescaler,
       \arg        TIMER_IC_POLARITY_FALLING: capture falling edge
     \param[out] none
     \retval     none
-*/
+ */
 void timer_quadrature_decoder_mode_config(uint32_t timer_periph,
 					  uint32_t decomode,
 					  uint16_t ic0polarity,
@@ -1410,7 +1353,7 @@ void timer_quadrature_decoder_mode_config(uint32_t timer_periph,
     \param[in]  timer_periph: TIMERx(x=0..4)
     \param[out] none
     \retval     none
-*/
+ */
 void timer_internal_clock_config(uint32_t timer_periph) {
 	TIMER_SMCFG(timer_periph) &= ~(uint32_t) TIMER_SMCFG_SMC;
 }
@@ -1426,7 +1369,7 @@ void timer_internal_clock_config(uint32_t timer_periph) {
       \arg        TIMER_SMCFG_TRGSEL_ITI3: internal trigger 3
     \param[out] none
     \retval     none
-*/
+ */
 void timer_internal_trigger_as_external_clock_config(uint32_t timer_periph,
 						     uint32_t intrigger) {
 	timer_input_trigger_source_select(timer_periph, intrigger);
@@ -1449,7 +1392,7 @@ void timer_internal_trigger_as_external_clock_config(uint32_t timer_periph,
     \param[in]  extfilter: a value between 0 and 15
     \param[out] none
     \retval     none
-*/
+ */
 void timer_external_trigger_as_external_clock_config(uint32_t timer_periph,
 						     uint32_t extrigger,
 						     uint16_t extpolarity,
@@ -1520,7 +1463,7 @@ void timer_external_trigger_as_external_clock_config(uint32_t timer_periph,
     \param[in]  extfilter: a value between 0 and 15
     \param[out] none
     \retval     none
-*/
+ */
 void timer_external_clock_mode0_config(uint32_t timer_periph,
 				       uint32_t extprescaler,
 				       uint32_t extpolarity,
@@ -1552,7 +1495,7 @@ void timer_external_clock_mode0_config(uint32_t timer_periph,
     \param[in]  extfilter: a value between 0 and 15
     \param[out] none
     \retval     none
-*/
+ */
 void timer_external_clock_mode1_config(uint32_t timer_periph,
 				       uint32_t extprescaler,
 				       uint32_t extpolarity,
@@ -1568,7 +1511,7 @@ void timer_external_clock_mode1_config(uint32_t timer_periph,
     \param[in]  timer_periph: TIMERx(x=0..4)
     \param[out] none
     \retval     none
-*/
+ */
 void timer_external_clock_mode1_disable(uint32_t timer_periph) {
 	TIMER_SMCFG(timer_periph) &= ~(uint32_t) TIMER_SMCFG_SMC1;
 }
@@ -1588,7 +1531,7 @@ void timer_external_clock_mode1_disable(uint32_t timer_periph) {
       \arg        TIMER_INT_BRK: break interrupt enable, TIMERx(x=0)
     \param[out] none
     \retval     none
-*/
+ */
 void timer_interrupt_enable(uint32_t timer_periph, uint32_t interrupt) {
 	TIMER_DMAINTEN(timer_periph) |= (uint32_t) interrupt;
 }
@@ -1608,7 +1551,7 @@ void timer_interrupt_enable(uint32_t timer_periph, uint32_t interrupt) {
       \arg        TIMER_INT_BRK: break interrupt enable, TIMERx(x=0)
     \param[out] none
     \retval     none
-*/
+ */
 void timer_interrupt_disable(uint32_t timer_periph, uint32_t interrupt) {
 	TIMER_DMAINTEN(timer_periph) &= (~(uint32_t) interrupt);
 }
@@ -1628,7 +1571,7 @@ void timer_interrupt_disable(uint32_t timer_periph, uint32_t interrupt) {
       \arg        TIMER_INT_FLAG_BRK: break interrupt flag, TIMERx(x=0)
     \param[out] none
     \retval     enum flag_status: SET or RESET
-*/
+ */
 enum flag_status timer_interrupt_flag_get(uint32_t timer_periph,
 					  uint32_t interrupt) {
 	uint32_t val;
@@ -1655,7 +1598,7 @@ enum flag_status timer_interrupt_flag_get(uint32_t timer_periph,
       \arg        TIMER_INT_FLAG_BRK: break interrupt flag, TIMERx(x=0)
     \param[out] none
     \retval     none
-*/
+ */
 void timer_interrupt_flag_clear(uint32_t timer_periph, uint32_t interrupt) {
 	TIMER_INTF(timer_periph) = (~(uint32_t) interrupt);
 }
@@ -1679,7 +1622,7 @@ void timer_interrupt_flag_clear(uint32_t timer_periph, uint32_t interrupt) {
       \arg        TIMER_FLAG_CH3O: channel 3 overcapture flag, TIMERx(x=0..4)
     \param[out] none
     \retval     enum flag_status: SET or RESET
-*/
+ */
 enum flag_status timer_flag_get(uint32_t timer_periph, uint32_t flag) {
 	if (RESET != (TIMER_INTF(timer_periph) & flag)) {
 		return SET;
@@ -1707,7 +1650,7 @@ enum flag_status timer_flag_get(uint32_t timer_periph, uint32_t flag) {
       \arg        TIMER_FLAG_CH3O: channel 3 overcapture flag, TIMERx(x=0..4)
     \param[out] none
     \retval     none
-*/
+ */
 void timer_flag_clear(uint32_t timer_periph, uint32_t flag) {
 	TIMER_INTF(timer_periph) = (~(uint32_t) flag);
 }
