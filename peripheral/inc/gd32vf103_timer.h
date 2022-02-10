@@ -13,197 +13,449 @@
 
 #define TIMER_CTL0(timerx)	REG32((timerx) + 0x00U)
 #define TIMER_CTL1(timerx)	REG32((timerx) + 0x04U)
+
 // TIMER slave mode configuration register
 #define TIMER_SMCFG(timerx)	REG32((timerx) + 0x08U)
+
 // TIMER DMA and interrupt enable register
 #define TIMER_DMAINTEN(timerx)	REG32((timerx) + 0x0CU)
+
 // TIMER interrupt flag register
 #define TIMER_INTF(timerx)	REG32((timerx) + 0x10U)
+
 // TIMER software event generation register
 #define TIMER_SWEVG(timerx)	REG32((timerx) + 0x14U)
+
 #define TIMER_CHCTL0(timerx)	REG32((timerx) + 0x18U)
 #define TIMER_CHCTL1(timerx)	REG32((timerx) + 0x1CU)
 #define TIMER_CHCTL2(timerx)	REG32((timerx) + 0x20U)
 #define TIMER_CNT(timerx)	REG32((timerx) + 0x24U)
+
 // TIMER prescaler register
 #define TIMER_PSC(timerx)	REG32((timerx) + 0x28U)
+
 // TIMER counter auto reload register
 #define TIMER_CAR(timerx)	REG32((timerx) + 0x2CU)
+
 // TIMER counter repetition register
 #define TIMER_CREP(timerx)	REG32((timerx) + 0x30U)
+
 // TIMER channel 0 capture/compare value register
 #define TIMER_CH0CV(timerx)	REG32((timerx) + 0x34U)
+
 // TIMER channel 1 capture/compare value register
 #define TIMER_CH1CV(timerx)	REG32((timerx) + 0x38U)
+
 // TIMER channel 2 capture/compare value register
 #define TIMER_CH2CV(timerx)	REG32((timerx) + 0x3CU)
+
 // TIMER channel 3 capture/compare value register
 #define TIMER_CH3CV(timerx)	REG32((timerx) + 0x40U)
+
 // TIMER channel complementary protection register
 #define TIMER_CCHP(timerx)	REG32((timerx) + 0x44U)
+
 // TIMER DMA configuration register
 #define TIMER_DMACFG(timerx)	REG32((timerx) + 0x48U)
+
 // TIMER DMA transfer buffer register
 #define TIMER_DMATB(timerx)	REG32((timerx) + 0x4CU)
 
-#define TIMER_CTL0_CEN		BIT(0) // TIMER counter enable
-#define TIMER_CTL0_UPDIS	BIT(1) // update disable
-#define TIMER_CTL0_UPS		BIT(2) // update source
-#define TIMER_CTL0_SPM		BIT(3) // single pulse mode
-#define TIMER_CTL0_DIR		BIT(4) // timer counter direction
-#define TIMER_CTL0_CAM		BITS(5, 6) // center-aligned mode selection
-#define TIMER_CTL0_ARSE		BIT(7) // auto-reload shadow enable
-#define TIMER_CTL0_CKDIV	BITS(8, 9) // clock division
+// TIMER counter enable
+#define TIMER_CTL0_CEN		BIT(0)
 
-#define TIMER_CTL1_CCSE		BIT(0) // commutation control shadow enable
-#define TIMER_CTL1_CCUC		BIT(2) // commutation control shadow register update control
-#define TIMER_CTL1_DMAS		BIT(3) // DMA request source selection
-#define TIMER_CTL1_MMC		BITS(4, 6) // master mode control
-#define TIMER_CTL1_TI0S		BIT(7) // channel 0 trigger input selection(hall mode selection)
-#define TIMER_CTL1_ISO0		BIT(8) // idle state of channel 0 output
-#define TIMER_CTL1_ISO0N	BIT(9) // idle state of channel 0 complementary output
-#define TIMER_CTL1_ISO1		BIT(10) // idle state of channel 1 output
-#define TIMER_CTL1_ISO1N	BIT(11) // idle state of channel 1 complementary output
-#define TIMER_CTL1_ISO2		BIT(12) // idle state of channel 2 output
-#define TIMER_CTL1_ISO2N	BIT(13) // idle state of channel 2 complementary output
-#define TIMER_CTL1_ISO3		BIT(14) // idle state of channel 3 output
+// update disable
+#define TIMER_CTL0_UPDIS	BIT(1)
 
+// update source
+#define TIMER_CTL0_UPS		BIT(2)
 
-#define TIMER_SMCFG_SMC		BITS(0, 2) // slave mode control
-#define TIMER_SMCFG_TRGS	BITS(4, 6) // trigger selection
-#define TIMER_SMCFG_MSM		BIT(7) // master-slave mode
-#define TIMER_SMCFG_ETFC	BITS(8, 11) // external trigger filter control
-#define TIMER_SMCFG_ETPSC	BITS(12, 13) // external trigger prescaler
-#define TIMER_SMCFG_SMC1	BIT(14) // part of SMC for enable external clock mode 1
-#define TIMER_SMCFG_ETP		BIT(15) // external trigger polarity
+// single pulse mode
+#define TIMER_CTL0_SPM		BIT(3)
+
+// timer counter direction
+#define TIMER_CTL0_DIR		BIT(4)
+
+// center-aligned mode selection
+#define TIMER_CTL0_CAM		BITS(5, 6)
+
+// auto-reload shadow enable
+#define TIMER_CTL0_ARSE		BIT(7)
+
+// clock division
+#define TIMER_CTL0_CKDIV	BITS(8, 9)
 
 
-#define TIMER_DMAINTEN_UPIE	BIT(0) // update interrupt enable
-#define TIMER_DMAINTEN_CH0IE	BIT(1) // channel 0 capture/compare interrupt enable
-#define TIMER_DMAINTEN_CH1IE	BIT(2) // channel 1 capture/compare interrupt enable
-#define TIMER_DMAINTEN_CH2IE	BIT(3) // channel 2 capture/compare interrupt enable
-#define TIMER_DMAINTEN_CH3IE	BIT(4) // channel 3 capture/compare interrupt enable
-#define TIMER_DMAINTEN_CMTIE	BIT(5) // commutation interrupt request enable
-#define TIMER_DMAINTEN_TRGIE	BIT(6) // trigger interrupt enable
-#define TIMER_DMAINTEN_BRKIE	BIT(7) // break interrupt enable
-#define TIMER_DMAINTEN_UPDEN	BIT(8) // update DMA request enable
-#define TIMER_DMAINTEN_CH0DEN	BIT(9) // channel 0 capture/compare DMA request enable
-#define TIMER_DMAINTEN_CH1DEN	BIT(10) // channel 1 capture/compare DMA request enable
-#define TIMER_DMAINTEN_CH2DEN	BIT(11) // channel 2 capture/compare DMA request enable
-#define TIMER_DMAINTEN_CH3DEN	BIT(12) // channel 3 capture/compare DMA request enable
-#define TIMER_DMAINTEN_CMTDEN	BIT(13) // commutation DMA request enable
-#define TIMER_DMAINTEN_TRGDEN	BIT(14) // trigger DMA request enable
+// commutation control shadow enable
+#define TIMER_CTL1_CCSE		BIT(0)
+
+// commutation control shadow register update control
+#define TIMER_CTL1_CCUC		BIT(2)
+
+// DMA request source selection
+#define TIMER_CTL1_DMAS		BIT(3)
+
+// master mode control
+#define TIMER_CTL1_MMC		BITS(4, 6)
+
+// channel 0 trigger input selection(hall mode selection)
+#define TIMER_CTL1_TI0S		BIT(7)
+
+// idle state of channel 0 output
+#define TIMER_CTL1_ISO0		BIT(8)
+
+// idle state of channel 0 complementary output
+#define TIMER_CTL1_ISO0N	BIT(9)
+
+// idle state of channel 1 output
+#define TIMER_CTL1_ISO1		BIT(10)
+
+// idle state of channel 1 complementary output
+#define TIMER_CTL1_ISO1N	BIT(11)
+
+// idle state of channel 2 output
+#define TIMER_CTL1_ISO2		BIT(12)
+
+// idle state of channel 2 complementary output
+#define TIMER_CTL1_ISO2N	BIT(13)
+
+// idle state of channel 3 output
+#define TIMER_CTL1_ISO3		BIT(14)
 
 
-#define TIMER_INTF_UPIF		BIT(0) // update interrupt flag
-#define TIMER_INTF_CH0IF	BIT(1) // channel 0 capture/compare interrupt flag
-#define TIMER_INTF_CH1IF	BIT(2) // channel 1 capture/compare interrupt flag
-#define TIMER_INTF_CH2IF	BIT(3) // channel 2 capture/compare interrupt flag
-#define TIMER_INTF_CH3IF	BIT(4) // channel 3 capture/compare interrupt flag
-#define TIMER_INTF_CMTIF	BIT(5) // channel commutation interrupt flag
-#define TIMER_INTF_TRGIF	BIT(6) // trigger interrupt flag
-#define TIMER_INTF_BRKIF	BIT(7) // break interrupt flag
-#define TIMER_INTF_CH0OF	BIT(9) // channel 0 over capture flag
-#define TIMER_INTF_CH1OF	BIT(10) // channel 1 over capture flag
-#define TIMER_INTF_CH2OF	BIT(11) // channel 2 over capture flag
-#define TIMER_INTF_CH3OF	BIT(12) // channel 3 over capture flag
+
+// slave mode control
+#define TIMER_SMCFG_SMC		BITS(0, 2)
+
+// trigger selection
+#define TIMER_SMCFG_TRGS	BITS(4, 6)
+
+// master-slave mode
+#define TIMER_SMCFG_MSM		BIT(7)
+
+// external trigger filter control
+#define TIMER_SMCFG_ETFC	BITS(8, 11)
+
+// external trigger prescaler
+#define TIMER_SMCFG_ETPSC	BITS(12, 13)
+
+// part of SMC for enable external clock mode 1
+#define TIMER_SMCFG_SMC1	BIT(14)
+
+// external trigger polarity
+#define TIMER_SMCFG_ETP		BIT(15)
 
 
-#define TIMER_SWEVG_UPG		BIT(0) // update event generate
-#define TIMER_SWEVG_CH0G	BIT(1) // channel 0 capture or compare event generation
-#define TIMER_SWEVG_CH1G	BIT(2) // channel 1 capture or compare event generation
-#define TIMER_SWEVG_CH2G	BIT(3) // channel 2 capture or compare event generation
-#define TIMER_SWEVG_CH3G	BIT(4) // channel 3 capture or compare event generation
-#define TIMER_SWEVG_CMTG	BIT(5) // channel commutation event generation
-#define TIMER_SWEVG_TRGG	BIT(6) // trigger event generation
-#define TIMER_SWEVG_BRKG	BIT(7) // break event generation
+
+// update interrupt enable
+#define TIMER_DMAINTEN_UPIE	BIT(0)
+
+// channel 0 capture/compare interrupt enable
+#define TIMER_DMAINTEN_CH0IE	BIT(1)
+
+// channel 1 capture/compare interrupt enable
+#define TIMER_DMAINTEN_CH1IE	BIT(2)
+
+// channel 2 capture/compare interrupt enable
+#define TIMER_DMAINTEN_CH2IE	BIT(3)
+
+// channel 3 capture/compare interrupt enable
+#define TIMER_DMAINTEN_CH3IE	BIT(4)
+
+// commutation interrupt request enable
+#define TIMER_DMAINTEN_CMTIE	BIT(5)
+
+// trigger interrupt enable
+#define TIMER_DMAINTEN_TRGIE	BIT(6)
+
+// break interrupt enable
+#define TIMER_DMAINTEN_BRKIE	BIT(7)
+
+// update DMA request enable
+#define TIMER_DMAINTEN_UPDEN	BIT(8)
+
+// channel 0 capture/compare DMA request enable
+#define TIMER_DMAINTEN_CH0DEN	BIT(9)
+
+// channel 1 capture/compare DMA request enable
+#define TIMER_DMAINTEN_CH1DEN	BIT(10)
+
+// channel 2 capture/compare DMA request enable
+#define TIMER_DMAINTEN_CH2DEN	BIT(11)
+
+// channel 3 capture/compare DMA request enable
+#define TIMER_DMAINTEN_CH3DEN	BIT(12)
+
+// commutation DMA request enable
+#define TIMER_DMAINTEN_CMTDEN	BIT(13)
+
+// trigger DMA request enable
+#define TIMER_DMAINTEN_TRGDEN	BIT(14)
+
+
+
+// update interrupt flag
+#define TIMER_INTF_UPIF		BIT(0)
+
+// channel 0 capture/compare interrupt flag
+#define TIMER_INTF_CH0IF	BIT(1)
+
+// channel 1 capture/compare interrupt flag
+#define TIMER_INTF_CH1IF	BIT(2)
+
+// channel 2 capture/compare interrupt flag
+#define TIMER_INTF_CH2IF	BIT(3)
+
+// channel 3 capture/compare interrupt flag
+#define TIMER_INTF_CH3IF	BIT(4)
+
+// channel commutation interrupt flag
+#define TIMER_INTF_CMTIF	BIT(5)
+
+// trigger interrupt flag
+#define TIMER_INTF_TRGIF	BIT(6)
+
+// break interrupt flag
+#define TIMER_INTF_BRKIF	BIT(7)
+
+// channel 0 over capture flag
+#define TIMER_INTF_CH0OF	BIT(9)
+
+// channel 1 over capture flag
+#define TIMER_INTF_CH1OF	BIT(10)
+
+// channel 2 over capture flag
+#define TIMER_INTF_CH2OF	BIT(11)
+
+// channel 3 over capture flag
+#define TIMER_INTF_CH3OF	BIT(12)
+
+
+
+// update event generate
+#define TIMER_SWEVG_UPG		BIT(0)
+
+// channel 0 capture or compare event generation
+#define TIMER_SWEVG_CH0G	BIT(1)
+
+// channel 1 capture or compare event generation
+#define TIMER_SWEVG_CH1G	BIT(2)
+
+// channel 2 capture or compare event generation
+#define TIMER_SWEVG_CH2G	BIT(3)
+
+// channel 3 capture or compare event generation
+#define TIMER_SWEVG_CH3G	BIT(4)
+
+// channel commutation event generation
+#define TIMER_SWEVG_CMTG	BIT(5)
+
+// trigger event generation
+#define TIMER_SWEVG_TRGG	BIT(6)
+
+// break event generation
+#define TIMER_SWEVG_BRKG	BIT(7)
+
 
 // output compare mode
-#define TIMER_CHCTL0_CH0MS	BITS(0, 1) // channel 0 mode selection
-#define TIMER_CHCTL0_CH0COMFEN	BIT(2) // channel 0 output compare fast enable
-#define TIMER_CHCTL0_CH0COMSEN	BIT(3) // channel 0 output compare shadow enable
-#define TIMER_CHCTL0_CH0COMCTL	BITS(4, 6) // channel 0 output compare control 
-#define TIMER_CHCTL0_CH0COMCEN	BIT(7) // channel 0 output compare clear enable
-#define TIMER_CHCTL0_CH1MS	BITS(8, 9) // channel 1 mode selection
-#define TIMER_CHCTL0_CH1COMFEN	BIT(10) // channel 1 output compare fast enable
-#define TIMER_CHCTL0_CH1COMSEN	BIT(11) // channel 1 output compare shadow enable
-#define TIMER_CHCTL0_CH1COMCTL	BITS(12, 14) // channel 1 output compare control 
-#define TIMER_CHCTL0_CH1COMCEN	BIT(15) // channel 1 output compare clear enable
+// channel 0 mode selection
+#define TIMER_CHCTL0_CH0MS	BITS(0, 1)
+
+// channel 0 output compare fast enable
+#define TIMER_CHCTL0_CH0COMFEN	BIT(2)
+
+// channel 0 output compare shadow enable
+#define TIMER_CHCTL0_CH0COMSEN	BIT(3)
+
+// channel 0 output compare control
+#define TIMER_CHCTL0_CH0COMCTL	BITS(4, 6)
+
+// channel 0 output compare clear enable
+#define TIMER_CHCTL0_CH0COMCEN	BIT(7)
+
+// channel 1 mode selection
+#define TIMER_CHCTL0_CH1MS	BITS(8, 9)
+
+// channel 1 output compare fast enable
+#define TIMER_CHCTL0_CH1COMFEN	BIT(10)
+
+// channel 1 output compare shadow enable
+#define TIMER_CHCTL0_CH1COMSEN	BIT(11)
+
+// channel 1 output compare control
+#define TIMER_CHCTL0_CH1COMCTL	BITS(12, 14)
+
+// channel 1 output compare clear enable
+#define TIMER_CHCTL0_CH1COMCEN	BIT(15)
+
 
 // input capture mode
-#define TIMER_CHCTL0_CH0CAPPSC	BITS(2, 3) // channel 0 input capture prescaler
-#define TIMER_CHCTL0_CH0CAPFLT	BITS(4, 7) // channel 0 input capture filter control
-#define TIMER_CHCTL0_CH1CAPPSC	BITS(10, 11) // channel 1 input capture prescaler
-#define TIMER_CHCTL0_CH1CAPFLT	BITS(12, 15) // channel 1 input capture filter control
+// channel 0 input capture prescaler
+#define TIMER_CHCTL0_CH0CAPPSC	BITS(2, 3)
+
+// channel 0 input capture filter control
+#define TIMER_CHCTL0_CH0CAPFLT	BITS(4, 7)
+
+// channel 1 input capture prescaler
+#define TIMER_CHCTL0_CH1CAPPSC	BITS(10, 11)
+
+// channel 1 input capture filter control
+#define TIMER_CHCTL0_CH1CAPFLT	BITS(12, 15)
+
 
 // output compare mode
-#define TIMER_CHCTL1_CH2MS	BITS(0, 1) // channel 2 mode selection
-#define TIMER_CHCTL1_CH2COMFEN	BIT(2) // channel 2 output compare fast enable
-#define TIMER_CHCTL1_CH2COMSEN	BIT(3) // channel 2 output compare shadow enable
-#define TIMER_CHCTL1_CH2COMCTL	BITS(4, 6) // channel 2 output compare control
-#define TIMER_CHCTL1_CH2COMCEN	BIT(7) // channel 2 output compare clear enable
-#define TIMER_CHCTL1_CH3MS	BITS(8, 9) // channel 3 mode selection
-#define TIMER_CHCTL1_CH3COMFEN	BIT(10) // channel 3 output compare fast enable
-#define TIMER_CHCTL1_CH3COMSEN	BIT(11) // channel 3 output compare shadow enable
-#define TIMER_CHCTL1_CH3COMCTL	BITS(12, 14) // channel 3 output compare control
-#define TIMER_CHCTL1_CH3COMCEN	BIT(15) // channel 3 output compare clear enable
+// channel 2 mode selection
+#define TIMER_CHCTL1_CH2MS	BITS(0, 1)
+
+// channel 2 output compare fast enable
+#define TIMER_CHCTL1_CH2COMFEN	BIT(2)
+
+// channel 2 output compare shadow enable
+#define TIMER_CHCTL1_CH2COMSEN	BIT(3)
+
+// channel 2 output compare control
+#define TIMER_CHCTL1_CH2COMCTL	BITS(4, 6)
+
+// channel 2 output compare clear enable
+#define TIMER_CHCTL1_CH2COMCEN	BIT(7)
+
+// channel 3 mode selection
+#define TIMER_CHCTL1_CH3MS	BITS(8, 9)
+
+// channel 3 output compare fast enable
+#define TIMER_CHCTL1_CH3COMFEN	BIT(10)
+
+// channel 3 output compare shadow enable
+#define TIMER_CHCTL1_CH3COMSEN	BIT(11)
+
+// channel 3 output compare control
+#define TIMER_CHCTL1_CH3COMCTL	BITS(12, 14)
+
+// channel 3 output compare clear enable
+#define TIMER_CHCTL1_CH3COMCEN	BIT(15)
+
 
 // input capture mode
-#define TIMER_CHCTL1_CH2CAPPSC	BITS(2, 3) // channel 2 input capture prescaler
-#define TIMER_CHCTL1_CH2CAPFLT	BITS(4, 7) // channel 2 input capture filter control
-#define TIMER_CHCTL1_CH3CAPPSC	BITS(10, 11) // channel 3 input capture prescaler
-#define TIMER_CHCTL1_CH3CAPFLT	BITS(12, 15) // channel 3 input capture filter control
+// channel 2 input capture prescaler
+#define TIMER_CHCTL1_CH2CAPPSC	BITS(2, 3)
+
+// channel 2 input capture filter control
+#define TIMER_CHCTL1_CH2CAPFLT	BITS(4, 7)
+
+// channel 3 input capture prescaler
+#define TIMER_CHCTL1_CH3CAPPSC	BITS(10, 11)
+
+// channel 3 input capture filter control
+#define TIMER_CHCTL1_CH3CAPFLT	BITS(12, 15)
 
 
-#define TIMER_CHCTL2_CH0EN	BIT(0) // channel 0 capture/compare function enable
-#define TIMER_CHCTL2_CH0P	BIT(1) // channel 0 capture/compare function polarity
-#define TIMER_CHCTL2_CH0NEN	BIT(2) // channel 0 complementary output enable
-#define TIMER_CHCTL2_CH0NP	BIT(3) // channel 0 complementary output polarity
-#define TIMER_CHCTL2_CH1EN	BIT(4) // channel 1 capture/compare function enable 
-#define TIMER_CHCTL2_CH1P	BIT(5) // channel 1 capture/compare function polarity
-#define TIMER_CHCTL2_CH1NEN	BIT(6) // channel 1 complementary output enable
-#define TIMER_CHCTL2_CH1NP	BIT(7) // channel 1 complementary output polarity
-#define TIMER_CHCTL2_CH2EN	BIT(8) // channel 2 capture/compare function enable 
-#define TIMER_CHCTL2_CH2P	BIT(9) // channel 2 capture/compare function polarity
-#define TIMER_CHCTL2_CH2NEN	BIT(10) // channel 2 complementary output enable
-#define TIMER_CHCTL2_CH2NP	BIT(11) // channel 2 complementary output polarity
-#define TIMER_CHCTL2_CH3EN	BIT(12) // channel 3 capture/compare function enable 
-#define TIMER_CHCTL2_CH3P	BIT(13) // channel 3 capture/compare function polarity
+
+// channel 0 capture/compare function enable
+#define TIMER_CHCTL2_CH0EN	BIT(0)
+
+// channel 0 capture/compare function polarity
+#define TIMER_CHCTL2_CH0P	BIT(1)
+
+// channel 0 complementary output enable
+#define TIMER_CHCTL2_CH0NEN	BIT(2)
+
+// channel 0 complementary output polarity
+#define TIMER_CHCTL2_CH0NP	BIT(3)
+
+// channel 1 capture/compare function enable
+#define TIMER_CHCTL2_CH1EN	BIT(4)
+
+// channel 1 capture/compare function polarity
+#define TIMER_CHCTL2_CH1P	BIT(5)
+
+// channel 1 complementary output enable
+#define TIMER_CHCTL2_CH1NEN	BIT(6)
+
+// channel 1 complementary output polarity
+#define TIMER_CHCTL2_CH1NP	BIT(7)
+
+// channel 2 capture/compare function enable
+#define TIMER_CHCTL2_CH2EN	BIT(8)
+
+// channel 2 capture/compare function polarity
+#define TIMER_CHCTL2_CH2P	BIT(9)
+
+// channel 2 complementary output enable
+#define TIMER_CHCTL2_CH2NEN	BIT(10)
+
+// channel 2 complementary output polarity
+#define TIMER_CHCTL2_CH2NP	BIT(11)
+
+// channel 3 capture/compare function enable
+#define TIMER_CHCTL2_CH3EN	BIT(12)
+
+// channel 3 capture/compare function polarity
+#define TIMER_CHCTL2_CH3P	BIT(13)
 
 
-#define TIMER_CNT_CNT		BITS(0, 15) // 16 bit timer counter
 
-#define TIMER_PSC_PSC		BITS(0, 15) // prescaler value of the counter clock
-
-#define TIMER_CAR_CARL		BITS(0, 15) // 16 bit counter auto reload value
-
-#define TIMER_CREP_CREP		BITS(0, 7) // counter repetition value
-
-#define TIMER_CH0CV_CH0VAL	BITS(0, 15) // 16 bit capture/compare value of channel 0
-
-#define TIMER_CH1CV_CH1VAL	BITS(0, 15) // 16 bit capture/compare value of channel 1
-
-#define TIMER_CH2CV_CH2VAL	BITS(0, 15) // 16 bit capture/compare value of channel 2
-
-#define TIMER_CH3CV_CH3VAL	BITS(0, 15) // 16 bit capture/compare value of channel 3
-
-#define TIMER_CCHP_DTCFG	BITS(0, 7) // dead time configure
-#define TIMER_CCHP_PROT		BITS(8, 9) // complementary register protect control
-#define TIMER_CCHP_IOS		BIT(10) // idle mode off-state configure
-#define TIMER_CCHP_ROS		BIT(11) // run mode off-state configure
-#define TIMER_CCHP_BRKEN	BIT(12) // break enable
-#define TIMER_CCHP_BRKP		BIT(13) // break polarity
-#define TIMER_CCHP_OAEN		BIT(14) // output automatic enable
-#define TIMER_CCHP_POEN		BIT(15) // primary output enable
+// 16 bit timer counter
+#define TIMER_CNT_CNT		BITS(0, 15)
 
 
-#define TIMER_DMACFG_DMATA	BITS(0, 4) // DMA transfer access start address
-#define TIMER_DMACFG_DMATC	BITS(8, 12) // DMA transfer count
+// prescaler value of the counter clock
+#define TIMER_PSC_PSC		BITS(0, 15)
 
 
-#define TIMER_DMATB_DMATB	BITS(0, 15) // DMA transfer buffer address
+// 16 bit counter auto reload value
+#define TIMER_CAR_CARL		BITS(0, 15)
 
-struct timer_param { 
+
+// counter repetition value
+#define TIMER_CREP_CREP		BITS(0, 7)
+
+
+// 16 bit capture/compare value of channel 0/1/2/3
+#define TIMER_CH0CV_CH0VAL	BITS(0, 15)
+#define TIMER_CH1CV_CH1VAL	BITS(0, 15)
+#define TIMER_CH2CV_CH2VAL	BITS(0, 15)
+#define TIMER_CH3CV_CH3VAL	BITS(0, 15)
+
+
+// dead time configure
+#define TIMER_CCHP_DTCFG	BITS(0, 7)
+
+// complementary register protect control
+#define TIMER_CCHP_PROT		BITS(8, 9)
+
+// idle mode off-state configure
+#define TIMER_CCHP_IOS		BIT(10)
+
+// run mode off-state configure
+#define TIMER_CCHP_ROS		BIT(11)
+
+// break enable
+#define TIMER_CCHP_BRKEN	BIT(12)
+
+// break polarity
+#define TIMER_CCHP_BRKP		BIT(13)
+
+// output automatic enable
+#define TIMER_CCHP_OAEN		BIT(14)
+
+// primary output enable
+#define TIMER_CCHP_POEN		BIT(15)
+
+
+
+// DMA transfer access start address
+#define TIMER_DMACFG_DMATA	BITS(0, 4)
+
+// DMA transfer count
+#define TIMER_DMACFG_DMATC	BITS(8, 12)
+
+
+
+// DMA transfer buffer address
+#define TIMER_DMATB_DMATB	BITS(0, 15)
+
+
+struct timer_param {
 	uint16_t	prescaler;
 	uint16_t	alignedmode;
 	uint16_t	counterdirection;
@@ -212,7 +464,7 @@ struct timer_param {
 	uint8_t		repetitioncounter;
 };
 
-struct timer_break_param { 
+struct timer_break_param {
 	uint16_t	runoffstate;
 	uint16_t	ideloffstate;
 	uint16_t	deadtime;
@@ -226,7 +478,7 @@ struct timer_break_param {
 };
 
 // channel output parameter struct definitions
-struct timer_oc_param { 
+struct timer_oc_param {
 	uint16_t	outputstate;
 	uint16_t	outputnstate;
 	uint16_t	ocpolarity;
@@ -242,7 +494,7 @@ struct timer_oc_param {
 };
 
 // channel input parameter struct definitions
-struct timer_ic_param { 
+struct timer_ic_param {
 	uint16_t	icpolarity;
 
 	// channel input mode selection
@@ -256,36 +508,71 @@ struct timer_ic_param {
 };
 
 // TIMER interrupt enable or disable
-#define TIMER_INT_UP		TIMER_DMAINTEN_UPIE // update interrupt
-#define TIMER_INT_CH0		TIMER_DMAINTEN_CH0IE // channel 0 interrupt
-#define TIMER_INT_CH1		TIMER_DMAINTEN_CH1IE // channel 1 interrupt
-#define TIMER_INT_CH2		TIMER_DMAINTEN_CH2IE // channel 2 interrupt
-#define TIMER_INT_CH3		TIMER_DMAINTEN_CH3IE // channel 3 interrupt
-#define TIMER_INT_CMT		TIMER_DMAINTEN_CMTIE // channel commutation interrupt flag
-#define TIMER_INT_TRG		TIMER_DMAINTEN_TRGIE // trigger interrupt
-#define TIMER_INT_BRK		TIMER_DMAINTEN_BRKIE // break interrupt
+// update interrupt
+#define TIMER_INT_UP		TIMER_DMAINTEN_UPIE
+
+// channel 0 interrupt
+#define TIMER_INT_CH0		TIMER_DMAINTEN_CH0IE
+
+// channel 1 interrupt
+#define TIMER_INT_CH1		TIMER_DMAINTEN_CH1IE
+
+// channel 2 interrupt
+#define TIMER_INT_CH2		TIMER_DMAINTEN_CH2IE
+
+// channel 3 interrupt
+#define TIMER_INT_CH3		TIMER_DMAINTEN_CH3IE
+
+// channel commutation interrupt flag
+#define TIMER_INT_CMT		TIMER_DMAINTEN_CMTIE
+
+// trigger interrupt
+#define TIMER_INT_TRG		TIMER_DMAINTEN_TRGIE
+
+// break interrupt
+#define TIMER_INT_BRK		TIMER_DMAINTEN_BRKIE
+
 
 // TIMER interrupt flag
-#define TIMER_INT_FLAG_UP  	TIMER_INT_UP // update interrupt
-#define TIMER_INT_FLAG_CH0	TIMER_INT_CH0 // channel 0 interrupt
-#define TIMER_INT_FLAG_CH1	TIMER_INT_CH1 // channel 1 interrupt
+// update interrupt
+#define TIMER_INT_FLAG_UP  	TIMER_INT_UP
+
+// channel 0/1/2/3 interrupt
+#define TIMER_INT_FLAG_CH0	TIMER_INT_CH0
+#define TIMER_INT_FLAG_CH1	TIMER_INT_CH1
 #define TIMER_INT_FLAG_CH2	TIMER_INT_CH2
 #define TIMER_INT_FLAG_CH3	TIMER_INT_CH3
-#define TIMER_INT_FLAG_CMT	TIMER_INT_CMT // channel commutation interrupt flag
-#define TIMER_INT_FLAG_TRG	TIMER_INT_TRG // trigger interrupt
-#define TIMER_INT_FLAG_BRK	TIMER_INT_BRK  
+
+// channel commutation interrupt flag
+#define TIMER_INT_FLAG_CMT	TIMER_INT_CMT
+
+// trigger interrupt
+#define TIMER_INT_FLAG_TRG	TIMER_INT_TRG
+
+#define TIMER_INT_FLAG_BRK	TIMER_INT_BRK
 
 // TIMER flag
-#define TIMER_FLAG_UP		TIMER_INTF_UPIF // update flag
-#define TIMER_FLAG_CH0		TIMER_INTF_CH0IF // channel 0 flag
-#define TIMER_FLAG_CH1		TIMER_INTF_CH1IF // channel 1 flag
-#define TIMER_FLAG_CH2		TIMER_INTF_CH2IF // ...
+// update flag
+#define TIMER_FLAG_UP		TIMER_INTF_UPIF
+
+// channel 0/1/2/3 flag
+#define TIMER_FLAG_CH0		TIMER_INTF_CH0IF
+#define TIMER_FLAG_CH1		TIMER_INTF_CH1IF
+#define TIMER_FLAG_CH2		TIMER_INTF_CH2IF
 #define TIMER_FLAG_CH3		TIMER_INTF_CH3IF
-#define TIMER_FLAG_CMT		TIMER_INTF_CMTIF // channel control update flag
-#define TIMER_FLAG_TRG		TIMER_INTF_TRGIF // trigger flag
-#define TIMER_FLAG_BRK		TIMER_INTF_BRKIF // break flag
-#define TIMER_FLAG_CH0O		TIMER_INTF_CH0OF // channel 0 overcapture flag
-#define TIMER_FLAG_CH1O		TIMER_INTF_CH1OF // channel 1 overcapture flag
+
+// channel control update flag
+#define TIMER_FLAG_CMT		TIMER_INTF_CMTIF
+
+// trigger flag
+#define TIMER_FLAG_TRG		TIMER_INTF_TRGIF
+
+// break flag
+#define TIMER_FLAG_BRK		TIMER_INTF_BRKIF
+
+// channel 0/1/2/3 overcapture flag
+#define TIMER_FLAG_CH0O		TIMER_INTF_CH0OF
+#define TIMER_FLAG_CH1O		TIMER_INTF_CH1OF
 #define TIMER_FLAG_CH2O		TIMER_INTF_CH2OF
 #define TIMER_FLAG_CH3O		TIMER_INTF_CH3OF
 
@@ -346,9 +633,10 @@ struct timer_ic_param {
 // DMA access burst length
 #define DMACFG_DMATC(regval)	(BITS(8, 12) & ((uint32_t) (regval) << 8U))
 
-#define TIMER_DMACFG_DMATC_1TRANSFER	DMACFG_DMATC(0) // DMA transfer 1 time
-#define TIMER_DMACFG_DMATC_2TRANSFER	DMACFG_DMATC(1) // DMA transfer 2 times
-#define TIMER_DMACFG_DMATC_3TRANSFER	DMACFG_DMATC(2) // ...
+// DMA transfer 1-18 time
+#define TIMER_DMACFG_DMATC_1TRANSFER	DMACFG_DMATC(0)
+#define TIMER_DMACFG_DMATC_2TRANSFER	DMACFG_DMATC(1)
+#define TIMER_DMACFG_DMATC_3TRANSFER	DMACFG_DMATC(2)
 #define TIMER_DMACFG_DMATC_4TRANSFER	DMACFG_DMATC(3)
 #define TIMER_DMACFG_DMATC_5TRANSFER	DMACFG_DMATC(4)
 #define TIMER_DMACFG_DMATC_6TRANSFER	DMACFG_DMATC(5)
@@ -590,7 +878,7 @@ struct timer_ic_param {
 #define TIMER_TRI_OUT_SRC_O3CPRE	CTL1_MMC(7)
 
 // slave mode control
-#define SMCFG_SMC(regval)	(BITS(0, 2) & ((uint32_t) (regval) << 0U)) 
+#define SMCFG_SMC(regval)	(BITS(0, 2) & ((uint32_t) (regval) << 0U))
 
 #define TIMER_SLAVE_MODE_DISABLE	SMCFG_SMC(0)
 #define TIMER_ENCODER_MODE0		SMCFG_SMC(1)

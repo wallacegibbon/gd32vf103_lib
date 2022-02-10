@@ -1,224 +1,108 @@
 #include "gd32vf103_rtc.h"
 
-/* RTC register high / low bits mask */
-#define RTC_HIGH_BITS_MASK         ((uint32_t)0x000F0000U)	/* RTC high bits mask */
-#define RTC_LOW_BITS_MASK          ((uint32_t)0x0000FFFFU)	/* RTC low bits mask */
+#define RTC_HIGH_BITS_MASK	((uint32_t) 0x000F0000U)
+#define RTC_LOW_BITS_MASK	((uint32_t) 0x0000FFFFU)
 
-/* RTC register high bits offset */
-#define RTC_HIGH_BITS_OFFSET       ((uint32_t)16U)
+#define RTC_HIGH_BITS_OFFSET	((uint32_t) 16U)
 
-/*!
-    \brief      enter RTC configuration mode
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void rtc_configuration_mode_enter(void) {
+void rtc_configuration_mode_enter() {
 	RTC_CTL |= RTC_CTL_CMF;
 }
 
-/*!
-    \brief      exit RTC configuration mode
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void rtc_configuration_mode_exit(void) {
+void rtc_configuration_mode_exit() {
 	RTC_CTL &= ~RTC_CTL_CMF;
 }
 
-/*!
-    \brief      set RTC counter value
-    \param[in]  cnt: RTC counter value
-    \param[out] none
-    \retval     none
-*/
 void rtc_counter_set(uint32_t cnt) {
 	rtc_configuration_mode_enter();
-	/* set the RTC counter high bits */
 	RTC_CNTH = (cnt >> RTC_HIGH_BITS_OFFSET);
-	/* set the RTC counter low bits */
 	RTC_CNTL = (cnt & RTC_LOW_BITS_MASK);
 	rtc_configuration_mode_exit();
 }
 
-/*!
-    \brief      set RTC prescaler value
-    \param[in]  psc: RTC prescaler value
-    \param[out] none
-    \retval     none
-*/
 void rtc_prescaler_set(uint32_t psc) {
 	rtc_configuration_mode_enter();
-	/* set the RTC prescaler high bits */
 	RTC_PSCH = ((psc & RTC_HIGH_BITS_MASK) >> RTC_HIGH_BITS_OFFSET);
-	/* set the RTC prescaler low bits */
 	RTC_PSCL = (psc & RTC_LOW_BITS_MASK);
 	rtc_configuration_mode_exit();
 }
 
-/*!
-    \brief      wait RTC last write operation finished flag set
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void rtc_lwoff_wait(void) {
-	/* loop until LWOFF flag is set */
-	while (RESET == (RTC_CTL & RTC_CTL_LWOFF)) {
-	}
+void rtc_lwoff_wait() {
+	while (RTC_CTL & RTC_CTL_LWOFF == RESET);
 }
 
-/*!
-    \brief      wait RTC registers synchronized flag set
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void rtc_register_sync_wait(void) {
-	/* clear RSYNF flag */
+/* wait RTC registers synchronized flag set */
+void rtc_register_sync_wait() {
 	RTC_CTL &= ~RTC_CTL_RSYNF;
-	/* loop until RSYNF flag is set */
-	while (RESET == (RTC_CTL & RTC_CTL_RSYNF)) {
-	}
+	while (RTC_CTL & RTC_CTL_RSYNF == RESET);
 }
 
-/*!
-    \brief      set RTC alarm value
-    \param[in]  alarm: RTC alarm value
-    \param[out] none
-    \retval     none
-*/
 void rtc_alarm_config(uint32_t alarm) {
 	rtc_configuration_mode_enter();
-	/* set the alarm high bits */
 	RTC_ALRMH = (alarm >> RTC_HIGH_BITS_OFFSET);
-	/* set the alarm low bits */
 	RTC_ALRML = (alarm & RTC_LOW_BITS_MASK);
 	rtc_configuration_mode_exit();
 }
 
-/*!
-    \brief      get RTC counter value
-    \param[in]  none
-    \param[out] none
-    \retval     RTC counter value
-*/
-uint32_t rtc_counter_get(void) {
-	uint32_t temp = 0x0U;
-
-	temp = RTC_CNTL;
-	temp |= (RTC_CNTH << RTC_HIGH_BITS_OFFSET);
-	return temp;
+uint32_t rtc_counter_get() {
+	uint32_t temp = RTC_CNTL;
+	return temp | (RTC_CNTH << RTC_HIGH_BITS_OFFSET);
 }
 
-/*!
-    \brief      get RTC divider value
-    \param[in]  none
-    \param[out] none
-    \retval     RTC divider value
-*/
-uint32_t rtc_divider_get(void) {
-	uint32_t temp = 0x00U;
-
-	temp = ((RTC_DIVH & RTC_DIVH_DIV) << RTC_HIGH_BITS_OFFSET);
-	temp |= RTC_DIVL;
-	return temp;
+uint32_t rtc_divider_get() {
+	uint32_t temp = (RTC_DIVH & RTC_DIVH_DIV) << RTC_HIGH_BITS_OFFSET;
+	return temp | RTC_DIVL;
 }
 
-/*!
-    \brief      get RTC flag status 
-    \param[in]  flag: specify which flag status to get
-                only one parameter can be selected which is shown as below:
-      \arg        RTC_FLAG_SECOND: second interrupt flag
-      \arg        RTC_FLAG_ALARM: alarm interrupt flag
-      \arg        RTC_FLAG_OVERFLOW: overflow interrupt flag
-      \arg        RTC_FLAG_RSYN: registers synchronized flag
-      \arg        RTC_FLAG_LWOF: last write operation finished flag
-    \param[out] none
-    \retval     SET or RESET
-*/
+/*
+ * flag: specify which flag status to get
+ * 	only one parameter can be selected which is shown as below:
+ * 		RTC_FLAG_SECOND: second interrupt flag
+ * 		RTC_FLAG_ALARM: alarm interrupt flag
+ * 		RTC_FLAG_OVERFLOW: overflow interrupt flag
+ * 		RTC_FLAG_RSYN: registers synchronized flag
+ * 		RTC_FLAG_LWOF: last write operation finished flag
+ */
 enum flag_status rtc_flag_get(uint32_t flag) {
-	if (RESET != (RTC_CTL & flag)) {
+	if (RTC_CTL & flag != RESET)
 		return SET;
-	} else {
+	else
 		return RESET;
-	}
 }
 
-/*!
-    \brief      clear RTC flag status
-    \param[in]  flag: specify which flag status to clear
-                one or more parameters can be selected which are shown as below:
-      \arg        RTC_FLAG_SECOND: second interrupt flag
-      \arg        RTC_FLAG_ALARM: alarm interrupt flag
-      \arg        RTC_FLAG_OVERFLOW: overflow interrupt flag
-      \arg        RTC_FLAG_RSYN: registers synchronized flag
-    \param[out] none
-    \retval     none
-*/
 void rtc_flag_clear(uint32_t flag) {
-	/* clear RTC flag */
 	RTC_CTL &= ~flag;
 }
 
-/*!
-    \brief      get RTC interrupt flag status 
-    \param[in]  flag: specify which flag status to get
-                only one parameter can be selected which is shown as below:
-      \arg        RTC_INT_FLAG_SECOND: second interrupt flag
-      \arg        RTC_INT_FLAG_ALARM: alarm interrupt flag
-      \arg        RTC_INT_FLAG_OVERFLOW: overflow interrupt flag
-    \param[out] none
-    \retval     SET or RESET
-*/
+/*
+ * flag: specify which flag status to get
+ * 	only one parameter can be selected which is shown as below:
+ * 		RTC_INT_FLAG_SECOND: second interrupt flag
+ * 		RTC_INT_FLAG_ALARM: alarm interrupt flag
+ * 		RTC_INT_FLAG_OVERFLOW: overflow interrupt flag
+ */
 enum flag_status rtc_interrupt_flag_get(uint32_t flag) {
-	if (RESET != (RTC_CTL & flag)) {
+	if (RTC_CTL & flag != RESET)
 		return SET;
-	} else {
+	else
 		return RESET;
-	}
 }
 
-/*!
-    \brief      clear RTC interrupt flag status
-    \param[in]  flag: specify which flag status to clear
-                one or more parameters can be selected which are shown as below:
-      \arg        RTC_INT_FLAG_SECOND: second interrupt flag
-      \arg        RTC_INT_FLAG_ALARM: alarm interrupt flag
-      \arg        RTC_INT_FLAG_OVERFLOW: overflow interrupt flag
-    \param[out] none
-    \retval     none
-*/
 void rtc_interrupt_flag_clear(uint32_t flag) {
-	/* clear RTC interrupt flag */
 	RTC_CTL &= ~flag;
 }
 
-/*!
-    \brief      enable RTC interrupt
-    \param[in]  interrupt: specify which interrupt to enbale
-                one or more parameters can be selected which are shown as below:
-      \arg        RTC_INT_SECOND: second interrupt
-      \arg        RTC_INT_ALARM: alarm interrupt
-      \arg        RTC_INT_OVERFLOW: overflow interrupt
-    \param[out] none
-    \retval     none
+/*
+ * interrupt: specify which interrupt to enbale
+ * 	one or more parameters can be selected which are shown as below:
+ * 		RTC_INT_SECOND: second interrupt
+ * 		RTC_INT_ALARM: alarm interrupt
+ * 		RTC_INT_OVERFLOW: overflow interrupt
 */
 void rtc_interrupt_enable(uint32_t interrupt) {
 	RTC_INTEN |= interrupt;
 }
 
-/*!
-    \brief      disable RTC interrupt
-    \param[in]  interrupt: specify which interrupt to disbale
-                one or more parameters can be selected which are shown as below:
-      \arg        RTC_INT_SECOND: second interrupt
-      \arg        RTC_INT_ALARM: alarm interrupt
-      \arg        RTC_INT_OVERFLOW: overflow interrupt
-    \param[out] none
-    \retval     none
-*/
 void rtc_interrupt_disable(uint32_t interrupt) {
 	RTC_INTEN &= ~interrupt;
 }

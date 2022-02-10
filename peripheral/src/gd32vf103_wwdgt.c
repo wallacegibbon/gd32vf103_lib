@@ -1,18 +1,19 @@
 #include "gd32vf103_wwdgt.h"
 
-/* write value to WWDGT_CTL_CNT bit field */
-#define CTL_CNT(regval)		(BITS(0,6) & ((uint32_t)(regval) << 0))
-/* write value to WWDGT_CFG_WIN bit field */
-#define CFG_WIN(regval)		(BITS(0,6) & ((uint32_t)(regval) << 0))
+// write value to WWDGT_CTL_CNT bit field
+#define CTL_CNT(regval)		(BITS(0, 6) & ((uint32_t) (regval) << 0))
 
-/* reset the window watchdog timer configuration */
-void wwdgt_deinit(void) {
+// write value to WWDGT_CFG_WIN bit field
+#define CFG_WIN(regval)		(BITS(0, 6) & ((uint32_t) (regval) << 0))
+
+// reset the window watchdog timer configuration
+void wwdgt_deinit() {
 	rcu_periph_reset_enable(RCU_WWDGTRST);
 	rcu_periph_reset_disable(RCU_WWDGTRST);
 }
 
 /* start the window watchdog timer counter */
-void wwdgt_enable(void) {
+void wwdgt_enable() {
 	WWDGT_CTL |= WWDGT_CTL_WDGTEN;
 }
 
@@ -52,13 +53,11 @@ void wwdgt_counter_update(uint16_t counter_value) {
  * 				(PCLK1/4096)/8
  */
 void wwdgt_config(uint16_t counter, uint16_t window, uint32_t prescaler) {
-	uint32_t reg_cfg = 0U, reg_ctl = 0U;
+	// clear WIN and PSC bits, clear CNT bit
+	uint32_t reg_cfg = WWDGT_CFG & ~(WWDGT_CFG_WIN | WWDGT_CFG_PSC);
+	uint32_t reg_ctl = WWDGT_CTL & ~WWDGT_CTL_CNT;
 
-	/* clear WIN and PSC bits, clear CNT bit */
-	reg_cfg = (WWDGT_CFG & (~(WWDGT_CFG_WIN | WWDGT_CFG_PSC)));
-	reg_ctl = (WWDGT_CTL & (~WWDGT_CTL_CNT));
-
-	/* configure WIN and PSC bits, configure CNT bit */
+	// configure WIN and PSC bits, configure CNT bit
 	reg_cfg |= CFG_WIN(window);
 	reg_cfg |= prescaler;
 	reg_ctl |= CTL_CNT(counter);
@@ -68,12 +67,12 @@ void wwdgt_config(uint16_t counter, uint16_t window, uint32_t prescaler) {
 }
 
 /* enable early wakeup interrupt of WWDGT */
-void wwdgt_interrupt_enable(void) {
+void wwdgt_interrupt_enable() {
 	WWDGT_CFG |= WWDGT_CFG_EWIE;
 }
 
 /* check early wakeup interrupt state of WWDGT */
-enum flag_status wwdgt_flag_get(void) {
+enum flag_status wwdgt_flag_get() {
 	if (WWDGT_STAT & WWDGT_STAT_EWIF)
 		return SET;
 	else
@@ -81,6 +80,6 @@ enum flag_status wwdgt_flag_get(void) {
 }
 
 /* early wakeup interrupt state of WWDGT */
-void wwdgt_flag_clear(void) {
-	WWDGT_STAT &= (~WWDGT_STAT_EWIF);
+void wwdgt_flag_clear() {
+	WWDGT_STAT &= ~WWDGT_STAT_EWIF;
 }

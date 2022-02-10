@@ -1,30 +1,32 @@
 #include "gd32vf103_i2c.h"
 
-/* I2C register bit mask */
-#define I2CCLK_MAX                    ((uint32_t)0x00000036U)	/* i2cclk maximum value */
-#define I2CCLK_MIN                    ((uint32_t)0x00000002U)	/* i2cclk minimum value */
-#define I2C_FLAG_MASK                 ((uint32_t)0x0000FFFFU)	/* i2c flag mask */
-#define I2C_ADDRESS_MASK              ((uint32_t)0x000003FFU)	/* i2c address mask */
-#define I2C_ADDRESS2_MASK             ((uint32_t)0x000000FEU)	/* the second i2c address mask */
+// i2cclk maximum value
+#define I2CCLK_MAX			((uint32_t) 0x00000036U)
 
-/* I2C register bit offset */
-#define STAT1_PECV_OFFSET             ((uint32_t)8U)	/* bit offset of PECV in I2C_STAT1 */
+// i2cclk minimum value
+#define I2CCLK_MIN			((uint32_t) 0x00000002U)
 
-/*!
-    \brief      reset I2C
-    \param[in]  i2c_periph: I2Cx(x=0,1)
-    \param[out] none
-    \retval     none
- */
+// i2c flag mask
+#define I2C_FLAG_MASK			((uint32_t) 0x0000FFFFU)
+
+// i2c address mask
+#define I2C_ADDRESS_MASK		((uint32_t) 0x000003FFU)
+
+// the second i2c address mask
+#define I2C_ADDRESS2_MASK		((uint32_t) 0x000000FEU)
+
+
+// bit offset of PECV in I2C_STAT1
+#define STAT1_PECV_OFFSET		((uint32_t) 8U)
+
+
 void i2c_deinit(uint32_t i2c_periph) {
 	switch (i2c_periph) {
 	case I2C0:
-		/* reset I2C0 */
 		rcu_periph_reset_enable(RCU_I2C0RST);
 		rcu_periph_reset_disable(RCU_I2C0RST);
 		break;
 	case I2C1:
-		/* reset I2C1 */
 		rcu_periph_reset_enable(RCU_I2C1RST);
 		rcu_periph_reset_disable(RCU_I2C1RST);
 		break;
@@ -33,37 +35,35 @@ void i2c_deinit(uint32_t i2c_periph) {
 	}
 }
 
-/*!
-    \brief      configure I2C clock
-    \param[in]  i2c_periph: I2Cx(x=0,1)
-    \param[in]  clkspeed: I2C clock speed, supports standard mode (up to 100 kHz), fast mode (up to 400 kHz)
-                          and fast mode plus (up to 1MHz)
-    \param[in]  dutycyc: duty cycle in fast mode or fast mode plus
-                only one parameter can be selected which is shown as below:
-     \arg        I2C_DTCY_2: T_low/T_high=2 
-     \arg        I2C_DTCY_16_9: T_low/T_high=16/9
-    \param[out] none
-    \retval     none
+/*
+ * clkspeed:
+ * 	I2C clock speed, supports standard mode (up to 100 kHz),
+ * 	fast mode (up to 400 kHz) and fast mode plus (up to 1MHz)
+ *
+ * dutycyc: duty cycle in fast mode or fast mode plus
+ * 	only one parameter can be selected which is shown as below:
+ * 		I2C_DTCY_2: T_low/T_high=2
+ * 		I2C_DTCY_16_9: T_low/T_high=16/9
  */
 void i2c_clock_config(uint32_t i2c_periph, uint32_t clkspeed, uint32_t dutycyc) {
-	uint32_t pclk1, clkc, freq, risetime;
-	uint32_t temp;
+	uint32_t pclk1 = rcu_clock_freq_get(CK_APB1);
 
-	pclk1 = rcu_clock_freq_get(CK_APB1);
-	/* I2C peripheral clock frequency */
-	freq = (uint32_t) (pclk1 / 1000000U);
-	if (freq >= I2CCLK_MAX) {
+	// I2C peripheral clock frequency
+	uint32_t freq = pclk1 / 1000000U;
+	if (freq >= I2CCLK_MAX)
 		freq = I2CCLK_MAX;
-	}
-	temp = I2C_CTL1(i2c_periph);
+
+	uint32_t temp = I2C_CTL1(i2c_periph);
 	temp &= ~I2C_CTL1_I2CCLK;
 	temp |= freq;
 
 	I2C_CTL1(i2c_periph) = temp;
 
-	if (100000U >= clkspeed) {
-		/* the maximum SCL rise time is 1000ns in standard mode */
-		risetime = (uint32_t) ((pclk1 / 1000000U) + 1U);
+	uint32_t clkc;
+
+	if (clkspeed < 100000U) {
+		// the maximum SCL rise time is 1000ns in standard mode
+		uint32_t risetime = pclk1 / 1000000U + 1;
 		if (risetime >= I2CCLK_MAX) {
 			I2C_RT(i2c_periph) = I2CCLK_MAX;
 		} else if (risetime <= I2CCLK_MIN) {
@@ -71,28 +71,26 @@ void i2c_clock_config(uint32_t i2c_periph, uint32_t clkspeed, uint32_t dutycyc) 
 		} else {
 			I2C_RT(i2c_periph) = risetime;
 		}
-		clkc = (uint32_t) (pclk1 / (clkspeed * 2U));
-		if (clkc < 0x04U) {
-			/* the CLKC in standard mode minmum value is 4 */
+		clkc = pclk1 / (clkspeed * 2U);
+		if (clkc < 0x04U)
+			// the CLKC in standard mode minmum value is 4
 			clkc = 0x04U;
-		}
-		I2C_CKCFG(i2c_periph) |= (I2C_CKCFG_CLKC & clkc);
+
+		I2C_CKCFG(i2c_periph) |= clkc &  I2C_CKCFG_CLKC;
 
 	} else if (400000U >= clkspeed) {
-		/* the maximum SCL rise time is 300ns in fast mode */
-		I2C_RT(i2c_periph) =
-		    (uint32_t) (((freq * (uint32_t) 300U) / (uint32_t) 1000U) +
-				(uint32_t) 1U);
+		// the maximum SCL rise time is 300ns in fast mode
+		I2C_RT(i2c_periph) = freq * 300 / 1000 + 1;
 		if (I2C_DTCY_2 == dutycyc) {
-			/* I2C duty cycle is 2 */
-			clkc = (uint32_t) (pclk1 / (clkspeed * 3U));
+			// I2C duty cycle is 2
+			clkc = pclk1 / (clkspeed * 3);
 			I2C_CKCFG(i2c_periph) &= ~I2C_CKCFG_DTCY;
 		} else {
-			/* I2C duty cycle is 16/9 */
-			clkc = (uint32_t) (pclk1 / (clkspeed * 25U));
+			// I2C duty cycle is 16/9
+			clkc = pclk1 / (clkspeed * 25);
 			I2C_CKCFG(i2c_periph) |= I2C_CKCFG_DTCY;
 		}
-		if (0U == (clkc & I2C_CKCFG_CLKC)) {
+		if (!(clkc & I2C_CKCFG_CLKC)) {
 			/* the CLKC in fast mode minmum value is 1 */
 			clkc |= 0x0001U;
 		}

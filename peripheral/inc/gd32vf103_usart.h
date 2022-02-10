@@ -303,28 +303,43 @@ enum usart_interrupt {
 
 // USART CK length
 #define CTL1_CLEN(regval)	(BIT(8) & ((uint32_t)(regval) << 8))
-#define USART_CLEN_NONE		CTL1_CLEN(0) // there are 7 CK pulses for an 8 bit frame and 8 CK pulses for a 9 bit frame
-#define USART_CLEN_EN		CTL1_CLEN(1) // there are 8 CK pulses for an 8 bit frame and 9 CK pulses for a 9 bit frame
+// there are 7 CK pulses for an 8 bit frame and 8 CK pulses for a 9 bit frame
+#define USART_CLEN_NONE		CTL1_CLEN(0)
+// there are 8 CK pulses for an 8 bit frame and 9 CK pulses for a 9 bit frame
+#define USART_CLEN_EN		CTL1_CLEN(1)
+
 
 // USART clock phase
 #define CTL1_CPH(regval)	(BIT(9) & ((uint32_t)(regval) << 9))
-#define USART_CPH_1CK		CTL1_CPH(0) // first clock transition is the first data capture edge
-#define USART_CPH_2CK		CTL1_CPH(1) // second clock transition is the first data capture edge
+// first clock transition is the first data capture edge
+#define USART_CPH_1CK		CTL1_CPH(0)
+// second clock transition is the first data capture edge
+#define USART_CPH_2CK		CTL1_CPH(1)
+
 
 // USART clock polarity
 #define CTL1_CPL(regval)	(BIT(10) & ((uint32_t)(regval) << 10))
-#define USART_CPL_LOW		CTL1_CPL(0) // steady low value on CK pin
-#define USART_CPL_HIGH		CTL1_CPL(1) // steady high value on CK pin
+// steady low value on CK pin
+#define USART_CPL_LOW		CTL1_CPL(0)
+// steady high value on CK pin
+#define USART_CPL_HIGH		CTL1_CPL(1)
+
 
 // USART DMA request for receive configure
 #define CLT2_DENR(regval)	(BIT(6) & ((uint32_t)(regval) << 6))
-#define USART_DENR_ENABLE	CLT2_DENR(1) // DMA request enable for reception
-#define USART_DENR_DISABLE	CLT2_DENR(0) // DMA request disable for reception
+// DMA request enable for reception
+#define USART_DENR_ENABLE	CLT2_DENR(1)
+// DMA request disable for reception
+#define USART_DENR_DISABLE	CLT2_DENR(0)
+
 
 // USART DMA request for transmission configure
 #define CLT2_DENT(regval)	(BIT(7) & ((uint32_t)(regval) << 7))
-#define USART_DENT_ENABLE	CLT2_DENT(1) // DMA request enable for transmission
-#define USART_DENT_DISABLE	CLT2_DENT(0) // DMA request disable for transmission
+// DMA request enable for transmission
+#define USART_DENT_ENABLE	CLT2_DENT(1)
+// DMA request disable for transmission
+#define USART_DENT_DISABLE	CLT2_DENT(0)
+
 
 // USART RTS configure
 #define CLT2_RTSEN(regval)	(BIT(8) & ((uint32_t)(regval) << 8))
