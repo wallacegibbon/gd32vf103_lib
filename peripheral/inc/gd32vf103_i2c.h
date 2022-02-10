@@ -201,7 +201,6 @@
 #define I2C_FMPCFG_FMPEN		BIT(0)
 
 
-
 // define the I2C bit position and its register index offset
 #define I2C_REGIDX_BIT(regidx, bitpos) \
 	(((uint32_t) (regidx) << 6) | (uint32_t)(bitpos))
