@@ -1,16 +1,16 @@
 #include "gd32vf103_eclic.h"
 #include "riscv_encoding.h"
 
-#define REG_DBGMCU2	((uint32_t) 0xE0042008)
-#define REG_DBGMCU2EN	((uint32_t) 0xE004200C)
+#define REG_DBGMCU2		((uint32_t) 0xE0042008)
+#define REG_DBGMCU2EN		((uint32_t) 0xE004200C)
 
-void eclic_global_interrupt_enable(void) {
-	/* set machine interrupt enable bit */
+void eclic_global_interrupt_enable() {
+	// set machine interrupt enable bit
 	set_csr(mstatus, MSTATUS_MIE);
 }
 
-void eclic_global_interrupt_disable(void) {
-	/* clear machine interrupt enable bit */
+void eclic_global_interrupt_disable() {
+	// clear machine interrupt enable bit
 	clear_csr(mstatus, MSTATUS_MIE);
 }
 
@@ -46,11 +46,11 @@ void eclic_irq_disable(uint32_t source) {
 	eclic_disable_interrupt(source);
 }
 
-void eclic_system_reset(void) {
+void eclic_system_reset() {
 	REG32(REG_DBGMCU2EN) = 0x4b5a6978;
 	REG32(REG_DBGMCU2) = 0x1;
 }
 
-void eclic_send_event(void) {
-	set_csr(0x812, 0x1);
+void eclic_send_event() {
+	set_csr(0x812, 1);
 }
