@@ -14,8 +14,7 @@ void bkp_deinit(void) {
 /*
  * write BKP data register
  * register_number: refer to enum bkp_data_reg
- * 	only one parameter can be selected which is shown as below:
- * 		BKP_DATA_x(x = 0..41): bkp data register number x
+ * 	BKP_DATA_x(x = 0..41): bkp data register number x
  *
  * data: the data to be write in BKP data register
  *
@@ -35,8 +34,7 @@ void bkp_data_write(enum bkp_data_reg register_number, uint16_t data) {
 /*
  * read BKP data register
  * register_number: refer to enum bkp_data_reg
- * 	only one parameter can be selected which is shown as below:
- * 		BKP_DATA_x(x = 0..41): bkp data register number x
+ * 	BKP_DATA_x(x = 0..41): bkp data register number x
  *
  */
 uint16_t bkp_data_read(enum bkp_data_reg register_number) {
@@ -86,12 +84,11 @@ void bkp_rtc_signal_output_disable(void) {
 /*
  * select RTC output
  * outputsel: RTC output selection
- * 	only one parameter can be selected which is shown as below:
- * 		RTC_OUTPUT_ALARM_PULSE:
- * 			RTC alarm pulse is selected as the RTC output
+ *	RTC_OUTPUT_ALARM_PULSE:
+ * 		RTC alarm pulse is selected as the RTC output
  *
- * 		RTC_OUTPUT_SECOND_PULSE:
- * 			RTC second pulse is selected as the RTC output
+ * 	RTC_OUTPUT_SECOND_PULSE:
+ * 		RTC second pulse is selected as the RTC output
  *
  */
 void bkp_rtc_output_select(uint16_t outputsel) {
@@ -135,9 +132,8 @@ void bkp_tamper_detection_disable(void) {
 /*
  * set tamper pin active level
  * level: tamper active level
- * 	only one parameter can be selected which is shown as below:
- * 		TAMPER_PIN_ACTIVE_HIGH: the tamper pin is active high
- * 		TAMPER_PIN_ACTIVE_LOW: the tamper pin is active low
+ * 	TAMPER_PIN_ACTIVE_HIGH: the tamper pin is active high
+ * 	TAMPER_PIN_ACTIVE_LOW: the tamper pin is active low
  */
 void bkp_tamper_active_level_set(uint16_t level) {
 	uint16_t ctl = 0U;

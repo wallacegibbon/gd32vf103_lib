@@ -26,14 +26,13 @@ void fwdgt_counter_reload() {
  * configure counter reload value, and prescaler divider value
  * reload_value: specify reload value(0x0000 - 0x0FFF)
  * prescaler_div: FWDGT prescaler value
- * 	only one parameter can be selected which is shown as below:
- * 		FWDGT_PSC_DIV4: FWDGT prescaler set to 4
- * 		FWDGT_PSC_DIV8: FWDGT prescaler set to 8
- * 		FWDGT_PSC_DIV16: FWDGT prescaler set to 16
- * 		FWDGT_PSC_DIV32: FWDGT prescaler set to 32
- * 		FWDGT_PSC_DIV64: FWDGT prescaler set to 64
- * 		FWDGT_PSC_DIV128: FWDGT prescaler set to 128
- * 		FWDGT_PSC_DIV256: FWDGT prescaler set to 256
+ * 	FWDGT_PSC_DIV4: FWDGT prescaler set to 4
+ * 	FWDGT_PSC_DIV8: FWDGT prescaler set to 8
+ * 	FWDGT_PSC_DIV16: FWDGT prescaler set to 16
+ * 	FWDGT_PSC_DIV32: FWDGT prescaler set to 32
+ * 	FWDGT_PSC_DIV64: FWDGT prescaler set to 64
+ * 	FWDGT_PSC_DIV128: FWDGT prescaler set to 128
+ * 	FWDGT_PSC_DIV256: FWDGT prescaler set to 256
  */
 enum err_status fwdgt_config(uint16_t reload_value, uint8_t prescaler_div) {
 	uint32_t timeout = FWDGT_PSC_TIMEOUT;
@@ -73,11 +72,8 @@ enum err_status fwdgt_config(uint16_t reload_value, uint8_t prescaler_div) {
 /*
  * get flag state of FWDGT
  * flag: flag to get
- * 	only one parameter can be selected which is shown as below:
- * 		FWDGT_FLAG_PUD:
- * 			a write operation to FWDGT_PSC register is on going
- * 		FWDGT_FLAG_RUD:
- * 			a write operation to FWDGT_RLD register is on going
+ * 	FWDGT_FLAG_PUD: a write operation to FWDGT_PSC register is on going
+ * 	FWDGT_FLAG_RUD: a write operation to FWDGT_RLD register is on going
  */
 enum flag_status fwdgt_flag_get(uint16_t flag) {
 	if (flag & FWDGT_STAT)

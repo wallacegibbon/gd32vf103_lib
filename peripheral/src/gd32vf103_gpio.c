@@ -52,23 +52,20 @@ void gpio_afio_deinit(void) {
  * GPIO parameter initialization
  * gpio_periph: GPIOx(x = A,B,C,D,E)
  * mode: gpio pin mode
- * 	only one parameter can be selected which is shown as below:
- * 		GPIO_MODE_AIN: analog input mode
- * 		GPIO_MODE_IN_FLOATING: floating input mode
- * 		GPIO_MODE_IPD: pull-down input mode
- * 		GPIO_MODE_IPU: pull-up input mode
- * 		GPIO_MODE_OUT_OD: GPIO output with open-drain
- * 		GPIO_MODE_OUT_PP: GPIO output with push-pull
- * 		GPIO_MODE_AF_OD: AFIO output with open-drain
- * 		GPIO_MODE_AF_PP: AFIO output with push-pull
+ * 	GPIO_MODE_AIN: analog input mode
+ * 	GPIO_MODE_IN_FLOATING: floating input mode
+ * 	GPIO_MODE_IPD: pull-down input mode
+ * 	GPIO_MODE_IPU: pull-up input mode
+ * 	GPIO_MODE_OUT_OD: GPIO output with open-drain
+ * 	GPIO_MODE_OUT_PP: GPIO output with push-pull
+ * 	GPIO_MODE_AF_OD: AFIO output with open-drain
+ * 	GPIO_MODE_AF_PP: AFIO output with push-pull
  * speed: gpio output max speed value
- * 	only one parameter can be selected which is shown as below:
- * 		GPIO_OSPEED_10MHZ: output max speed 10MHz
- * 		GPIO_OSPEED_2MHZ: output max speed 2MHz
- * 		GPIO_OSPEED_50MHZ: output max speed 50MHz
+ * 	GPIO_OSPEED_10MHZ: output max speed 10MHz
+ * 	GPIO_OSPEED_2MHZ: output max speed 2MHz
+ * 	GPIO_OSPEED_50MHZ: output max speed 50MHz
  * pin: GPIO pin
- * 	one or more parameters can be selected which are shown as below:
- * 		GPIO_PIN_x(x=0..15), GPIO_PIN_ALL
+ * 	GPIO_PIN_x(x=0..15), GPIO_PIN_ALL
  */
 void gpio_init(uint32_t gpio_periph, uint32_t mode, uint32_t speed,
 		uint32_t pin) {
@@ -173,31 +170,30 @@ uint16_t gpio_output_port_get(uint32_t gpio_periph) {
 /*
  * configure GPIO pin remap
  * gpio_remap: select the pin to remap
- * 	only one parameter can be selected which are shown as below:
- * 		GPIO_SPI0_REMAP: SPI0 remapping
- * 		GPIO_I2C0_REMAP: I2C0 remapping
- * 		GPIO_USART0_REMAP: USART0 remapping
- * 		GPIO_USART1_REMAP: USART1 remapping
- * 		GPIO_USART2_PARTIAL_REMAP: USART2 partial remapping
- * 		GPIO_USART2_FULL_REMAP: USART2 full remapping
- * 		GPIO_TIMER0_PARTIAL_REMAP: TIMER0 partial remapping
- * 		GPIO_TIMER0_FULL_REMAP: TIMER0 full remapping
- * 		GPIO_TIMER1_PARTIAL_REMAP0: TIMER1 partial remapping
- * 		GPIO_TIMER1_PARTIAL_REMAP1: TIMER1 partial remapping
- * 		GPIO_TIMER1_FULL_REMAP: TIMER1 full remapping
- * 		GPIO_TIMER2_PARTIAL_REMAP: TIMER2 partial remapping
- * 		GPIO_TIMER2_FULL_REMAP: TIMER2 full remapping
- * 		GPIO_TIMER3_REMAP: TIMER3 remapping
- * 		GPIO_CAN0_PARTIAL_REMAP: CAN0 partial remapping
- * 		GPIO_CAN0_FULL_REMAP: CAN0 full remapping
- * 		GPIO_PD01_REMAP: PD01 remapping
- * 		GPIO_TIMER4CH3_IREMAP: TIMER4 channel3 internal remapping
- * 		GPIO_CAN1_REMAP: CAN1 remapping
- * 		GPIO_SWJ_NONJTRST_REMAP: JTAG-DP,but without NJTRST
- * 		GPIO_SWJ_DISABLE_REMAP: JTAG-DP disabled
- * 		GPIO_SPI2_REMAP: SPI2 remapping
- * 		GPIO_TIMER1ITI1_REMAP: TIMER1 internal trigger 1 remapping
- * 		GPIO_EXMC_NADV_REMAP: EXMC_NADV connect/disconnect
+ * 	GPIO_SPI0_REMAP: SPI0 remapping
+ * 	GPIO_I2C0_REMAP: I2C0 remapping
+ * 	GPIO_USART0_REMAP: USART0 remapping
+ * 	GPIO_USART1_REMAP: USART1 remapping
+ * 	GPIO_USART2_PARTIAL_REMAP: USART2 partial remapping
+ * 	GPIO_USART2_FULL_REMAP: USART2 full remapping
+ * 	GPIO_TIMER0_PARTIAL_REMAP: TIMER0 partial remapping
+ * 	GPIO_TIMER0_FULL_REMAP: TIMER0 full remapping
+ * 	GPIO_TIMER1_PARTIAL_REMAP0: TIMER1 partial remapping
+ * 	GPIO_TIMER1_PARTIAL_REMAP1: TIMER1 partial remapping
+ * 	GPIO_TIMER1_FULL_REMAP: TIMER1 full remapping
+ * 	GPIO_TIMER2_PARTIAL_REMAP: TIMER2 partial remapping
+ * 	GPIO_TIMER2_FULL_REMAP: TIMER2 full remapping
+ * 	GPIO_TIMER3_REMAP: TIMER3 remapping
+ * 	GPIO_CAN0_PARTIAL_REMAP: CAN0 partial remapping
+ * 	GPIO_CAN0_FULL_REMAP: CAN0 full remapping
+ * 	GPIO_PD01_REMAP: PD01 remapping
+ * 	GPIO_TIMER4CH3_IREMAP: TIMER4 channel3 internal remapping
+ * 	GPIO_CAN1_REMAP: CAN1 remapping
+ * 	GPIO_SWJ_NONJTRST_REMAP: JTAG-DP,but without NJTRST
+ * 	GPIO_SWJ_DISABLE_REMAP: JTAG-DP disabled
+ * 	GPIO_SPI2_REMAP: SPI2 remapping
+ * 	GPIO_TIMER1ITI1_REMAP: TIMER1 internal trigger 1 remapping
+ * 	GPIO_EXMC_NADV_REMAP: EXMC_NADV connect/disconnect
  * newvalue: ENABLE or DISABLE
  */
 void gpio_pin_remap_config(uint32_t remap, enum control_status newvalue) {
@@ -242,12 +238,11 @@ void gpio_pin_remap_config(uint32_t remap, enum control_status newvalue) {
 /*
  * select GPIO pin exti sources
  * gpio_outputport: gpio event output port
- * 	only one parameter can be selected which are shown as below:
- * 		GPIO_PORT_SOURCE_GPIOA: output port source A
- * 		GPIO_PORT_SOURCE_GPIOB: output port source B
- * 		GPIO_PORT_SOURCE_GPIOC: output port source C
- * 		GPIO_PORT_SOURCE_GPIOD: output port source D
- * 		GPIO_PORT_SOURCE_GPIOE: output port source E
+ * 	GPIO_PORT_SOURCE_GPIOA: output port source A
+ * 	GPIO_PORT_SOURCE_GPIOB: output port source B
+ * 	GPIO_PORT_SOURCE_GPIOC: output port source C
+ * 	GPIO_PORT_SOURCE_GPIOD: output port source D
+ * 	GPIO_PORT_SOURCE_GPIOE: output port source E
  * gpio_outputpin: GPIO_PIN_SOURCE_x(x=0..15)
  */
 void gpio_exti_source_select(uint8_t output_port, uint8_t output_pin) {
@@ -284,15 +279,13 @@ void gpio_exti_source_select(uint8_t output_port, uint8_t output_pin) {
 /*
  * configure GPIO pin event output
  * output_port: gpio event output port
- * 	only one parameter can be selected which are shown as below:
- * 		GPIO_EVENT_PORT_GPIOA: event output port A
- * 		GPIO_EVENT_PORT_GPIOB: event output port B
- * 		GPIO_EVENT_PORT_GPIOC: event output port C
- * 		GPIO_EVENT_PORT_GPIOD: event output port D
- * 		GPIO_EVENT_PORT_GPIOE: event output port E
+ * 	GPIO_EVENT_PORT_GPIOA: event output port A
+ * 	GPIO_EVENT_PORT_GPIOB: event output port B
+ * 	GPIO_EVENT_PORT_GPIOC: event output port C
+ * 	GPIO_EVENT_PORT_GPIOD: event output port D
+ * 	GPIO_EVENT_PORT_GPIOE: event output port E
  * output_pin:
- * 	only one parameter can be selected which are shown as below:
- * 		GPIO_EVENT_PIN_x(x=0..15)
+ * 	GPIO_EVENT_PIN_x(x=0..15)
  */
 void gpio_event_output_config(uint8_t output_port, uint8_t output_pin) {
 	uint32_t reg = AFIO_EC;
@@ -318,8 +311,7 @@ void gpio_event_output_disable(void) {
  * lock GPIO pin
  * gpio_periph: GPIOx(x = A,B,C,D,E)
  * pin: GPIO pin
- * 	one or more parameters can be selected which are shown as below:
- * 		GPIO_PIN_x(x=0..15), GPIO_PIN_ALL
+ * 	GPIO_PIN_x(x=0..15), GPIO_PIN_ALL
 */
 void gpio_pin_lock(uint32_t gpio_periph, uint32_t pin) {
 	uint32_t lock = 0x00010000U;

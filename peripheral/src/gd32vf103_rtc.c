@@ -56,12 +56,11 @@ uint32_t rtc_divider_get() {
 
 /*
  * flag: specify which flag status to get
- * 	only one parameter can be selected which is shown as below:
- * 		RTC_FLAG_SECOND: second interrupt flag
- * 		RTC_FLAG_ALARM: alarm interrupt flag
- * 		RTC_FLAG_OVERFLOW: overflow interrupt flag
- * 		RTC_FLAG_RSYN: registers synchronized flag
- * 		RTC_FLAG_LWOF: last write operation finished flag
+ * 	RTC_FLAG_SECOND: second interrupt flag
+ * 	RTC_FLAG_ALARM: alarm interrupt flag
+ * 	RTC_FLAG_OVERFLOW: overflow interrupt flag
+ * 	RTC_FLAG_RSYN: registers synchronized flag
+ * 	RTC_FLAG_LWOF: last write operation finished flag
  */
 enum flag_status rtc_flag_get(uint32_t flag) {
 	if (RTC_CTL & flag != RESET)
@@ -76,10 +75,9 @@ void rtc_flag_clear(uint32_t flag) {
 
 /*
  * flag: specify which flag status to get
- * 	only one parameter can be selected which is shown as below:
- * 		RTC_INT_FLAG_SECOND: second interrupt flag
- * 		RTC_INT_FLAG_ALARM: alarm interrupt flag
- * 		RTC_INT_FLAG_OVERFLOW: overflow interrupt flag
+ * 	RTC_INT_FLAG_SECOND: second interrupt flag
+ * 	RTC_INT_FLAG_ALARM: alarm interrupt flag
+ * 	RTC_INT_FLAG_OVERFLOW: overflow interrupt flag
  */
 enum flag_status rtc_interrupt_flag_get(uint32_t flag) {
 	if (RTC_CTL & flag != RESET)
@@ -94,10 +92,9 @@ void rtc_interrupt_flag_clear(uint32_t flag) {
 
 /*
  * interrupt: specify which interrupt to enbale
- * 	one or more parameters can be selected which are shown as below:
- * 		RTC_INT_SECOND: second interrupt
- * 		RTC_INT_ALARM: alarm interrupt
- * 		RTC_INT_OVERFLOW: overflow interrupt
+ * 	RTC_INT_SECOND: second interrupt
+ * 	RTC_INT_ALARM: alarm interrupt
+ * 	RTC_INT_OVERFLOW: overflow interrupt
 */
 void rtc_interrupt_enable(uint32_t interrupt) {
 	RTC_INTEN |= interrupt;

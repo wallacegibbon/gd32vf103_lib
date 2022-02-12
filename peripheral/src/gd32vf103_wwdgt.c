@@ -35,22 +35,17 @@ void wwdgt_counter_update(uint16_t counter_value) {
  * counter: 0x00 - 0x7F
  * window: 0x00 - 0x7F
  * prescaler: wwdgt prescaler value
- * 	only one parameter can be selected which is shown as below:
- * 		WWDGT_CFG_PSC_DIV1:
- * 			the time base of window watchdog counter =
- * 				(PCLK1/4096)/1
+ * 	WWDGT_CFG_PSC_DIV1:
+ * 		the time base of window watchdog counter = (PCLK1/4096)/1
  *
- * 		WWDGT_CFG_PSC_DIV2:
- * 			the time base of window watchdog counter =
- * 				(PCLK1/4096)/2
+ * 	WWDGT_CFG_PSC_DIV2:
+ * 		the time base of window watchdog counter = (PCLK1/4096)/2
  *
- * 		WWDGT_CFG_PSC_DIV4:
- * 			the time base of window watchdog counter =
- * 				(PCLK1/4096)/4
+ * 	WWDGT_CFG_PSC_DIV4:
+ * 		the time base of window watchdog counter = (PCLK1/4096)/4
  *
- * 		WWDGT_CFG_PSC_DIV8:
- * 			the time base of window watchdog counter =
- * 				(PCLK1/4096)/8
+ * 	WWDGT_CFG_PSC_DIV8:
+ * 		the time base of window watchdog counter = (PCLK1/4096)/8
  */
 void wwdgt_config(uint16_t counter, uint16_t window, uint32_t prescaler) {
 	// clear WIN and PSC bits, clear CNT bit

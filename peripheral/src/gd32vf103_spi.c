@@ -55,23 +55,22 @@ void spi_struct_para_init(struct spi_param * spi_struct) {
 /*
  * spi_periph: SPIx(x=0,1,2)
  * spi_struct: SPI parameter initialization stuct members of the structure
- * 	and the member values are shown as below:
- * 		device_mode:
- * 			SPI_MASTER, SPI_SLAVE
- * 		trans_mode:
- * 			SPI_TRANSMODE_FULLDUPLEX, SPI_TRANSMODE_RECEIVEONLY,
- * 			SPI_TRANSMODE_BDRECEIVE, SPI_TRANSMODE_BDTRANSMIT
- * 		frame_size:
- * 			SPI_FRAMESIZE_16BIT, SPI_FRAMESIZE_8BIT
- * 		nss:
- * 			SPI_NSS_SOFT, SPI_NSS_HARD
- * 		endian:
- * 			SPI_ENDIAN_MSB, SPI_ENDIAN_LSB
- * 		clock_polarity_phase:
- * 			SPI_CK_PL_LOW_PH_1EDGE, SPI_CK_PL_HIGH_PH_1EDGE,
- * 			SPI_CK_PL_LOW_PH_2EDGE, SPI_CK_PL_HIGH_PH_2EDGE
- * 		prescale:
- * 			SPI_PSC_n (n=2,4,8,16,32,64,128,256)
+ * 	device_mode:
+ * 		SPI_MASTER, SPI_SLAVE
+ * 	trans_mode:
+ * 		SPI_TRANSMODE_FULLDUPLEX, SPI_TRANSMODE_RECEIVEONLY,
+ * 		SPI_TRANSMODE_BDRECEIVE, SPI_TRANSMODE_BDTRANSMIT
+ * 	frame_size:
+ * 		SPI_FRAMESIZE_16BIT, SPI_FRAMESIZE_8BIT
+ * 	nss:
+ * 		SPI_NSS_SOFT, SPI_NSS_HARD
+ * 	endian:
+ * 		SPI_ENDIAN_MSB, SPI_ENDIAN_LSB
+ * 	clock_polarity_phase:
+ * 		SPI_CK_PL_LOW_PH_1EDGE, SPI_CK_PL_HIGH_PH_1EDGE,
+ * 		SPI_CK_PL_LOW_PH_2EDGE, SPI_CK_PL_HIGH_PH_2EDGE
+ * 	prescale:
+ * 		SPI_PSC_n (n=2,4,8,16,32,64,128,256)
  */
 void spi_init(uint32_t spi_periph, struct spi_param * spi_struct) {
 	uint32_t reg = SPI_CTL0(spi_periph);
@@ -102,24 +101,21 @@ void spi_disable(uint32_t spi_periph) {
 /*
  * spi_periph: SPIx(x=1,2)
  * mode: I2S operation mode
- * 	only one parameter can be selected which is shown as below:
- * 		I2S_MODE_SLAVETX: I2S slave transmit mode
- * 		I2S_MODE_SLAVERX: I2S slave receive mode
- * 		I2S_MODE_MASTERTX: I2S master transmit mode
- * 		I2S_MODE_MASTERRX: I2S master receive mode
+ * 	I2S_MODE_SLAVETX: I2S slave transmit mode
+ * 	I2S_MODE_SLAVERX: I2S slave receive mode
+ * 	I2S_MODE_MASTERTX: I2S master transmit mode
+ * 	I2S_MODE_MASTERRX: I2S master receive mode
  *
  * standard: I2S standard
- * 	only one parameter can be selected which is shown as below:
- * 		I2S_STD_PHILLIPS: I2S phillips standard
- * 		I2S_STD_MSB: I2S MSB standard
- * 		I2S_STD_LSB: I2S LSB standard
- * 		I2S_STD_PCMSHORT: I2S PCM short standard
- * 		I2S_STD_PCMLONG: I2S PCM long standard
+ * 	I2S_STD_PHILLIPS: I2S phillips standard
+ * 	I2S_STD_MSB: I2S MSB standard
+ * 	I2S_STD_LSB: I2S LSB standard
+ * 	I2S_STD_PCMSHORT: I2S PCM short standard
+ * 	I2S_STD_PCMLONG: I2S PCM long standard
  *
  * ckpl: I2S idle state clock polarity
- * 	only one parameter can be selected which is shown as below:
- * 		I2S_CKPL_LOW: I2S clock polarity low level
- * 		I2S_CKPL_HIGH: I2S clock polarity high level
+ * 	I2S_CKPL_LOW: I2S clock polarity low level
+ * 	I2S_CKPL_HIGH: I2S clock polarity high level
  */
 void i2s_init(uint32_t spi_periph, uint32_t mode, uint32_t standard,
 		uint32_t ckpl) {
@@ -140,32 +136,29 @@ void i2s_init(uint32_t spi_periph, uint32_t mode, uint32_t standard,
  * configure I2S prescaler
  * spi_periph: SPIx(x=1,2)
  * audiosample: I2S audio sample rate
- * 	only one parameter can be selected which is shown as below:
- * 		I2S_AUDIOSAMPLE_8K: audio sample rate is 8KHz
- * 		I2S_AUDIOSAMPLE_11K: audio sample rate is 11KHz
- * 		I2S_AUDIOSAMPLE_16K: audio sample rate is 16KHz
- * 		I2S_AUDIOSAMPLE_22K: audio sample rate is 22KHz
- * 		I2S_AUDIOSAMPLE_32K: audio sample rate is 32KHz
- * 		I2S_AUDIOSAMPLE_44K: audio sample rate is 44KHz
- * 		I2S_AUDIOSAMPLE_48K: audio sample rate is 48KHz
- * 		I2S_AUDIOSAMPLE_96K: audio sample rate is 96KHz
- * 		I2S_AUDIOSAMPLE_192K: audio sample rate is 192KHz
+ * 	I2S_AUDIOSAMPLE_8K: audio sample rate is 8KHz
+ * 	I2S_AUDIOSAMPLE_11K: audio sample rate is 11KHz
+ * 	I2S_AUDIOSAMPLE_16K: audio sample rate is 16KHz
+ * 	I2S_AUDIOSAMPLE_22K: audio sample rate is 22KHz
+ * 	I2S_AUDIOSAMPLE_32K: audio sample rate is 32KHz
+ * 	I2S_AUDIOSAMPLE_44K: audio sample rate is 44KHz
+ * 	I2S_AUDIOSAMPLE_48K: audio sample rate is 48KHz
+ * 	I2S_AUDIOSAMPLE_96K: audio sample rate is 96KHz
+ * 	I2S_AUDIOSAMPLE_192K: audio sample rate is 192KHz
  *
  * frameformat: I2S data length and channel length
- * 	only one parameter can be selected which is shown as below:
- * 		I2S_FRAMEFORMAT_DT16B_CH16B:
- * 			I2S data length is 16 bit and channel length is 16 bit
- * 		I2S_FRAMEFORMAT_DT16B_CH32B:
- * 			I2S data length is 16 bit and channel length is 32 bit
- * 		I2S_FRAMEFORMAT_DT24B_CH32B:
- * 			I2S data length is 24 bit and channel length is 32 bit
- * 		I2S_FRAMEFORMAT_DT32B_CH32B:
- * 			I2S data length is 32 bit and channel length is 32 bit
+ * 	I2S_FRAMEFORMAT_DT16B_CH16B:
+ * 		I2S data length is 16 bit and channel length is 16 bit
+ * 	I2S_FRAMEFORMAT_DT16B_CH32B:
+ * 		I2S data length is 16 bit and channel length is 32 bit
+ * 	I2S_FRAMEFORMAT_DT24B_CH32B:
+ * 		I2S data length is 24 bit and channel length is 32 bit
+ * 	I2S_FRAMEFORMAT_DT32B_CH32B:
+ * 		I2S data length is 32 bit and channel length is 32 bit
  *
  * mckout: I2S master clock output
- * 	only one parameter can be selected which is shown as below:
- * 		I2S_MCKOUT_ENABLE: I2S master clock output enable
- * 		I2S_MCKOUT_DISABLE: I2S master clock output disable
+ * 	I2S_MCKOUT_ENABLE: I2S master clock output enable
+ * 	I2S_MCKOUT_DISABLE: I2S master clock output disable
 */
 void i2s_psc_config(uint32_t spi_periph, uint32_t audiosample,
 		uint32_t frameformat, uint32_t mckout) {
@@ -267,9 +260,8 @@ void spi_nss_internal_low(uint32_t spi_periph) {
 
 /*
  * dma: SPI DMA mode
- * 	only one parameter can be selected which is shown as below:
- * 		SPI_DMA_TRANSMIT: SPI transmit data using DMA
- * 		SPI_DMA_RECEIVE: SPI receive data using DMA
+ * 	SPI_DMA_TRANSMIT: SPI transmit data using DMA
+ * 	SPI_DMA_RECEIVE: SPI receive data using DMA
 */
 void spi_dma_enable(uint32_t spi_periph, uint8_t dma) {
 	if (dma == SPI_DMA_TRANSMIT)
@@ -287,9 +279,8 @@ void spi_dma_disable(uint32_t spi_periph, uint8_t dma) {
 
 /*
  * frame_format: SPI frame size
- * 	only one parameter can be selected which is shown as below:
- * 		SPI_FRAMESIZE_16BIT: SPI frame size is 16 bits
- * 		SPI_FRAMESIZE_8BIT: SPI frame size is 8 bits
+ * 	SPI_FRAMESIZE_16BIT: SPI frame size is 16 bits
+ * 	SPI_FRAMESIZE_8BIT: SPI frame size is 8 bits
  */
 void spi_i2s_data_frame_format_config(uint32_t spi_periph,
 		uint16_t frame_format) {
@@ -310,9 +301,8 @@ uint16_t spi_i2s_data_receive(uint32_t spi_periph) {
 
 /*
  * transfer_direction: SPI transfer direction
- * 	only one parameter can be selected which is shown as below:
- * 		SPI_BIDIRECTIONAL_TRANSMIT: SPI work in transmit-only mode
- * 		SPI_BIDIRECTIONAL_RECEIVE: SPI work in receive-only mode
+ * 	SPI_BIDIRECTIONAL_TRANSMIT: SPI work in transmit-only mode
+ * 	SPI_BIDIRECTIONAL_RECEIVE: SPI work in receive-only mode
  */
 void spi_bidirectional_transfer_config(uint32_t spi_periph,
 				       uint32_t transfer_direction) {
@@ -349,9 +339,8 @@ void spi_crc_next(uint32_t spi_periph) {
  * get SPI CRC send value or receive value
  *
  * crc: SPI crc value
- * 	only one parameter can be selected which is shown as below:
- * 		SPI_CRC_TX: get transmit crc value
- * 		SPI_CRC_RX: get receive crc value
+ * 	SPI_CRC_TX: get transmit crc value
+ * 	SPI_CRC_RX: get receive crc value
  */
 uint16_t spi_crc_get(uint32_t spi_periph, uint8_t crc) {
 	if (crc == SPI_CRC_TX)
@@ -379,14 +368,13 @@ void spi_nssp_mode_disable(uint32_t spi_periph) {
 
 /*
  * interrupt: SPI/I2S interrupt
- * 	only one parameter can be selected which is shown as below:
- * 		SPI_I2S_INT_TBE:
- * 			transmit buffer empty interrupt
- * 		SPI_I2S_INT_RBNE:
- * 			receive buffer not empty interrupt
- * 		SPI_I2S_INT_ERR:
- * 			CRC error,configuration error,reception overrun error,
- * 			transmission underrun error and format error interrupt
+ * 	SPI_I2S_INT_TBE:
+ * 		transmit buffer empty interrupt
+ * 	SPI_I2S_INT_RBNE:
+ * 		receive buffer not empty interrupt
+ * 	SPI_I2S_INT_ERR:
+ * 		CRC error,configuration error,reception overrun error,
+ * 		transmission underrun error and format error interrupt
 */
 void spi_i2s_interrupt_enable(uint32_t spi_periph, uint8_t interrupt) {
 	switch (interrupt) {
@@ -429,14 +417,13 @@ void spi_i2s_interrupt_disable(uint32_t spi_periph, uint8_t interrupt) {
 /*
  * get SPI and I2S interrupt flag status
  * interrupt: SPI/I2S interrupt flag status
- * 	only one parameter can be selected which is shown as below:
- * 		SPI_I2S_INT_FLAG_TBE: transmit buffer empty interrupt flag
- * 		SPI_I2S_INT_FLAG_RBNE: receive buffer not empty interrupt flag
- * 		SPI_I2S_INT_FLAG_RXORERR: overrun interrupt flag
- * 		SPI_INT_FLAG_CONFERR: config error interrupt flag
- * 		SPI_INT_FLAG_CRCERR: CRC error interrupt flag
- * 		I2S_INT_FLAG_TXURERR: underrun error interrupt flag
- * 		SPI_I2S_INT_FLAG_FERR: format error interrupt flag
+ * 	SPI_I2S_INT_FLAG_TBE: transmit buffer empty interrupt flag
+ * 	SPI_I2S_INT_FLAG_RBNE: receive buffer not empty interrupt flag
+ * 	SPI_I2S_INT_FLAG_RXORERR: overrun interrupt flag
+ * 	SPI_INT_FLAG_CONFERR: config error interrupt flag
+ * 	SPI_INT_FLAG_CRCERR: CRC error interrupt flag
+ * 	I2S_INT_FLAG_TXURERR: underrun error interrupt flag
+ * 	SPI_I2S_INT_FLAG_FERR: format error interrupt flag
  */
 enum flag_status spi_i2s_interrupt_flag_get(uint32_t spi_periph,
 		uint8_t interrupt) {
@@ -493,21 +480,20 @@ enum flag_status spi_i2s_interrupt_flag_get(uint32_t spi_periph,
 
 /*
  * flag: SPI/I2S flag status
- * 	one or more parameters can be selected which are shown as below:
- * 		SPI_FLAG_TBE: transmit buffer empty flag
- * 		SPI_FLAG_RBNE: receive buffer not empty flag
- * 		SPI_FLAG_TRANS: transmit on-going flag
- * 		SPI_FLAG_RXORERR: receive overrun error flag
- * 		SPI_FLAG_CONFERR: mode config error flag
- * 		SPI_FLAG_CRCERR: CRC error flag
- * 		SPI_FLAG_FERR: format error interrupt flag
- * 		I2S_FLAG_TBE: transmit buffer empty flag
- * 		I2S_FLAG_RBNE: receive buffer not empty flag
- * 		I2S_FLAG_TRANS: transmit on-going flag
- * 		I2S_FLAG_RXORERR: overrun error flag
- * 		I2S_FLAG_TXURERR: underrun error flag
- * 		I2S_FLAG_CH: channel side flag
- * 		I2S_FLAG_FERR: format error interrupt flag
+ * 	SPI_FLAG_TBE: transmit buffer empty flag
+ * 	SPI_FLAG_RBNE: receive buffer not empty flag
+ * 	SPI_FLAG_TRANS: transmit on-going flag
+ * 	SPI_FLAG_RXORERR: receive overrun error flag
+ * 	SPI_FLAG_CONFERR: mode config error flag
+ * 	SPI_FLAG_CRCERR: CRC error flag
+ * 	SPI_FLAG_FERR: format error interrupt flag
+ * 	I2S_FLAG_TBE: transmit buffer empty flag
+ * 	I2S_FLAG_RBNE: receive buffer not empty flag
+ * 	I2S_FLAG_TRANS: transmit on-going flag
+ * 	I2S_FLAG_RXORERR: overrun error flag
+ * 	I2S_FLAG_TXURERR: underrun error flag
+ * 	I2S_FLAG_CH: channel side flag
+ * 	I2S_FLAG_FERR: format error interrupt flag
  */
 enum flag_status spi_i2s_flag_get(uint32_t spi_periph, uint32_t flag) {
 	if (SPI_STAT(spi_periph) & flag != RESET)

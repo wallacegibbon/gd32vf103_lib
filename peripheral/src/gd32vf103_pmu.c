@@ -9,15 +9,14 @@ void pmu_deinit() {
 /*
  * select low voltage detector threshold
  * lvdt_n:
- * 	only one parameter can be selected which is shown as below:
- * 		PMU_LVDT_0: voltage threshold is 2.2V
- * 		PMU_LVDT_1: voltage threshold is 2.3V
- * 		PMU_LVDT_2: voltage threshold is 2.4V
- * 		PMU_LVDT_3: voltage threshold is 2.5V
- * 		PMU_LVDT_4: voltage threshold is 2.6V
- * 		PMU_LVDT_5: voltage threshold is 2.7V
- * 		PMU_LVDT_6: voltage threshold is 2.8V
- * 		PMU_LVDT_7: voltage threshold is 2.9V
+ * 	PMU_LVDT_0: voltage threshold is 2.2V
+ * 	PMU_LVDT_1: voltage threshold is 2.3V
+ * 	PMU_LVDT_2: voltage threshold is 2.4V
+ * 	PMU_LVDT_3: voltage threshold is 2.5V
+ * 	PMU_LVDT_4: voltage threshold is 2.6V
+ * 	PMU_LVDT_5: voltage threshold is 2.7V
+ * 	PMU_LVDT_6: voltage threshold is 2.8V
+ * 	PMU_LVDT_7: voltage threshold is 2.9V
  */
 void pmu_lvd_select(uint32_t lvdt_n) {
 	// disable LVD
@@ -37,9 +36,8 @@ void pmu_lvd_disable() {
 /*
  * PMU work at sleep mode
  * sleepmodecmd:
- * 	only one parameter can be selected which is shown as below:
- * 		WFI_CMD: use WFI command
- * 		WFE_CMD: use WFE command
+ * 	WFI_CMD: use WFI command
+ * 	WFE_CMD: use WFE command
  */
 void pmu_to_sleepmode(uint8_t sleepmodecmd) {
 	// clear sleepdeep bit of RISC-V system control register
@@ -60,16 +58,14 @@ void pmu_to_sleepmode(uint8_t sleepmodecmd) {
 /*
  * PMU work at deepsleep mode
  * ldo:
- * 	only one parameter can be selected which is shown as below:
- * 		PMU_LDO_NORMAL:
- * 			LDO work at normal power mode when pmu enter
- * 			deepsleep mode
- * 		PMU_LDO_LOWPOWER:
- * 			LDO work at low power mode when pmu enter deepsleep mode
+ * 	PMU_LDO_NORMAL:
+ * 		LDO work at normal power mode when pmu enter
+ * 		deepsleep mode
+ * 	PMU_LDO_LOWPOWER:
+ * 		LDO work at low power mode when pmu enter deepsleep mode
  * deepsleepmodecmd:
- * 	only one parameter can be selected which is shown as below:
- * 		WFI_CMD: use WFI command
- * 		WFE_CMD: use WFE command
+ * 	WFI_CMD: use WFI command
+ * 	WFE_CMD: use WFE command
  */
 void pmu_to_deepsleepmode(uint32_t ldo, uint8_t deepsleepmodecmd) {
 	// clear stbmod and ldolp bits
@@ -95,9 +91,8 @@ void pmu_to_deepsleepmode(uint32_t ldo, uint8_t deepsleepmodecmd) {
 /*
  * pmu work at standby mode
  * standbymodecmd:
- * 	only one parameter can be selected which is shown as below:
- * 		WFI_CMD: use WFI command
- * 		WFE_CMD: use WFE command
+ * 	WFI_CMD: use WFI command
+ * 	WFE_CMD: use WFE command
  */
 void pmu_to_standbymode(uint8_t standbymodecmd) {
 	// set CSR_SLEEPVALUE bit of RISC-V system control register
@@ -140,10 +135,9 @@ void pmu_backup_write_disable() {
 /*
  * get flag state
  * flag:
- * 	only one parameter can be selected which is shown as below:
- * 		PMU_FLAG_WAKEUP: wakeup flag
- * 		PMU_FLAG_STANDBY: standby flag
- * 		PMU_FLAG_LVD: lvd flag
+ * 	PMU_FLAG_WAKEUP: wakeup flag
+ * 	PMU_FLAG_STANDBY: standby flag
+ * 	PMU_FLAG_LVD: lvd flag
  */
 enum flag_status pmu_flag_get(uint32_t flag) {
 	if (flag & PMU_CS)
@@ -154,9 +148,8 @@ enum flag_status pmu_flag_get(uint32_t flag) {
 
 /*
  * flag_reset:
- * 	only one parameter can be selected which is shown as below:
- * 		PMU_FLAG_RESET_WAKEUP: reset wakeup flag
- * 		PMU_FLAG_RESET_STANDBY: reset standby flag
+ * 	PMU_FLAG_RESET_WAKEUP: reset wakeup flag
+ * 	PMU_FLAG_RESET_STANDBY: reset standby flag
  */
 void pmu_flag_clear(uint32_t flag_reset) {
 	switch (flag_reset) {

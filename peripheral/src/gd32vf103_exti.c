@@ -1,6 +1,6 @@
 #include "gd32vf103_exti.h"
 
-#define EXTI_REG_RESET_VALUE            ((uint32_t) 0x00000000U)
+#define EXTI_REG_RESET_VALUE		((uint32_t) 0x00000000U)
 
 void exti_deinit(void) {
 	EXTI_INTEN = EXTI_REG_RESET_VALUE;
@@ -65,7 +65,7 @@ void exti_event_disable(enum exti_line linex) {
 }
 
 enum flag_status exti_flag_get(enum exti_line linex) {
-	if (EXTI_PD & linex != RESET)
+	if (linex & EXTI_PD != RESET)
 		return SET;
 	else
 		return RESET;
@@ -76,7 +76,7 @@ void exti_flag_clear(enum exti_line linex) {
 }
 
 enum flag_status exti_interrupt_flag_get(enum exti_line linex) {
-	if ((EXTI_PD & linex != RESET) && (EXTI_INTEN & linex != RESET))
+	if ((linex & EXTI_PD != RESET) && (linex & EXTI_INTEN != RESET))
 		return SET;
 	else
 		return RESET;

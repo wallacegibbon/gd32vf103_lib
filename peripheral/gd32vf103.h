@@ -135,17 +135,17 @@ enum IRQn {
 
 enum control_status {DISABLE = 0, ENABLE = !DISABLE};
 enum event_status {DISABLE = 0, ENABLE = !DISABLE};
-enum flag_status {RESET = 0, SET = 1, MAX = 0X7FFFFFFF};
+enum flag_status {RESET = 0, SET = 1, MAX = 0x7FFFFFFF};
 enum err_status {ERROR = 0, SUCCESS = !ERROR};
 
 #define REG32(addr) (* (volatile uint32_t *) (uint32_t) (addr))
 #define REG16(addr) (* (volatile uint16_t *) (uint32_t) (addr))
 #define REG8(addr) (* (volatile uint8_t *) (uint32_t) (addr))
 
-#define BIT(x) ((uint32_t) ((uint32_t) 0x01U << (x)))
+#define BIT(x) ((uint32_t) ((uint32_t) 1 << (x)))
 
 #define BITS(start, end) \
-	((0xFFFFFFFFUL << (start)) & (0xFFFFFFFFUL >> (31U - (uint32_t) (end))))
+	((0xFFFFFFFFUL << (start)) & (0xFFFFFFFFUL >> (31 - (uint32_t) (end))))
 
 #define GET_BITS(regval, start, end) \
 	(((regval) & BITS((start), (end))) >> (start))

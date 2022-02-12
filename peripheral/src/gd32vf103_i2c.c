@@ -39,9 +39,8 @@ void i2c_deinit(uint32_t i2c_periph) {
  * 	fast mode (up to 400 kHz) and fast mode plus (up to 1MHz)
  *
  * dutycyc: duty cycle in fast mode or fast mode plus
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_DTCY_2: T_low/T_high=2
- * 		I2C_DTCY_16_9: T_low/T_high=16/9
+ * 	I2C_DTCY_2: T_low/T_high=2
+ * 	I2C_DTCY_16_9: T_low/T_high=16/9
  */
 void i2c_clock_config(uint32_t i2c_periph, uint32_t clkspeed, uint32_t dutycyc) {
 	uint32_t pclk1 = rcu_clock_freq_get(CK_APB1);
@@ -117,14 +116,12 @@ void i2c_clock_config(uint32_t i2c_periph, uint32_t clkspeed, uint32_t dutycyc) 
 
 /*
  * mode:
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_I2CMODE_ENABLE: I2C mode
- * 		I2C_SMBUSMODE_ENABLE: SMBus mode
+ * 	I2C_I2CMODE_ENABLE: I2C mode
+ * 	I2C_SMBUSMODE_ENABLE: SMBus mode
  *
  * addformat: 7bits or 10bits
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_ADDFORMAT_7BITS: 7bits
- * 		I2C_ADDFORMAT_10BITS: 10bits
+ * 	I2C_ADDFORMAT_7BITS: 7bits
+ * 	I2C_ADDFORMAT_10BITS: 10bits
  * addr:
  * 	I2C address
  */
@@ -142,9 +139,8 @@ void i2c_mode_addr_config(uint32_t i2c_periph, uint32_t mode,
 
 /*
  * type:
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_SMBUS_DEVICE: device
- * 		I2C_SMBUS_HOST: host
+ * 	I2C_SMBUS_DEVICE: device
+ * 	I2C_SMBUS_HOST: host
  */
 void i2c_smbus_type_config(uint32_t i2c_periph, uint32_t type) {
 	if (type == I2C_SMBUS_HOST)
@@ -155,9 +151,8 @@ void i2c_smbus_type_config(uint32_t i2c_periph, uint32_t type) {
 
 /*
  * ack:
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_ACK_ENABLE: ACK will be sent
- * 		I2C_ACK_DISABLE: ACK will not be sent
+ * 	I2C_ACK_ENABLE: ACK will be sent
+ * 	I2C_ACK_DISABLE: ACK will not be sent
  */
 void i2c_ack_config(uint32_t i2c_periph, uint32_t ack) {
 	if (ack == I2C_ACK_ENABLE)
@@ -168,9 +163,8 @@ void i2c_ack_config(uint32_t i2c_periph, uint32_t ack) {
 
 /*
  * pos:
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_ACKPOS_CURRENT: whether to send ACK or not for the current
- * 		I2C_ACKPOS_NEXT: whether to send ACK or not for the next byte
+ * 	I2C_ACKPOS_CURRENT: whether to send ACK or not for the current
+ * 	I2C_ACKPOS_NEXT: whether to send ACK or not for the next byte
  */
 void i2c_ackpos_config(uint32_t i2c_periph, uint32_t pos) {
 	if (pos == I2C_ACKPOS_NEXT)
@@ -185,9 +179,8 @@ void i2c_ackpos_config(uint32_t i2c_periph, uint32_t pos) {
  * addr: slave address  
  *
  * trandirection: transmitter or receiver
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_TRANSMITTER: transmitter
- * 		I2C_RECEIVER: receiver  
+ * 	I2C_TRANSMITTER: transmitter
+ * 	I2C_RECEIVER: receiver  
  */
 void i2c_master_addressing(uint32_t i2c_periph, uint32_t addr,
 		uint32_t trandirection) {
@@ -241,9 +234,8 @@ uint8_t i2c_data_receive(uint32_t i2c_periph) {
 
 /*
  * dmastate:
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_DMA_ON: DMA mode enable
- * 		I2C_DMA_OFF: DMA mode disable
+ * 	I2C_DMA_ON: DMA mode enable
+ * 	I2C_DMA_OFF: DMA mode disable
  */
 void i2c_dma_enable(uint32_t i2c_periph, uint32_t dmastate) {
 	// configure I2C DMA function
@@ -255,9 +247,8 @@ void i2c_dma_enable(uint32_t i2c_periph, uint32_t dmastate) {
 
 /*
  * dmalast:
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_DMALST_ON: next DMA EOT is the last transfer
- * 		I2C_DMALST_OFF: next DMA EOT is not the last transfer
+ * 	I2C_DMALST_ON: next DMA EOT is the last transfer
+ * 	I2C_DMALST_OFF: next DMA EOT is not the last transfer
  */
 void i2c_dma_last_transfer_config(uint32_t i2c_periph, uint32_t dmalast) {
 	// configure DMA last transfer
@@ -271,9 +262,8 @@ void i2c_dma_last_transfer_config(uint32_t i2c_periph, uint32_t dmalast) {
  * whether to stretch SCL low when data is not ready in slave mode 
  *
  * stretchpara:
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_SCLSTRETCH_ENABLE: SCL stretching is enabled
- * 		I2C_SCLSTRETCH_DISABLE: SCL stretching is disabled
+ * 	I2C_SCLSTRETCH_ENABLE: SCL stretching is enabled
+ * 	I2C_SCLSTRETCH_DISABLE: SCL stretching is disabled
  */
 void i2c_stretch_scl_low_config(uint32_t i2c_periph, uint32_t stretchpara) {
 	uint32_t ctl = I2C_CTL0(i2c_periph);
@@ -285,9 +275,8 @@ void i2c_stretch_scl_low_config(uint32_t i2c_periph, uint32_t stretchpara) {
 /*
  * whether or not to response to a general call
  * gcallpara:
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_GCEN_ENABLE: slave will response to a general call
- * 		I2C_GCEN_DISABLE: slave will not response to a general call
+ * 	I2C_GCEN_ENABLE: slave will response to a general call
+ * 	I2C_GCEN_DISABLE: slave will not response to a general call
  */
 void i2c_slave_response_to_gcall_config(uint32_t i2c_periph,
 		uint32_t gcallpara) {
@@ -300,9 +289,8 @@ void i2c_slave_response_to_gcall_config(uint32_t i2c_periph,
 
 /*
  * sreset:
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_SRESET_SET: I2C is under reset
- * 		I2C_SRESET_RESET: I2C is not under reset
+ * 	I2C_SRESET_SET: I2C is under reset
+ * 	I2C_SRESET_RESET: I2C is not under reset
  */
 void i2c_software_reset_config(uint32_t i2c_periph, uint32_t sreset) {
 	// modify CTL0 and configure software reset I2C state
@@ -314,9 +302,8 @@ void i2c_software_reset_config(uint32_t i2c_periph, uint32_t sreset) {
 
 /*
  * pecpara:
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_PEC_ENABLE: PEC calculation on
- * 		I2C_PEC_DISABLE: PEC calculation off 
+ * 	I2C_PEC_ENABLE: PEC calculation on
+ * 	I2C_PEC_DISABLE: PEC calculation off 
  */
 void i2c_pec_enable(uint32_t i2c_periph, uint32_t pecstate) {
 	uint32_t ctl = I2C_CTL0(i2c_periph);
@@ -327,9 +314,8 @@ void i2c_pec_enable(uint32_t i2c_periph, uint32_t pecstate) {
 
 /*
  * pecpara:
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_PECTRANS_ENABLE: transfer PEC
- * 		I2C_PECTRANS_DISABLE: not transfer PEC 
+ * 	I2C_PECTRANS_ENABLE: transfer PEC
+ * 	I2C_PECTRANS_DISABLE: not transfer PEC 
  */
 void i2c_pec_transfer_enable(uint32_t i2c_periph, uint32_t pecpara) {
 	uint32_t ctl = I2C_CTL0(i2c_periph);
@@ -349,9 +335,8 @@ uint8_t i2c_pec_value_get(uint32_t i2c_periph) {
  * i2c_periph:
  * 	I2Cx(x=0,1)
  * smbuspara:
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_SALTSEND_ENABLE: issue alert through SMBA pin
- * 		I2C_SALTSEND_DISABLE: not issue alert through SMBA pin 
+ * 	I2C_SALTSEND_ENABLE: issue alert through SMBA pin
+ * 	I2C_SALTSEND_DISABLE: not issue alert through SMBA pin 
  */
 void i2c_smbus_issue_alert(uint32_t i2c_periph, uint32_t smbuspara) {
 	uint32_t ctl = I2C_CTL0(i2c_periph);
@@ -362,9 +347,8 @@ void i2c_smbus_issue_alert(uint32_t i2c_periph, uint32_t smbuspara) {
 
 /*
  * arpstate:
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_ARP_ENABLE: enable ARP
- * 		I2C_ARP_DISABLE: disable ARP
+ * 	I2C_ARP_ENABLE: enable ARP
+ * 	I2C_ARP_DISABLE: disable ARP
  */
 void i2c_smbus_arp_enable(uint32_t i2c_periph, uint32_t arpstate) {
 	uint32_t ctl = I2C_CTL0(i2c_periph);
@@ -430,26 +414,25 @@ enum flag_status i2c_interrupt_flag_get(uint32_t i2c_periph,
 
 /*
  * int_flag: I2C interrupt flags, refer to enum i2c_interrupt_flag
- * 	only one parameter can be selected which is shown as below:
- * 		I2C_INT_FLAG_ADDSEND:
- * 			address is sent in master mode or received and
- * 			matches in slave mode interrupt flag
- * 		I2C_INT_FLAG_BERR:
- * 			a bus error occurs indication a unexpected start
- * 			or stop condition on I2C bus interrupt flag
- * 		I2C_INT_FLAG_LOSTARB:
- * 			arbitration lost in master mode interrupt flag
- * 		I2C_INT_FLAG_AERR:
- * 			acknowledge error interrupt flag
- * 		I2C_INT_FLAG_OUERR:
- * 			over-run or under-run situation occurs in slave mode
- * 			interrupt flag
- * 		I2C_INT_FLAG_PECERR:
- * 			PEC error when receiving data interrupt flag
- * 		I2C_INT_FLAG_SMBTO:
- * 			timeout signal in SMBus mode interrupt flag
- * 		I2C_INT_FLAG_SMBALT:
- * 			SMBus Alert status interrupt flag
+ * 	I2C_INT_FLAG_ADDSEND:
+ * 		address is sent in master mode or received and matches
+ * 		in slave mode interrupt flag
+ * 	I2C_INT_FLAG_BERR:
+ * 		a bus error occurs indication a unexpected start or stop
+ * 		condition on I2C bus interrupt flag
+ * 	I2C_INT_FLAG_LOSTARB:
+ * 		arbitration lost in master mode interrupt flag
+ * 	I2C_INT_FLAG_AERR:
+ * 		acknowledge error interrupt flag
+ * 	I2C_INT_FLAG_OUERR:
+ * 		over-run or under-run situation occurs in slave mode interrupt
+ * 		flag
+ * 	I2C_INT_FLAG_PECERR:
+ * 		PEC error when receiving data interrupt flag
+ * 	I2C_INT_FLAG_SMBTO:
+ * 		timeout signal in SMBus mode interrupt flag
+ * 	I2C_INT_FLAG_SMBALT:
+ * 		SMBus Alert status interrupt flag
  */
 void i2c_interrupt_flag_clear(uint32_t i2c_periph,
 		enum i2c_interrupt_flag int_flag) {

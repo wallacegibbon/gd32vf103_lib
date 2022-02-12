@@ -77,20 +77,15 @@ void adc_mode_config(uint32_t mode) {
 
 /*
  * enable or disable ADC special function
- * adc_periph: ADCx, x=0,1
- *
  * function: the function to config
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_SCAN_MODE:
- * 			scan mode select
+ * 	ADC_SCAN_MODE:
+ * 		scan mode select
  *
- * 		ADC_INSERTED_CHANNEL_AUTO:
- * 			inserted channel group convert automatically
+ * 	ADC_INSERTED_CHANNEL_AUTO:
+ * 		inserted channel group convert automatically
  *
- * 		ADC_CONTINUOUS_MODE:
+ * 	ADC_CONTINUOUS_MODE:
  * 			continuous mode select
- *
- * newvalue: ENABLE or DISABLE
  */
 void adc_special_function_config(uint32_t adc_periph, uint32_t function,
 		enum control_status newvalue) {
@@ -122,7 +117,6 @@ void adc_special_function_config(uint32_t adc_periph, uint32_t function,
  * adc_periph: ADCx, x=0,1
  *
  * data_alignment: data alignment select
- * 	only one parameter can be selected which is shown as below:
  *	ADC_DATAALIGN_RIGHT: LSB alignment
  *	ADC_DATAALIGN_LEFT: MSB alignment
  *
@@ -183,15 +177,14 @@ void adc_dma_mode_disable(uint32_t adc_periph) {
  * dc_periph: ADCx, x=0,1
  *
  * adc_channel_group: select the channel group
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_REGULAR_CHANNEL:
- * 			regular channel group
+ * 	ADC_REGULAR_CHANNEL:
+ * 		regular channel group
  *
- * 		ADC_INSERTED_CHANNEL:
- * 			inserted channel group
+ * 	ADC_INSERTED_CHANNEL:
+ * 		inserted channel group
  *
- * 		ADC_CHANNEL_DISCON_DISABLE:
- * 			disable discontinuous mode of regular & inserted channel
+ * 	ADC_CHANNEL_DISCON_DISABLE:
+ * 		disable discontinuous mode of regular & inserted channel
  *
  * length: number of conversions in discontinuous mode,the number can be 1..8
  * 	for regular channel, the number has no effect for inserted channel
@@ -227,9 +220,8 @@ void adc_discontinuous_mode_config(uint32_t adc_periph,
  * adc_periph: ADCx, x=0,1
  *
  * adc_channel_group: select the channel group
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_REGULAR_CHANNEL: regular channel group
- * 		ADC_INSERTED_CHANNEL: inserted channel group
+ * 	ADC_REGULAR_CHANNEL: regular channel group
+ * 	ADC_INSERTED_CHANNEL: inserted channel group
  *
  * length: the length of the channel
  * 	regular channel 1-16
@@ -265,20 +257,18 @@ void adc_channel_length_config(uint32_t adc_periph, uint8_t adc_channel_group,
  * 	the regular group sequence rank,this parameter must be between 0 to 15
  *
  * adc_channel: the selected ADC channel
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_CHANNEL_x(x=0..17)(x=16 and x=17 are only for ADC0):
- * 			ADC Channelx 
+ * 	ADC_CHANNEL_x(x=0..17)(x=16 and x=17 are only for ADC0):
+ * 		ADC Channelx 
  *
  * sample_time: the sample time value
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_SAMPLETIME_1POINT5: 1.5 cycles
- * 		ADC_SAMPLETIME_7POINT5: 7.5 cycles
- * 		ADC_SAMPLETIME_13POINT5: 13.5 cycles
- * 		ADC_SAMPLETIME_28POINT5: 28.5 cycles
- * 		ADC_SAMPLETIME_41POINT5: 41.5 cycles
- * 		ADC_SAMPLETIME_55POINT5: 55.5 cycles
- * 		ADC_SAMPLETIME_71POINT5: 71.5 cycles
- * 		ADC_SAMPLETIME_239POINT5: 239.5 cycles
+ * 	ADC_SAMPLETIME_1POINT5: 1.5 cycles
+ * 	ADC_SAMPLETIME_7POINT5: 7.5 cycles
+ * 	ADC_SAMPLETIME_13POINT5: 13.5 cycles
+ * 	ADC_SAMPLETIME_28POINT5: 28.5 cycles
+ * 	ADC_SAMPLETIME_41POINT5: 41.5 cycles
+ * 	ADC_SAMPLETIME_55POINT5: 55.5 cycles
+ * 	ADC_SAMPLETIME_71POINT5: 71.5 cycles
+ * 	ADC_SAMPLETIME_239POINT5: 239.5 cycles
  */
 void adc_regular_channel_config(uint32_t adc_periph, uint8_t rank,
 		uint8_t adc_channel, uint32_t sample_time) {
@@ -366,20 +356,18 @@ void adc_regular_channel_config(uint32_t adc_periph, uint8_t rank,
  * 	the inserted group sequencer rank,this parameter must be between 0 to 3
  *
  * adc_channel: the selected ADC channel
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_CHANNEL_x(x=0..17)(x=16 and x=17 are only for ADC0):
- * 			ADC Channelx
+ * 	ADC_CHANNEL_x(x=0..17)(x=16 and x=17 are only for ADC0):
+ * 		ADC Channelx
  *
  * sample_time: The sample time value
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_SAMPLETIME_1POINT5: 1.5 cycles
- * 		ADC_SAMPLETIME_7POINT5: 7.5 cycles
- * 		ADC_SAMPLETIME_13POINT5: 13.5 cycles
- * 		ADC_SAMPLETIME_28POINT5: 28.5 cycles
- * 		ADC_SAMPLETIME_41POINT5: 41.5 cycles
- * 		ADC_SAMPLETIME_55POINT5: 55.5 cycles
- * 		ADC_SAMPLETIME_71POINT5: 71.5 cycles
- * 		ADC_SAMPLETIME_239POINT5: 239.5 cycles
+ * 	ADC_SAMPLETIME_1POINT5: 1.5 cycles
+ * 	ADC_SAMPLETIME_7POINT5: 7.5 cycles
+ * 	ADC_SAMPLETIME_13POINT5: 13.5 cycles
+ * 	ADC_SAMPLETIME_28POINT5: 28.5 cycles
+ * 	ADC_SAMPLETIME_41POINT5: 41.5 cycles
+ * 	ADC_SAMPLETIME_55POINT5: 55.5 cycles
+ * 	ADC_SAMPLETIME_71POINT5: 71.5 cycles
+ * 	ADC_SAMPLETIME_239POINT5: 239.5 cycles
  */
 void adc_inserted_channel_config(uint32_t adc_periph, uint8_t rank,
 		uint8_t adc_channel, uint32_t sample_time) {
@@ -435,11 +423,10 @@ void adc_inserted_channel_config(uint32_t adc_periph, uint8_t rank,
  * dc_periph: ADCx, x=0,1
  *
  * inserted_channel: insert channel select
- * 	only one parameter can be selected
- * 		ADC_INSERTED_CHANNEL_0: inserted channel0
- * 		ADC_INSERTED_CHANNEL_1: inserted channel1
- * 		ADC_INSERTED_CHANNEL_2: inserted channel2
- * 		ADC_INSERTED_CHANNEL_3: inserted channel3
+ * 	ADC_INSERTED_CHANNEL_0: inserted channel0
+ * 	ADC_INSERTED_CHANNEL_1: inserted channel1
+ * 	ADC_INSERTED_CHANNEL_2: inserted channel2
+ * 	ADC_INSERTED_CHANNEL_3: inserted channel3
  *
  * offset: the offset data
  */
@@ -462,12 +449,10 @@ void adc_inserted_channel_offset_config(uint32_t adc_periph,
  * adc_periph: ADCx, x=0,1
  *
  * adc_channel_group: select the channel group
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_REGULAR_CHANNEL: regular channel group
- * 		ADC_INSERTED_CHANNEL: inserted channel group
+ * 	ADC_REGULAR_CHANNEL: regular channel group
+ * 	ADC_INSERTED_CHANNEL: inserted channel group
  *
  * external_trigger_source: regular or inserted group trigger source
- * 	only one parameter can be selected
  * 	for regular channel:
  * 		ADC0_1_EXTTRIG_REGULAR_T0_CH0: TIMER0 CH0 event select
  * 		ADC0_1_EXTTRIG_REGULAR_T0_CH1: TIMER0 CH1 event select
@@ -571,11 +556,10 @@ uint16_t adc_regular_data_read(uint32_t adc_periph) {
  * adc_periph: ADCx, x=0,1
  *
  * inserted_channel: insert channel select
- * 	only one parameter can be selected
- * 		ADC_INSERTED_CHANNEL_0: inserted Channel0
- * 		ADC_INSERTED_CHANNEL_1: inserted channel1
- * 		ADC_INSERTED_CHANNEL_2: inserted Channel2
- * 		ADC_INSERTED_CHANNEL_3: inserted Channel3
+ * 	ADC_INSERTED_CHANNEL_0: inserted Channel0
+ * 	ADC_INSERTED_CHANNEL_1: inserted channel1
+ * 	ADC_INSERTED_CHANNEL_2: inserted Channel2
+ * 	ADC_INSERTED_CHANNEL_3: inserted Channel3
  *
  */
 uint16_t adc_inserted_data_read(uint32_t adc_periph, uint8_t inserted_channel) {
@@ -604,9 +588,8 @@ uint32_t adc_sync_mode_convert_value_read() {
  * configure ADC analog watchdog single channel 
  * dc_periph: ADCx, x=0,1
  * adc_channel: the selected ADC channel
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_CHANNEL_x:
- * 			ADC Channelx(x=0..17)(x=16 and x=17 are only for ADC0)
+ * 	ADC_CHANNEL_x:
+ * 		ADC Channelx(x=0..17)(x=16 and x=17 are only for ADC0)
  *
  */
 void adc_watchdog_single_channel_enable(uint32_t adc_periph,
@@ -626,10 +609,9 @@ void adc_watchdog_single_channel_enable(uint32_t adc_periph,
  * dc_periph: ADCx, x=0,1
  *
  * adc_channel_group: the channel group use analog watchdog
- * 	only one parameter can be selected which is shown as below: 
- * 		ADC_REGULAR_CHANNEL: regular channel group
- * 		ADC_INSERTED_CHANNEL: inserted channel group
- * 		ADC_REGULAR_INSERTED_CHANNEL: both regular and inserted group
+ * 	ADC_REGULAR_CHANNEL: regular channel group
+ * 	ADC_INSERTED_CHANNEL: inserted channel group
+ * 	ADC_REGULAR_INSERTED_CHANNEL: both regular and inserted group
  *
  */
 void adc_watchdog_group_channel_enable(uint32_t adc_periph,
@@ -677,12 +659,11 @@ void adc_watchdog_threshold_config(uint32_t adc_periph, uint16_t low_threshold,
  * get the ADC flag bits
  * adc_periph: ADCx, x=0,1
  * adc_flag: the adc flag bits
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_FLAG_WDE: analog watchdog event flag
- * 		ADC_FLAG_EOC: end of group conversion flag
- * 		ADC_FLAG_EOIC: end of inserted group conversion flag
- * 		ADC_FLAG_STIC: start flag of inserted channel group
- * 		ADC_FLAG_STRC: start flag of regular channel group
+ * 	ADC_FLAG_WDE: analog watchdog event flag
+ * 	ADC_FLAG_EOC: end of group conversion flag
+ * 	ADC_FLAG_EOIC: end of inserted group conversion flag
+ * 	ADC_FLAG_STIC: start flag of inserted channel group
+ * 	ADC_FLAG_STRC: start flag of regular channel group
  *
  */
 enum flag_status adc_flag_get(uint32_t adc_periph, uint32_t adc_flag) {
@@ -728,10 +709,9 @@ enum flag_status adc_inserted_software_startconv_flag_get(uint32_t adc_periph) {
  * adc_periph: ADCx, x=0,1
  *
  * adc_interrupt: the adc interrupt bits
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_INT_FLAG_WDE: analog watchdog interrupt
- * 		ADC_INT_FLAG_EOC: end of group conversion interrupt
- * 		ADC_INT_FLAG_EOIC: end of inserted group conversion interrupt
+ * 	ADC_INT_FLAG_WDE: analog watchdog interrupt
+ * 	ADC_INT_FLAG_EOC: end of group conversion interrupt
+ * 	ADC_INT_FLAG_EOIC: end of inserted group conversion interrupt
  *
  */
 enum flag_status adc_interrupt_flag_get(uint32_t adc_periph,
@@ -835,11 +815,10 @@ void adc_interrupt_disable(uint32_t adc_periph, uint32_t adc_interrupt) {
  * adc resolution config
  * adc_periph: ADCx, x=0,1
  * resolution: ADC resolution
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_RESOLUTION_12B: 12-bit ADC resolution
- * 		ADC_RESOLUTION_10B: 10-bit ADC resolution
- * 		ADC_RESOLUTION_8B: 8-bit ADC resolution
- * 		ADC_RESOLUTION_6B: 6-bit ADC resolution
+ * 	ADC_RESOLUTION_12B: 12-bit ADC resolution
+ * 	ADC_RESOLUTION_10B: 10-bit ADC resolution
+ * 	ADC_RESOLUTION_8B: 8-bit ADC resolution
+ * 	ADC_RESOLUTION_6B: 6-bit ADC resolution
  *
  */
 void adc_resolution_config(uint32_t adc_periph, uint32_t resolution) {
@@ -852,37 +831,34 @@ void adc_resolution_config(uint32_t adc_periph, uint32_t resolution) {
  * adc_periph: ADCx, x=0,1
  *
  * mode: ADC oversampling mode
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_OVERSAMPLING_ALL_CONVERT:
- * 			all oversampled conversions for a channel are done
- * 			consecutively after a trigger
+ * 	ADC_OVERSAMPLING_ALL_CONVERT:
+ * 		all oversampled conversions for a channel are done
+ * 		consecutively after a trigger
  *
- * 		ADC_OVERSAMPLING_ONE_CONVERT:
- * 			each oversampled conversion for a channel needs a
- * 			trigger
+ * 	ADC_OVERSAMPLING_ONE_CONVERT:
+ * 		each oversampled conversion for a channel needs a
+ * 		trigger
  *
  * shift: ADC oversampling shift
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_OVERSAMPLING_SHIFT_NONE: no oversampling shift
- * 		ADC_OVERSAMPLING_SHIFT_1B: 1-bit oversampling shift
- * 		ADC_OVERSAMPLING_SHIFT_2B: 2-bit oversampling shift
- * 		ADC_OVERSAMPLING_SHIFT_3B: 3-bit oversampling shift
- * 		ADC_OVERSAMPLING_SHIFT_4B: 3-bit oversampling shift
- * 		ADC_OVERSAMPLING_SHIFT_5B: 5-bit oversampling shift
- * 		ADC_OVERSAMPLING_SHIFT_6B: 6-bit oversampling shift
- * 		ADC_OVERSAMPLING_SHIFT_7B: 7-bit oversampling shift
- * 		ADC_OVERSAMPLING_SHIFT_8B: 8-bit oversampling shift
+ * 	ADC_OVERSAMPLING_SHIFT_NONE: no oversampling shift
+ * 	ADC_OVERSAMPLING_SHIFT_1B: 1-bit oversampling shift
+ * 	ADC_OVERSAMPLING_SHIFT_2B: 2-bit oversampling shift
+ * 	ADC_OVERSAMPLING_SHIFT_3B: 3-bit oversampling shift
+ * 	ADC_OVERSAMPLING_SHIFT_4B: 3-bit oversampling shift
+ * 	ADC_OVERSAMPLING_SHIFT_5B: 5-bit oversampling shift
+ * 	ADC_OVERSAMPLING_SHIFT_6B: 6-bit oversampling shift
+ * 	ADC_OVERSAMPLING_SHIFT_7B: 7-bit oversampling shift
+ * 	ADC_OVERSAMPLING_SHIFT_8B: 8-bit oversampling shift
  *
  * ratio: ADC oversampling ratio
- * 	only one parameter can be selected which is shown as below:
- * 		ADC_OVERSAMPLING_RATIO_MUL2: oversampling ratio X2
- * 		ADC_OVERSAMPLING_RATIO_MUL4: oversampling ratio X4
- * 		ADC_OVERSAMPLING_RATIO_MUL8: oversampling ratio X8
- * 		ADC_OVERSAMPLING_RATIO_MUL16: oversampling ratio X16
- * 		ADC_OVERSAMPLING_RATIO_MUL32: oversampling ratio X32
- * 		ADC_OVERSAMPLING_RATIO_MUL64: oversampling ratio X64
- * 		ADC_OVERSAMPLING_RATIO_MUL128: oversampling ratio X128
- * 	        ADC_OVERSAMPLING_RATIO_MUL256: oversampling ratio X256
+ * 	ADC_OVERSAMPLING_RATIO_MUL2: oversampling ratio X2
+ * 	ADC_OVERSAMPLING_RATIO_MUL4: oversampling ratio X4
+ * 	ADC_OVERSAMPLING_RATIO_MUL8: oversampling ratio X8
+ * 	ADC_OVERSAMPLING_RATIO_MUL16: oversampling ratio X16
+ * 	ADC_OVERSAMPLING_RATIO_MUL32: oversampling ratio X32
+ * 	ADC_OVERSAMPLING_RATIO_MUL64: oversampling ratio X64
+ * 	ADC_OVERSAMPLING_RATIO_MUL128: oversampling ratio X128
+ *	ADC_OVERSAMPLING_RATIO_MUL256: oversampling ratio X256
  *
  */
 void adc_oversample_mode_config(uint32_t adc_periph, uint8_t mode,
