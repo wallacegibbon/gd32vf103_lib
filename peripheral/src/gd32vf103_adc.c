@@ -332,7 +332,7 @@ void adc_regular_channel_config(uint32_t adc_periph, uint8_t rank,
 		ADC_SAMPT1(adc_periph) = sampt;
 	} else if (adc_channel < ADC_CHANNEL_SAMPLE_EIGHTEEN) {
 		// the regular group sequence rank is smaller than eighteen
-		sampt = ADC_SAMPT0(adc_periph);
+		uint32_t sampt = ADC_SAMPT0(adc_periph);
 		sampt &= ~(ADC_SAMPTX_SPTN <<
 				(ADC_CHANNEL_SAMPLE_LENGTH *
 				 (adc_channel - ADC_CHANNEL_SAMPLE_TEN)));
@@ -730,7 +730,7 @@ enum flag_status adc_interrupt_flag_get(uint32_t adc_periph,
 		// get the ADC end of group conversion interrupt bits
 		state = ADC_STAT(adc_periph) & ADC_STAT_EOC;
 		if ((ADC_CTL0(adc_periph) & ADC_CTL0_EOCIE) && state)
-			interrupt_flag = SET;
+			return SET;
 		else
 			return RESET;
 	case ADC_INT_FLAG_EOIC:

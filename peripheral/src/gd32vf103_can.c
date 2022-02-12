@@ -16,7 +16,7 @@ void can_struct_para_init(enum can_struct_type type, void *p_struct) {
 	// get type of the struct
 	switch (type) {
 	// used for can_init()
-	case CAN_INIT_STRUCT:
+	case CAN_INIT_STRUCT: {
 		struct can_param *param = (struct can_param *) p_struct;
 		param->auto_bus_off_recovery = DISABLE;
 		param->no_auto_retrans = DISABLE;
@@ -30,8 +30,9 @@ void can_struct_para_init(enum can_struct_type type, void *p_struct) {
 		param->trans_fifo_order = DISABLE;
 		param->working_mode = CAN_NORMAL_MODE;
 		break;
+			      }
 	// used for can_filter_init()
-	case CAN_FILTER_STRUCT:
+	case CAN_FILTER_STRUCT: {
 		struct can_filter_param *f_param = p_struct;
 		f_param->filter_bits = CAN_FILTERBITS_32BIT;
 		f_param->filter_enable = DISABLE;
@@ -43,8 +44,9 @@ void can_struct_para_init(enum can_struct_type type, void *p_struct) {
 		f_param->filter_mode = CAN_FILTERMODE_MASK;
 		f_param->filter_number = 0;
 		break;
+				}
 	// used for can_message_transmit()
-	case CAN_TX_MESSAGE_STRUCT:
+	case CAN_TX_MESSAGE_STRUCT: {
 		struct can_trasnmit_message *t_msg = p_struct;
 		for (int i = 0; i < 8; i++)
 			t_msg->tx_data[i] = 0;
@@ -55,8 +57,9 @@ void can_struct_para_init(enum can_struct_type type, void *p_struct) {
 		t_msg->tx_ft = (uint8_t) CAN_FT_DATA;
 		t_msg->tx_sfid = 0;
 		break;
+				    }
 	// used for can_message_receive()
-	case CAN_RX_MESSAGE_STRUCT:
+	case CAN_RX_MESSAGE_STRUCT: {
 		struct can_receive_message *r_msg = p_struct;
 		for (int i = 0; i < 8; i++)
 			r_msg->rx_data[i] = 0;
@@ -68,6 +71,7 @@ void can_struct_para_init(enum can_struct_type type, void *p_struct) {
 		r_msg->rx_ft = (uint8_t) CAN_FT_DATA;
 		r_msg->rx_sfid = 0;
 		break;
+				    }
 	default:
 		CAN_ERROR_HANDLE("parameter is invalid \r\n");
 	}
@@ -549,8 +553,10 @@ void can_fifo_release(uint32_t can_periph, uint8_t fifo_number) {
 	switch (fifo_number) {
 	case CAN_FIFO0:
 		CAN_RFIFO0(can_periph) |= CAN_RFIFO0_RFD0;
+		break;
 	case CAN_FIFO1:
 		CAN_RFIFO1(can_periph) |= CAN_RFIFO1_RFD1;
+		break;
 	default:
 		// illegal parameter
 		CAN_ERROR_HANDLE("CAN FIFO NUM is invalid \r\n");
@@ -562,8 +568,10 @@ uint8_t can_receive_message_length_get(uint32_t can_periph,
 	switch (fifo_number) {
 	case CAN_FIFO0:
 		(uint8_t) (CAN_RFIFO0(can_periph) & CAN_RFIF_RFL_MASK);
+		break;
 	case CAN_FIFO1:
 		(uint8_t) (CAN_RFIFO1(can_periph) & CAN_RFIF_RFL_MASK);
+		break;
 	default:
 		return 0;
 	}

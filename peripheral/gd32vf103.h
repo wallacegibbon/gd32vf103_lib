@@ -134,7 +134,6 @@ enum IRQn {
 #include <stdint.h>
 
 enum control_status {DISABLE = 0, ENABLE = !DISABLE};
-enum event_status {DISABLE = 0, ENABLE = !DISABLE};
 enum flag_status {RESET = 0, SET = 1, MAX = 0x7FFFFFFF};
 enum err_status {ERROR = 0, SUCCESS = !ERROR};
 
@@ -189,3 +188,6 @@ enum err_status {ERROR = 0, SUCCESS = !ERROR};
 #define CRC_BASE	(AHB1_BUS_BASE + 0x0000B000U)
 #define USBFS_BASE	(AHB1_BUS_BASE + 0x0FFE8000U)
 
+#include "gd32vf103_libopt.h"
+
+#endif

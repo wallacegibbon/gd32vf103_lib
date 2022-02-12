@@ -351,7 +351,7 @@ enum flag_status dma_interrupt_flag_get(uint32_t dma_periph,
 	}
 
 	// when the interrupt flag is set and enabled, return SET
-	if (interrupt_flag && interrupt_enable) {
+	if (interrupt_flag && interrupt_enable)
 		return SET;
 	else
 		return RESET;

@@ -400,15 +400,19 @@ void rcu_osci_off(enum rcu_osci_type osci) {
 void rcu_osci_bypass_mode_enable(enum rcu_osci_type osci) {
 	switch (osci) {
 	case RCU_HXTAL:
+		{
 		uint32_t reg = RCU_CTL;
 		RCU_CTL &= ~RCU_CTL_HXTALEN;
 		RCU_CTL = reg | RCU_CTL_HXTALBPS;
 		break;
+		}
 	case RCU_LXTAL:
+		{
 		uint32_t reg = RCU_BDCTL;
 		RCU_BDCTL &= ~RCU_BDCTL_LXTALEN;
 		RCU_BDCTL = reg | RCU_BDCTL_LXTALBPS;
 		break;
+		}
 	case RCU_IRC8M:
 	case RCU_IRC40K:
 	case RCU_PLL_CK:
@@ -423,15 +427,19 @@ void rcu_osci_bypass_mode_enable(enum rcu_osci_type osci) {
 void rcu_osci_bypass_mode_disable(enum rcu_osci_type osci) {
 	switch (osci) {
 	case RCU_HXTAL:
+		{
 		uint32_t reg = RCU_CTL;
 		RCU_CTL &= ~RCU_CTL_HXTALEN;
 		RCU_CTL = reg & ~RCU_CTL_HXTALBPS;
 		break;
+		}
 	case RCU_LXTAL:
+		{
 		uint32_t reg = RCU_BDCTL;
 		RCU_BDCTL &= ~RCU_BDCTL_LXTALEN;
 		RCU_BDCTL = reg & ~RCU_BDCTL_LXTALBPS;
 		break;
+		}
 	case RCU_IRC8M:
 	case RCU_IRC40K:
 	case RCU_PLL_CK:
@@ -494,6 +502,7 @@ uint32_t rcu_clock_freq_get(enum rcu_clock_freq clock) {
 		cksys_freq = HXTAL_VALUE;
 		break;
 	case SEL_PLL:
+		{
 		// PLL clock source selection, HXTAL or IRC8M/2
 		uint32_t pllsel = (RCU_CFG0 & RCU_CFG0_PLLSEL);
 
@@ -539,6 +548,8 @@ uint32_t rcu_clock_freq_get(enum rcu_clock_freq clock) {
 			cksys_freq = ck_src * 6U + ck_src / 2U;
 
 		break;
+
+		}
 	// IRC8M is selected as CK_SYS
 	default:
 		cksys_freq = IRC8M_VALUE;

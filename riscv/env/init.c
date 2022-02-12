@@ -5,7 +5,10 @@
 #include "riscv_encoding.h"
 #include "n200_func.h"
 
-extern uint32_t disable_mcycle_minstret();
+//extern uint32_t disable_mcycle_minstret();
+uint32_t disable_mcycle_minstret() {
+	return 0;
+}
 
 void _init() {
 	system_init();

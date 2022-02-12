@@ -157,7 +157,7 @@ static void enable_irc8m() {
 }
 
 
-static inline xhtal_as_sys_clock() {
+static inline void xhtal_as_sys_clock() {
 	// select HXTAL as system clock
 	RCU_CFG0 &= ~RCU_CFG0_SCS;
 	RCU_CFG0 |= RCU_CKSYSSRC_HXTAL;
@@ -166,7 +166,7 @@ static inline xhtal_as_sys_clock() {
 	while (!(RCU_CFG0 & RCU_SCSS_HXTAL));
 }
 
-static inline pll_as_sys_clock() {
+static inline void pll_as_sys_clock() {
 	// select PLL as system clock
 	RCU_CFG0 &= ~RCU_CFG0_SCS;
 	RCU_CFG0 |= RCU_CKSYSSRC_PLL;
@@ -175,7 +175,7 @@ static inline pll_as_sys_clock() {
 	while (!(RCU_CFG0 & RCU_SCSS_PLL));
 }
 
-static inline pre_init_rcu() {
+static inline void pre_init_rcu() {
 	// AHB = SYSCLK
 	RCU_CFG0 |= RCU_AHB_CKSYS_DIV1;
 	// APB2 = AHB/1
