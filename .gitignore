@@ -1,5 +1,7 @@
 *.a
 *.o
+*.hex
+*.bin
 *.out
 *.elf
 *.swp
