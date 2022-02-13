@@ -4,6 +4,7 @@
 *.bin
 *.out
 *.elf
+*.lss
 *.swp
 *~
 

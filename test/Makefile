@@ -2,33 +2,30 @@ TARGET = simple_test
 
 TOOL_PREFIX = /usr/local/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/riscv-none-embed-
 
-ARCH = rv32imac
-CPU =
+## "-ffunction-sections -fdata-sections" will make every function a section.
+## this works with the "-Wl,--gc-sections" parameter of the linker.
 
 CFLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
 	-I../peripheral -I../peripheral/src -I../peripheral/inc \
-	-I../riscv/drivers -I../riscv/stubs \
-	-I./src -I./inc \
+	-I../riscv/drivers -I../riscv/stubs -I./src -I./inc \
+	-march=rv32imac \
 	-DLONGON_NANO
-	-march=$(ARCH) \
-	#-mcpu=$(CPU)
+
+## "-Wl,--gc-sections" will pass "--gc-sections" to linker to make it
+## ignore unused sections.
+
+LDFLAGS = -T../riscv/env/gd32vf103.lds -Wl,--gc-sections -march=rv32imac
 
 CC = $(TOOL_PREFIX)gcc
-
-LDFLAGS = -T../riscv/env/gd32vf103.lds -nostartfiles -Wl,--gc-sections \
-	  -march=$(ARCH) \
-	  #-mcpu=$(CPU)
-
 LD = $(TOOL_PREFIX)gcc
-
 OBJCOPY = $(TOOL_PREFIX)objcopy
 OBJDUMP = $(TOOL_PREFIX)objdump
 SIZE = $(TOOL_PREFIX)size
 
-#ASM_FILE = $(wildcard ../riscv/env/*.s)
-#ASM_OBJ = $(patsubst %.s, %.o, $(ASM_FILE))
-ASM_FILE = ../riscv/env/start.s
-ASM_OBJ = $(patsubst %.s, %.o, $(ASM_FILE))
+#ASM_FILE = $(wildcard ../riscv/env/*.S)
+#ASM_FILE = ../riscv/env/start.S
+ASM_FILE =
+ASM_OBJ = $(patsubst %.S, %.o, $(ASM_FILE))
 
 C_FILE = $(wildcard ../peripheral/*.c)
 C_FILE += $(wildcard ../peripheral/src/*.c)
@@ -39,8 +36,8 @@ C_FILE += $(wildcard ./src/*.c)
 
 C_OBJ = $(patsubst %.c, %.o, $(C_FILE))
 
+#OBJFILE = $(C_OBJ) $(ASM_OBJ)
 OBJFILE = $(C_OBJ)
-OBJFILE += $(STARTUP_OBJ)
 
 all: $(TARGET).hex
 $(TARGET).hex: $(TARGET).elf
