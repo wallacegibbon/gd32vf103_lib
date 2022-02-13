@@ -14,7 +14,7 @@ CFLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
 ## "-Wl,--gc-sections" will pass "--gc-sections" to linker to make it
 ## ignore unused sections.
 
-LDFLAGS = -T../riscv/env/gd32vf103.lds -Wl,--gc-sections -march=rv32imac
+LDFLAGS = -T../ldscript/gd32vf103.lds -Wl,--gc-sections -march=rv32imac
 
 CC = $(TOOL_PREFIX)gcc
 LD = $(TOOL_PREFIX)gcc

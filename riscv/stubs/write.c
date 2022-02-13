@@ -34,7 +34,7 @@ int puts(const char *string) {
 
 int _put_char(int ch) {
 	usart_data_transmit(USART0, (uint8_t) ch);
-	while (usart_flag_get(USART0, USART_FLAG_TBE) == RESET) {
-	}
+	while (usart_flag_get(USART0, USART_FLAG_TBE) == RESET);
+
 	return ch;
 }

@@ -8,5 +8,5 @@ void _exit(int code) {
 	write_hex(STDERR_FILENO, code);
 	write(STDERR_FILENO, "\n", 1);
 
-	for (;;) ;
+	while (1);
 }
