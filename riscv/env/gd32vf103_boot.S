@@ -156,7 +156,7 @@ in_address_space:
 	bltu a0, a1, 1b
 2:
 	/* Call main(0, NULL) */
-	li   a0, 0
-	li   a1, 0
+	li a0, 0
+	li a1, 0
 	call main
 

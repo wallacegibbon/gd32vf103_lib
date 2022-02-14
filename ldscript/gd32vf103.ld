@@ -46,7 +46,7 @@ SECTIONS {
 		*(.data .data.*)
 		*(.sdata .sdata.*)
 		_edata = .;
-	} >ram
+	} >ram AT>flash
 
 	. = ALIGN(4);
 	PROVIDE(_edata = .);

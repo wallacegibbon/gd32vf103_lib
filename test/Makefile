@@ -15,8 +15,8 @@ CFLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
 ## ignore unused sections.
 
 LDFLAGS = -T../ldscript/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
-	  -nostartfiles -nostdlib \
-	  -march=rv32imac
+	-nostartfiles -nostdlib \
+	-march=rv32imac
 
 CC = $(TOOL_PREFIX)gcc
 LD = $(TOOL_PREFIX)gcc
