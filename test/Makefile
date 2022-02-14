@@ -14,7 +14,9 @@ CFLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
 ## "-Wl,--gc-sections" will pass "--gc-sections" to linker to make it
 ## ignore unused sections.
 
-LDFLAGS = -T../ldscript/gd32vf103.lds -Wl,--gc-sections -march=rv32imac
+LDFLAGS = -T../ldscript/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
+	  -nostartfiles -nostdlib \
+	  -march=rv32imac
 
 CC = $(TOOL_PREFIX)gcc
 LD = $(TOOL_PREFIX)gcc
@@ -23,8 +25,7 @@ OBJDUMP = $(TOOL_PREFIX)objdump
 SIZE = $(TOOL_PREFIX)size
 
 #ASM_FILE = $(wildcard ../riscv/env/*.S)
-#ASM_FILE = ../riscv/env/start.S
-ASM_FILE =
+ASM_FILE = ../riscv/env/gd32vf103_boot.S
 ASM_OBJ = $(patsubst %.S, %.o, $(ASM_FILE))
 
 C_FILE = $(wildcard ../peripheral/*.c)
@@ -36,8 +37,7 @@ C_FILE += $(wildcard ./src/*.c)
 
 C_OBJ = $(patsubst %.c, %.o, $(C_FILE))
 
-#OBJFILE = $(C_OBJ) $(ASM_OBJ)
-OBJFILE = $(C_OBJ)
+OBJFILE = $(C_OBJ) $(ASM_OBJ)
 
 all: $(TARGET).hex
 $(TARGET).hex: $(TARGET).elf
@@ -48,10 +48,10 @@ $(TARGET).hex: $(TARGET).elf
 $(TARGET).elf: $(OBJFILE)
 	$(LD) $(LDFLAGS) -o $@ $^
 
-$(ASM_OBJ): $(ASM_FILE)
-	$(CC) $(CFLAGS) -o $@ $^
+%o: %.S
+	$(CC) $(CFLAGS) -c $< -o $@
 
-start.o: $(ASM_FILE)
+$(ASM_OBJ): $(ASM_FILE)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 %.o: %.c %.h

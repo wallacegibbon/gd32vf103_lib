@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-char my_variable[] = "hello, world!";
+char my_variable[] = "hello, world !";
 char buf[100];
 
 int main(int argc, const char **argv) {
