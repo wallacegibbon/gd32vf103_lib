@@ -17,62 +17,44 @@ SECTIONS {
 
 	.vector_table : {
 		KEEP(*(SORT_NONE(.vector_table)))
-	} >FLASH AT>FLASH
+	} >FLASH
 
 	.text : {
+		. = ALIGN(4);
 		*(.rodata .rodata.*)
 		*(.srodata .srodata.*)
 		*(.text .text.*)
-	} >FLASH AT>FLASH
+		. = ALIGN(4);
+		_etext = .;
+	} >FLASH
 
 	/* VMA is 0x0800xxxx here */
-	. = ALIGN(4);
-	PROVIDE(__etext = .);
-	PROVIDE(_etext = .);
-	PROVIDE(etext = .);
 
-	.lalign : {
+	.data : AT(_etext) {
 		. = ALIGN(4);
-		PROVIDE(_data_lma = .);
-	} >FLASH AT>FLASH
-
-	.dalign : {
-		. = ALIGN(4);
-		PROVIDE(_data = .);
-	} >RAM AT>FLASH
-
-	.data : {
 		_sdata = .;
 		*(.rdata);
 		*(.data .data.*)
 		*(.sdata .sdata.*)
+		. = ALIGN(4);
 		_edata = .;
-	} >RAM AT>FLASH
+	} >RAM
 
 	/* VMA is 0x2000xxxx here */
-	. = ALIGN(4);
-	PROVIDE(_edata = .);
-	PROVIDE(edata = .);
-
-	PROVIDE(_fbss = .);
-	PROVIDE(__bss_start = .);
 
 	.bss : {
+		. = ALIGN(4);
 		_sbss = .;
 		*(.sbss*)
 		*(.bss .bss.*)
 		*(COMMON)
 		. = ALIGN(4);
 		_ebss = .;
-	} >RAM AT>RAM
-
-	. = ALIGN(8);
-	PROVIDE(_end = .);
-	PROVIDE(end = .);
+	} >RAM
 
 	.stack ORIGIN(RAM) + LENGTH(RAM) - __stack_size : {
-		PROVIDE(_heap_end = .);
+		. = ALIGN(4);
 		. = __stack_size;
-		PROVIDE(_sp = .);
-	} >RAM AT>RAM
+		_sp = .;
+	} >RAM
 }

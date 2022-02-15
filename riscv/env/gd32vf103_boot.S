@@ -104,8 +104,8 @@ vtable:
 
 	.section .text.default_interrupt_handler, "ax", %progbits
 default_interrupt_handler:
+	/* should i use mret instead ? */
 	j default_interrupt_handler
-
 
 	.global reset_handler
 	.type reset_handler, @function
@@ -135,8 +135,8 @@ in_address_space:
 	csrw CSR_MTVEC, a0
 
 	/* initialized .data */
-	la a0, _data_lma
-	la a1, _data
+	la a0, _etext
+	la a1, _sdata
 	la a2, _edata
 	bgeu a1, a2, 2f
 1:
@@ -147,8 +147,8 @@ in_address_space:
 	bltu a1, a2, 1b
 2:
 	/* clear .bss */
-	la a0, __bss_start
-	la a1, _end
+	la a0, _sbss
+	la a1, _ebss
 	bgeu a0, a1, 2f
 1:
 	sw zero, (a0)
