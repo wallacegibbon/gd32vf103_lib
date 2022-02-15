@@ -1,5 +1,3 @@
-#include <stdio.h>
-
 char my_variable[] = "hello, world !";
 char buf[100];
 

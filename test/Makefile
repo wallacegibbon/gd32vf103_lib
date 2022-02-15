@@ -43,7 +43,7 @@ all: $(TARGET).hex
 $(TARGET).hex: $(TARGET).elf
 	$(OBJCOPY) -Obinary $< $(TARGET).bin
 	$(OBJCOPY) -Oihex $< $(TARGET).hex
-	$(SIZE) $^
+	$(SIZE) $<
 
 $(TARGET).elf: $(OBJFILE)
 	$(LD) $(LDFLAGS) -o $@ $^

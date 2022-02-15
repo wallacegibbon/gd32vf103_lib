@@ -3,12 +3,12 @@ OUTPUT_ARCH( "riscv" )
 ENTRY( reset_handler )
 
 MEMORY {
-	/* for GD32VF103C4, flash: 16K, ram: 6K */
-	/* for GD32VF103C6, flash: 32K, ram: 10K */
-	/* for GD32VF103C8, flash: 64K, ram: 20K */
-	/* for GD32VF103CB, flash: 128K, ram: 32K */
-	flash(rx) : ORIGIN = 0x08000000, LENGTH = 128K
-	ram(rwx)  : ORIGIN = 0x20000000, LENGTH = 32K
+	/* for GD32VF103C4, FLASH: 16K, RAM: 6K */
+	/* for GD32VF103C6, FLASH: 32K, RAM: 10K */
+	/* for GD32VF103C8, FLASH: 64K, RAM: 20K */
+	/* for GD32VF103CB, FLASH: 128K, RAM: 32K */
+	FLASH(rx) : ORIGIN = 0x08000000, LENGTH = 128K
+	RAM(rwx)  : ORIGIN = 0x20000000, LENGTH = 32K
 }
 
 SECTIONS {
@@ -17,14 +17,15 @@ SECTIONS {
 
 	.vector_table : {
 		KEEP(*(SORT_NONE(.vector_table)))
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
 	.text : {
 		*(.rodata .rodata.*)
 		*(.srodata .srodata.*)
 		*(.text .text.*)
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
+	/* VMA is 0x0800xxxx here */
 	. = ALIGN(4);
 	PROVIDE(__etext = .);
 	PROVIDE(_etext = .);
@@ -33,12 +34,12 @@ SECTIONS {
 	.lalign : {
 		. = ALIGN(4);
 		PROVIDE(_data_lma = .);
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
 	.dalign : {
 		. = ALIGN(4);
 		PROVIDE(_data = .);
-	} >ram AT>flash
+	} >RAM AT>FLASH
 
 	.data : {
 		_sdata = .;
@@ -46,8 +47,9 @@ SECTIONS {
 		*(.data .data.*)
 		*(.sdata .sdata.*)
 		_edata = .;
-	} >ram AT>flash
+	} >RAM AT>FLASH
 
+	/* VMA is 0x2000xxxx here */
 	. = ALIGN(4);
 	PROVIDE(_edata = .);
 	PROVIDE(edata = .);
@@ -62,15 +64,15 @@ SECTIONS {
 		*(COMMON)
 		. = ALIGN(4);
 		_ebss = .;
-	} >ram AT>ram
+	} >RAM AT>RAM
 
 	. = ALIGN(8);
 	PROVIDE(_end = .);
 	PROVIDE(end = .);
 
-	.stack ORIGIN(ram) + LENGTH(ram) - __stack_size : {
+	.stack ORIGIN(RAM) + LENGTH(RAM) - __stack_size : {
 		PROVIDE(_heap_end = .);
 		. = __stack_size;
 		PROVIDE(_sp = .);
-	} >ram AT>ram
+	} >RAM AT>RAM
 }

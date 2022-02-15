@@ -4,21 +4,21 @@ ENTRY( _start )
 
 MEMORY {
 	/* Run in FLASH */
-	/* for GD32VF103C4, flash: 16K, ram: 6K */
-	/* for GD32VF103C6, flash: 32K, ram: 10K */
-	/* for GD32VF103C8, flash: 64K, ram: 20K */
-	/* for GD32VF103CB, flash: 128K, ram: 32K */
-	flash (rxai!w) : ORIGIN = 0x08000000, LENGTH = 128K
-	ram   (wxa!ri) : ORIGIN = 0x20000000, LENGTH = 32K
+	/* for GD32VF103C4, FLASH: 16K, RAM: 6K */
+	/* for GD32VF103C6, FLASH: 32K, RAM: 10K */
+	/* for GD32VF103C8, FLASH: 64K, RAM: 20K */
+	/* for GD32VF103CB, FLASH: 128K, RAM: 32K */
+	FLASH (rxai!w) : ORIGIN = 0x08000000, LENGTH = 128K
+	RAM   (wxa!ri) : ORIGIN = 0x20000000, LENGTH = 32K
 
 	/* Run in RAM */
-	/* for GD32VF103C4, flash: 4K, ram: 2K */
-	/* for GD32VF103C6, flash: 7K, ram: 3K */
-	/* for GD32VF103C8, flash: 15K, ram: 5K */
-	/* for GD32VF103CB, flash: 24K, ram: 8K */
+	/* for GD32VF103C4, FLASH: 4K, RAM: 2K */
+	/* for GD32VF103C6, FLASH: 7K, RAM: 3K */
+	/* for GD32VF103C8, FLASH: 15K, RAM: 5K */
+	/* for GD32VF103CB, FLASH: 24K, RAM: 8K */
 	/*
-	flash (rxai!w) : ORIGIN = 0x20000000, LENGTH = 24K
-	ram   (wxa!ri) : ORIGIN = 0x20006000, LENGTH = 8K
+	FLASH (rxai!w) : ORIGIN = 0x20000000, LENGTH = 24K
+	RAM   (wxa!ri) : ORIGIN = 0x20006000, LENGTH = 8K
 	*/
 }
 
@@ -29,16 +29,16 @@ SECTIONS {
 
 	.init : {
 		KEEP (*(SORT_NONE(.init)))
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
 	.ilalign : {
 		. = ALIGN(4);
 		PROVIDE( _ilm_lma = . );
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
 	.ialign : {
 		PROVIDE( _ilm = . );
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
 	.text : {
 		*(.rodata .rodata.*)
@@ -46,11 +46,11 @@ SECTIONS {
 		*(.text.startup .text.startup.*)
 		*(.text .text.*)
 		*(.gnu.linkonce.t.*)
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
 	.fini : {
 		KEEP (*(SORT_NONE(.fini)))
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
 	. = ALIGN(4);
 
@@ -63,7 +63,7 @@ SECTIONS {
 		PROVIDE_HIDDEN (__preinit_array_start = .);
 		KEEP (*(.preinit_array))
 		PROVIDE_HIDDEN (__preinit_array_end = .);
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
 	.init_array : {
 		PROVIDE_HIDDEN (__init_array_start = .);
@@ -73,7 +73,7 @@ SECTIONS {
 			(*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o )
 			.ctors))
 		PROVIDE_HIDDEN (__init_array_end = .);
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
 	.fini_array : {
 		PROVIDE_HIDDEN (__fini_array_start = .);
@@ -83,7 +83,7 @@ SECTIONS {
 			(*crtbegin.o *crtbegin?.o *crtend.o *crtend?.o )
 			.dtors))
 		PROVIDE_HIDDEN (__fini_array_end = .);
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
 	.ctors : {
 		/* gcc uses crtbegin.o to find the start of
@@ -106,7 +106,7 @@ SECTIONS {
 		KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o ) .ctors))
 		KEEP (*(SORT(.ctors.*)))
 		KEEP (*(.ctors))
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
 	.dtors : {
 		KEEP (*crtbegin.o(.dtors))
@@ -114,7 +114,7 @@ SECTIONS {
 		KEEP (*(EXCLUDE_FILE (*crtend.o *crtend?.o ) .dtors))
 		KEEP (*(SORT(.dtors.*)))
 		KEEP (*(.dtors))
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
 	. = ALIGN(4);
 	PROVIDE( _eilm = . );
@@ -122,12 +122,12 @@ SECTIONS {
 	.lalign : {
 		. = ALIGN(4);
 		PROVIDE( _data_lma = . );
-	} >flash AT>flash
+	} >FLASH AT>FLASH
 
 	.dalign : {
 		. = ALIGN(4);
 		PROVIDE( _data = . );
-	} >ram AT>flash
+	} >RAM AT>FLASH
 
 
 	.data : {
@@ -145,7 +145,7 @@ SECTIONS {
 		*(.srodata.cst4)
 		*(.srodata.cst2)
 		*(.srodata .srodata.*)
-	} >ram AT>flash
+	} >RAM AT>FLASH
 
 	. = ALIGN(4);
 	PROVIDE( _edata = . );
@@ -160,15 +160,15 @@ SECTIONS {
 		*(.gnu.linkonce.b.*)
 		*(COMMON)
 		. = ALIGN(4);
-	} >ram AT>ram
+	} >RAM AT>RAM
 
 	. = ALIGN(8);
 	PROVIDE( _end = . ); /*0X2000,0340*/
 	PROVIDE( end = . );
 
-	.stack ORIGIN(ram) + LENGTH(ram) - __stack_size : {
+	.stack ORIGIN(RAM) + LENGTH(RAM) - __stack_size : {
 		PROVIDE( _heap_end = . );
 		. = __stack_size;
 		PROVIDE( _sp = . );
-	} >ram AT>ram
+	} >RAM AT>RAM
 }
