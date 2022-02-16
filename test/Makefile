@@ -1,8 +1,10 @@
 TARGET = simple_test
 
-#TOOL_PREFIX = /usr/local/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/riscv-none-embed-
-TOOL_PREFIX = /usr/local/nuclei-riscv-tools/gcc/bin/riscv-nuclei-elf-
-#TOOL_PREFIX = riscv64-unknown-elf-
+#COMPILER_PREFIX = /usr/local/xpack-riscv-none-embed-gcc-10.2.0-1.2/bin/riscv-none-embed-
+COMPILER_PREFIX = /usr/local/nuclei-riscv-tools/gcc/bin/riscv-nuclei-elf-
+#COMPILER_PREFIX = riscv64-unknown-elf-
+
+OPENOCD_CMD = /usr/local/nuclei-riscv-tools/openocd/2022.01/bin/openocd
 
 ## "-ffunction-sections -fdata-sections" will make every function a section.
 ## this works with the "-Wl,--gc-sections" parameter of the linker.
@@ -19,11 +21,11 @@ LDFLAGS = -T../ldscript/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
 	-nostartfiles -nostdlib \
 	-march=rv32imac -mabi=ilp32 -DLONGON_NANO
 
-CC = $(TOOL_PREFIX)gcc
-LD = $(TOOL_PREFIX)gcc
-OBJCOPY = $(TOOL_PREFIX)objcopy
-OBJDUMP = $(TOOL_PREFIX)objdump
-SIZE = $(TOOL_PREFIX)size
+CC = $(COMPILER_PREFIX)gcc
+LD = $(COMPILER_PREFIX)gcc
+OBJCOPY = $(COMPILER_PREFIX)objcopy
+OBJDUMP = $(COMPILER_PREFIX)objdump
+SIZE = $(COMPILER_PREFIX)size
 
 STARTUP_FILE = ../riscv/env/gd32vf103_boot.S
 STARTUP_OBJ = $(patsubst %.S, %.o, $(STARTUP_FILE))
@@ -65,6 +67,11 @@ clean:
 
 lss: $(TARGET).elf
 	$(OBJDUMP) -S -D $< > $(TARGET).lss
+
+debug:
+	$(OPENOCD_CMD) \
+		-f interface/ftdi/sipeed-rv-debugger.cfg \
+		-f target/gd32vf103.cfg
 
 load: $(TARGET).hex
 	echo "load program" $< "to target machine"
