@@ -8,6 +8,11 @@ This is a library for GD32VF103xxxx RISC-V microcontrollers. It depends on the G
 ```sh
 curl -fsSL https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules | sudo tee /etc/udev/rules.d/99-platformio-udev.rules
 
+# or
+sudo cp misc/99-platformio-udev.rules /etc/udev/rules.d/
+
+## then restart udev
+
 sudo udevadm control --reload-rules
 sudo udevadm trigger
 ```
