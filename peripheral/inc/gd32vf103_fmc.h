@@ -105,7 +105,7 @@
 	(((regidx) << 6) | (bitpos))
 
 #define FMC_REG_VAL(offset) \
-	(REG32(FMC + ((offset) >> 6)))
+	(REG32(FMC + ((uint32_t) (offset) >> 6)))
 
 #define FMC_BIT_POS(val) \
 	((val) & 0x1FU)
@@ -114,16 +114,16 @@
 	(((regidx) << 12) | ((bitpos0) << 6) | (bitpos1))
 
 #define FMC_REG_VALS(offset) \
-	(REG32(FMC + ((offset) >> 12)))
+	(REG32(FMC + ((uint32_t) (offset) >> 12)))
 
 #define FMC_BIT_POS0(val) \
-	(((val) >> 6) & 0x1FU)
+	(((uint32_t) (val) >> 6) & 0x1FU)
 
 #define FMC_BIT_POS1(val) \
 	((val) & 0x1FU)
 
 #define FMC_REG_OFFSET_GET(flag) \
-	((flag) >> 12)
+	((uint32_t) (flag) >> 12)
 
 // status register offset
 #define FMC_STAT_REG_OFFSET		0x0CU
