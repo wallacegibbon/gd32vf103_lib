@@ -8,8 +8,6 @@
 #include "stub.h"
 #include "gd32vf103.h"
 
-typedef unsigned int size_t;
-
 extern int _put_char(int ch) __attribute__((weak));
 
 ssize_t _write(int fd, const void *ptr, size_t len) {

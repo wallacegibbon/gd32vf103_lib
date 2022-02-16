@@ -137,56 +137,56 @@ enum control_status {DISABLE = 0, ENABLE = !DISABLE};
 enum flag_status {RESET = 0, SET = 1, MAX = 0x7FFFFFFF};
 enum err_status {ERROR = 0, SUCCESS = !ERROR};
 
-#define REG32(addr) (* (volatile uint32_t *) (uint32_t) (addr))
-#define REG16(addr) (* (volatile uint16_t *) (uint32_t) (addr))
-#define REG8(addr) (* (volatile uint8_t *) (uint32_t) (addr))
+#define REG32(addr) (* (volatile uint32_t *) (uintptr_t) (addr))
+#define REG16(addr) (* (volatile uint16_t *) (uintptr_t) (addr))
+#define REG8(addr) (* (volatile uint8_t *) (uintptr_t) (addr))
 
-#define BIT(x) ((uint32_t) ((uint32_t) 1 << (x)))
+#define BIT(x) ((uint32_t) (1 << (x)))
 
 #define BITS(start, end) \
-	((0xFFFFFFFFUL << (start)) & (0xFFFFFFFFUL >> (31 - (uint32_t) (end))))
+	((0xFFFFFFFF << (start)) & (0xFFFFFFFF >> (31 - (end))))
 
 #define GET_BITS(regval, start, end) \
 	(((regval) & BITS((start), (end))) >> (start))
 
 // main flash and SRAM memory map
-#define FLASH_BASE	((uint32_t) 0x08000000U)
-#define SRAM_BASE	((uint32_t) 0x20000000U) // SRAM0 base address
-#define OB_BASE		((uint32_t) 0x1FFFF800U)
-#define DBG_BASE	((uint32_t) 0xE0042000U)
-#define EXMC_BASE	((uint32_t) 0xA0000000U)
+#define FLASH_BASE	((uint32_t) 0x08000000)
+#define SRAM_BASE	((uint32_t) 0x20000000) // SRAM0 base address
+#define OB_BASE		((uint32_t) 0x1FFFF800)
+#define DBG_BASE	((uint32_t) 0xE0042000)
+#define EXMC_BASE	((uint32_t) 0xA0000000)
 
 // peripheral memory map
-#define APB1_BUS_BASE	((uint32_t) 0x40000000U)
-#define APB2_BUS_BASE	((uint32_t) 0x40010000U)
-#define AHB1_BUS_BASE	((uint32_t) 0x40018000U)
-#define AHB3_BUS_BASE	((uint32_t) 0x60000000U)
+#define APB1_BUS_BASE	((uint32_t) 0x40000000)
+#define APB2_BUS_BASE	((uint32_t) 0x40010000)
+#define AHB1_BUS_BASE	((uint32_t) 0x40018000)
+#define AHB3_BUS_BASE	((uint32_t) 0x60000000)
 
 // advanced peripheral bus 1 memory map
-#define TIMER_BASE	(APB1_BUS_BASE + 0x00000000U)
-#define RTC_BASE	(APB1_BUS_BASE + 0x00002800U)
-#define WWDGT_BASE	(APB1_BUS_BASE + 0x00002C00U)
-#define FWDGT_BASE	(APB1_BUS_BASE + 0x00003000U)
-#define SPI_BASE	(APB1_BUS_BASE + 0x00003800U)
-#define USART_BASE	(APB1_BUS_BASE + 0x00004400U)
-#define I2C_BASE	(APB1_BUS_BASE + 0x00005400U)
-#define CAN_BASE	(APB1_BUS_BASE + 0x00006400U)
-#define BKP_BASE	(APB1_BUS_BASE + 0x00006C00U)
-#define PMU_BASE	(APB1_BUS_BASE + 0x00007000U)
-#define DAC_BASE	(APB1_BUS_BASE + 0x00007400U)
+#define TIMER_BASE	(APB1_BUS_BASE + 0x00000000)
+#define RTC_BASE	(APB1_BUS_BASE + 0x00002800)
+#define WWDGT_BASE	(APB1_BUS_BASE + 0x00002C00)
+#define FWDGT_BASE	(APB1_BUS_BASE + 0x00003000)
+#define SPI_BASE	(APB1_BUS_BASE + 0x00003800)
+#define USART_BASE	(APB1_BUS_BASE + 0x00004400)
+#define I2C_BASE	(APB1_BUS_BASE + 0x00005400)
+#define CAN_BASE	(APB1_BUS_BASE + 0x00006400)
+#define BKP_BASE	(APB1_BUS_BASE + 0x00006C00)
+#define PMU_BASE	(APB1_BUS_BASE + 0x00007000)
+#define DAC_BASE	(APB1_BUS_BASE + 0x00007400)
 
 // advanced peripheral bus 2 memory map
-#define AFIO_BASE	(APB2_BUS_BASE + 0x00000000U)
-#define EXTI_BASE	(APB2_BUS_BASE + 0x00000400U)
-#define GPIO_BASE	(APB2_BUS_BASE + 0x00000800U)
-#define ADC_BASE	(APB2_BUS_BASE + 0x00002400U)
+#define AFIO_BASE	(APB2_BUS_BASE + 0x00000000)
+#define EXTI_BASE	(APB2_BUS_BASE + 0x00000400)
+#define GPIO_BASE	(APB2_BUS_BASE + 0x00000800)
+#define ADC_BASE	(APB2_BUS_BASE + 0x00002400)
 
 // advanced high performance bus 1 memory map
-#define DMA_BASE	(AHB1_BUS_BASE + 0x00008000U)
-#define RCU_BASE	(AHB1_BUS_BASE + 0x00009000U)
-#define FMC_BASE	(AHB1_BUS_BASE + 0x0000A000U)
-#define CRC_BASE	(AHB1_BUS_BASE + 0x0000B000U)
-#define USBFS_BASE	(AHB1_BUS_BASE + 0x0FFE8000U)
+#define DMA_BASE	(AHB1_BUS_BASE + 0x00008000)
+#define RCU_BASE	(AHB1_BUS_BASE + 0x00009000)
+#define FMC_BASE	(AHB1_BUS_BASE + 0x0000A000)
+#define CRC_BASE	(AHB1_BUS_BASE + 0x0000B000)
+#define USBFS_BASE	(AHB1_BUS_BASE + 0x0FFE8000)
 
 #include "gd32vf103_libopt.h"
 
