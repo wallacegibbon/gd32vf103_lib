@@ -24,20 +24,19 @@ OBJCOPY = $(TOOL_PREFIX)objcopy
 OBJDUMP = $(TOOL_PREFIX)objdump
 SIZE = $(TOOL_PREFIX)size
 
-#ASM_FILE = $(wildcard ../riscv/env/*.S)
-ASM_FILE = ../riscv/env/gd32vf103_boot.S
-ASM_OBJ = $(patsubst %.S, %.o, $(ASM_FILE))
+STARTUP_FILE = ../riscv/env/gd32vf103_boot.S
+STARTUP_OBJ = $(patsubst %.S, %.o, $(STARTUP_FILE))
 
-C_FILE = $(wildcard ../peripheral/*.c)
-C_FILE += $(wildcard ../peripheral/src/*.c)
-C_FILE += $(wildcard ../riscv/drivers/*.c)
-C_FILE += $(wildcard ../riscv/stubs/*.c)
-C_FILE += $(wildcard ../riscv/env/*.c)
-C_FILE += $(wildcard ./src/*.c)
+C_FILES = $(wildcard ../peripheral/*.c)
+C_FILES += $(wildcard ../peripheral/src/*.c)
+C_FILES += $(wildcard ../riscv/drivers/*.c)
+C_FILES += $(wildcard ../riscv/stubs/*.c)
+C_FILES += $(wildcard ../riscv/env/*.c)
+C_FILES += $(wildcard ./src/*.c)
 
-C_OBJ = $(patsubst %.c, %.o, $(C_FILE))
+C_OBJ = $(patsubst %.c, %.o, $(C_FILES))
 
-OBJFILE = $(C_OBJ) $(ASM_OBJ)
+OBJFILE = $(C_OBJ) $(STARTUP_OBJ)
 
 all: $(TARGET).hex
 $(TARGET).hex: $(TARGET).elf
@@ -48,13 +47,10 @@ $(TARGET).hex: $(TARGET).elf
 $(TARGET).elf: $(OBJFILE)
 	$(LD) $(LDFLAGS) -o $@ $^
 
-%o: %.S
+$(STARTUP_OBJ): $(STARTUP_FILE)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(ASM_OBJ): $(ASM_FILE)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-%.o: %.c %.h
+%.o: %.c
 	$(warning $<)
 	$(CC) $(CFLAGS) -c $< -o $@
 
