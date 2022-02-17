@@ -24,7 +24,7 @@ void init() {
 }
 
 int main(int argc, const char **argv) {
-	//init();
+	init();
 
 	for (int i = 0; i < 100; i++)
 		buf[i] = my_variable[i % 10];
@@ -37,11 +37,9 @@ int main(int argc, const char **argv) {
 	return 0;
 }
 
-/*
 int _put_char(int ch) {
 	usart_data_transmit(USART0, (uint8_t) ch);
 	while (usart_flag_get(USART0, USART_FLAG_TBE) == RESET);
 
 	return ch;
 }
-*/

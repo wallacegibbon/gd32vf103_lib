@@ -47,7 +47,7 @@ all: $(TARGET).hex
 $(TARGET).hex: $(TARGET).elf
 	$(OBJCOPY) -Obinary $< $(TARGET).bin
 	$(OBJCOPY) -Oihex $< $(TARGET).hex
-	#$(SIZE) --format=sysv --radix=16 $<
+	$(SIZE) --format=sysv --radix=16 $<
 	$(SIZE) $<
 
 $(TARGET).elf: $(OBJFILE)
