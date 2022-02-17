@@ -480,6 +480,30 @@ void rcu_deepsleep_voltage_set(uint32_t dsvol) {
 	RCU_DSV = dsvol;
 }
 
+static inline uint8_t ahb_exp(uint32_t idx) {
+	// AHB : 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9
+	if (idx < 8)
+		return 0;
+	if (idx < 12)
+		return idx - 7;
+	if (idx < 16)
+		return idx - 6;
+	// this should not happen
+	if (idx >= 16)
+		return 0;
+}
+
+static inline uint8_t apb_1_2_exp(uint32_t idx) {
+	// 0, 0, 0, 0, 1, 2, 3, 4
+	if (idx < 4)
+		return 0;
+	if (idx < 8)
+		return idx - 3;
+	// this should not happen
+	if (idx >= 8)
+		return 0;
+}
+
 /*
  * get the system clock, bus and peripheral clock frequency.
  * returns the clock frequency of system, AHB, APB1, APB2
@@ -487,11 +511,6 @@ void rcu_deepsleep_voltage_set(uint32_t dsvol) {
 uint32_t rcu_clock_freq_get(enum rcu_clock_freq clock) {
 	uint32_t cksys_freq, ahb_freq, apb1_freq, apb2_freq;
 	uint32_t ck_freq = 0;
-
-	// exponent of AHB, APB1 and APB2 clock divider
-	uint8_t ahb_exp[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9};
-	uint8_t apb1_exp[8] = {0, 0, 0, 0, 1, 2, 3, 4};
-	uint8_t apb2_exp[8] = {0, 0, 0, 0, 1, 2, 3, 4};
 
 	uint32_t sws = GET_BITS(RCU_CFG0, 2, 3);
 	switch (sws) {
@@ -558,17 +577,17 @@ uint32_t rcu_clock_freq_get(enum rcu_clock_freq clock) {
 
 	// calculate AHB clock frequency
 	uint32_t idx = GET_BITS(RCU_CFG0, 4, 7);
-	uint32_t clk_exp = ahb_exp[idx];
+	uint32_t clk_exp = ahb_exp(idx);
 	ahb_freq = cksys_freq >> clk_exp;
 
 	// calculate APB1 clock frequency
 	idx = GET_BITS(RCU_CFG0, 8, 10);
-	clk_exp = apb1_exp[idx];
+	clk_exp = apb_1_2_exp(idx);
 	apb1_freq = ahb_freq >> clk_exp;
 
 	// calculate APB2 clock frequency
 	idx = GET_BITS(RCU_CFG0, 11, 13);
-	clk_exp = apb2_exp[idx];
+	clk_exp = apb_1_2_exp(idx);
 	apb2_freq = ahb_freq >> clk_exp;
 
 	// return the clocks frequency

@@ -1,7 +1,7 @@
-#include <stdio.h>
 #include "gd32vf103.h"
 
-char my_variable[] = "hello, world !";
+char my_variable[] = "hello, world!";
+
 char buf[100];
 
 void init() {
@@ -23,6 +23,18 @@ void init() {
 	usart_enable(USART0);
 }
 
+int _put_char(int ch) {
+	usart_data_transmit(USART0, (uint8_t) ch);
+	while (usart_flag_get(USART0, USART_FLAG_TBE) == RESET);
+
+	return ch;
+}
+
+int puts(const char *str) {
+	for (char c = *str; c != '\0'; str++)
+		_put_char(c);
+}
+
 int main(int argc, const char **argv) {
 	init();
 
@@ -30,16 +42,10 @@ int main(int argc, const char **argv) {
 		buf[i] = my_variable[i % 10];
 
 	for (int i = 0; i < 100; i++)
-		printf("_hello, i is now %d\n", i);
+		puts("hello, this is from the serial port\n");
 
 	while (1);
 
 	return 0;
 }
 
-int _put_char(int ch) {
-	usart_data_transmit(USART0, (uint8_t) ch);
-	while (usart_flag_get(USART0, USART_FLAG_TBE) == RESET);
-
-	return ch;
-}

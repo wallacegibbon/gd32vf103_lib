@@ -11,15 +11,15 @@ OPENOCD_CMD = /usr/local/riscv-openocd/bin/openocd
 ## this works with the "-Wl,--gc-sections" parameter of the linker.
 
 CFLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
-	-I../peripheral -I../peripheral/src -I../peripheral/inc \
-	-I../riscv/drivers -I../riscv/stubs -I./src -I./inc \
+	-I../riscv -I../peripheral -I../peripheral/src -I../peripheral/inc \
+	-I./src \
 	-march=rv32imac -mabi=ilp32 -DLONGON_NANO
 
 ## "-Wl,--gc-sections" will pass "--gc-sections" to linker to make it
 ## ignore unused sections.
 
 LDFLAGS = -T../ldscript/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
-	-nostartfiles \
+	-nostartfiles -nostdlib \
 	-march=rv32imac -mabi=ilp32 -DLONGON_NANO
 
 CC = $(COMPILER_PREFIX)gcc
@@ -29,14 +29,12 @@ OBJCOPY = $(COMPILER_PREFIX)objcopy
 OBJDUMP = $(COMPILER_PREFIX)objdump
 SIZE = $(COMPILER_PREFIX)size
 
-STARTUP_FILE = ../riscv/env/gd32vf103_boot.S
+STARTUP_FILE = ../boot/gd32vf103_boot.S
 STARTUP_OBJ = $(patsubst %.S, %.o, $(STARTUP_FILE))
 
 C_FILES = $(wildcard ../peripheral/*.c)
 C_FILES += $(wildcard ../peripheral/src/*.c)
-C_FILES += $(wildcard ../riscv/drivers/*.c)
-C_FILES += $(wildcard ../riscv/stubs/*.c)
-C_FILES += $(wildcard ../riscv/env/*.c)
+C_FILES += $(wildcard ../riscv/*.c)
 C_FILES += $(wildcard ./src/*.c)
 
 C_OBJ = $(patsubst %.c, %.o, $(C_FILES))
