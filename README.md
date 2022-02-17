@@ -22,8 +22,13 @@ sudo usermod -a -G dialout wallace
 sudo usermod -a -G plugdev wallace
 ```
 
+
+## OpenOCD
+
+Use this [riscv openocd](https://github.com/riscv/riscv-openocd). And copy the sipeed-debugger configuration to the openocd script/interface directory.
+
 ```sh
-sudo cp misc/sipeed-rv-debugger.cfg /usr/local/nuclei-riscv-tools/openocd/2022.01/scripts/interface/ftdi/
+sudo cp misc/sipeed-rv-debugger.cfg /usr/local/riscv-openocd/share/openocd/scripts/interface/ftdi/
 ```
 
 

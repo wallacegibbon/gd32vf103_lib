@@ -4,7 +4,8 @@ TARGET = simple_test
 COMPILER_PREFIX = /usr/local/nuclei-riscv-tools/gcc/bin/riscv-nuclei-elf-
 #COMPILER_PREFIX = riscv64-unknown-elf-
 
-OPENOCD_CMD = /usr/local/nuclei-riscv-tools/openocd/2022.01/bin/openocd
+#OPENOCD_CMD = /usr/local/nuclei-riscv-tools/openocd/2022.01/bin/openocd
+OPENOCD_CMD = /usr/local/riscv-openocd/bin/openocd
 
 ## "-ffunction-sections -fdata-sections" will make every function a section.
 ## this works with the "-Wl,--gc-sections" parameter of the linker.
@@ -23,6 +24,7 @@ LDFLAGS = -T../ldscript/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
 
 CC = $(COMPILER_PREFIX)gcc
 LD = $(COMPILER_PREFIX)gcc
+GDB = $(COMPILER_PREFIX)gdb
 OBJCOPY = $(COMPILER_PREFIX)objcopy
 OBJDUMP = $(COMPILER_PREFIX)objdump
 SIZE = $(COMPILER_PREFIX)size
@@ -68,10 +70,13 @@ clean:
 lss: $(TARGET).elf
 	$(OBJDUMP) -S -D $< > $(TARGET).lss
 
-debug:
+openocd:
 	$(OPENOCD_CMD) \
 		-f interface/ftdi/sipeed-rv-debugger.cfg \
 		-f target/gd32vf103.cfg
+
+debug:
+	$(GDB)
 
 load: $(TARGET).hex
 	echo "load program" $< "to target machine"
