@@ -110,15 +110,14 @@ void eclic_init(uint32_t num_irq) {
 
 	//clear all IP/IE/ATTR/CTRL bits for all interrupt sources
 
-	typedef volatile uint32_t vuint32_t;
+	volatile uint32_t *p =
+		(volatile uint32_t *) (ECLIC_ADDR_BASE + ECLIC_INT_IP_OFFSET);
 
-	vuint32_t *base =
-		(vuint32_t *) (ECLIC_ADDR_BASE + ECLIC_INT_IP_OFFSET);
+	volatile uint32_t *upper =
+		(volatile uint32_t *) (p + num_irq * 4);
 
-	vuint32_t *upper = (vuint32_t *) (base + num_irq * 4);
-
-	for (vuint32_t *ptr = base; ptr < upper; ptr = ptr + 4)
-		*ptr = 0;
+	for (; p < upper; p += 4)
+		*p = 0;
 }
 
 void eclic_enable_interrupt(uint32_t source) {

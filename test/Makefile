@@ -19,7 +19,7 @@ CFLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
 ## ignore unused sections.
 
 LDFLAGS = -T../ldscript/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
-	-nostartfiles -nostdlib \
+	-nostartfiles \
 	-march=rv32imac -mabi=ilp32 -DLONGON_NANO
 
 CC = $(COMPILER_PREFIX)gcc
@@ -47,7 +47,8 @@ all: $(TARGET).hex
 $(TARGET).hex: $(TARGET).elf
 	$(OBJCOPY) -Obinary $< $(TARGET).bin
 	$(OBJCOPY) -Oihex $< $(TARGET).hex
-	$(SIZE) --format=sysv --radix=16 $<
+	#$(SIZE) --format=sysv --radix=16 $<
+	$(SIZE) $<
 
 $(TARGET).elf: $(OBJFILE)
 	$(LD) $(LDFLAGS) -o $@ $^
