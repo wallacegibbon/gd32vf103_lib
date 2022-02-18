@@ -4,12 +4,40 @@ char my_variable[] = "hello, world!";
 
 char buf[100];
 
+__attribute__((interrupt))
+void USART0_IRQn_handler() {
+	//gpio_bit_reset(GPIOC, GPIO_PIN_13);
+	if (usart_interrupt_flag_get(USART0, USART_INT_FLAG_RBNE) != RESET) {
+		gpio_bit_reset(GPIOA, GPIO_PIN_1);
+	} else {
+		gpio_bit_reset(GPIOA, GPIO_PIN_2);
+	}
+}
+
 void init() {
 	rcu_periph_clock_enable(RCU_GPIOA);
+	rcu_periph_clock_enable(RCU_GPIOC);
 	rcu_periph_clock_enable(RCU_USART0);
 
+	// USART0
 	gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_9);
 	gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
+
+	eclic_global_interrupt_enable();
+	eclic_priority_group_set(ECLIC_PRIGROUP_LEVEL3_PRIO1);
+	eclic_irq_enable(USART0_IRQn, 1, 0);
+
+	//usart_interrupt_enable(USART0, USART_INT_TBE);
+	usart_interrupt_enable(USART0, USART_INT_RBNE);
+
+	// trun off all LEDs
+	gpio_bit_set(GPIOA, GPIO_PIN_1 | GPIO_PIN_2);
+	gpio_bit_set(GPIOC, GPIO_PIN_13);
+
+	// LED
+	gpio_init(GPIOA, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ,
+			GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_13);
+	gpio_init(GPIOC, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_13);
 
 	usart_deinit(USART0);
 	usart_baudrate_set(USART0, 9600);
@@ -37,6 +65,10 @@ int puts(const char *str) {
 
 int main(int argc, const char **argv) {
 	init();
+
+	//gpio_bit_reset(GPIOA, GPIO_PIN_1);
+	//gpio_bit_reset(GPIOA, GPIO_PIN_2);
+	gpio_bit_reset(GPIOC, GPIO_PIN_13);
 
 	for (int i = 0; i < 100; i++)
 		buf[i] = my_variable[i % 10];
