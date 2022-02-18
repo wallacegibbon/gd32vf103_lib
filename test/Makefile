@@ -7,6 +7,9 @@ COMPILER_PREFIX = /usr/local/nuclei-riscv-tools/gcc/bin/riscv-nuclei-elf-
 #OPENOCD_CMD = /usr/local/nuclei-riscv-tools/openocd/2022.01/bin/openocd
 OPENOCD_CMD = /usr/local/riscv-openocd/bin/openocd
 
+OPENOCD_ARGS = -f interface/ftdi/sipeed-rv-debugger.cfg \
+	-f target/gd32vf103.cfg
+
 ## "-ffunction-sections -fdata-sections" will make every function a section.
 ## this works with the "-Wl,--gc-sections" parameter of the linker.
 
@@ -58,25 +61,21 @@ $(STARTUP_OBJ): $(STARTUP_FILE)
 	$(warning $<)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-.PHONY: clean lss load
+.PHONY: load openocd debug lss clean
 
-RM = rm -f
-
-clean:
-	$(RM) *.elf *.hex *.bin *.lss
-	$(RM) $(OBJFILE)
-
-lss: $(TARGET).elf
-	$(OBJDUMP) -S -D $< > $(TARGET).lss
+load: $(TARGET).bin
+	$(OPENOCD_CMD) $(OPENOCD_ARGS) -c "program $< verify reset exit" -d1
 
 openocd:
-	$(OPENOCD_CMD) \
-		-f interface/ftdi/sipeed-rv-debugger.cfg \
-		-f target/gd32vf103.cfg
+	$(OPENOCD_CMD) $(OPENOCD_ARGS)
 
 debug:
 	$(GDB)
 
-load: $(TARGET).hex
-	echo "load program" $< "to target machine"
+lss: $(TARGET).elf
+	$(OBJDUMP) -S -D $< > $(TARGET).lss
+
+clean:
+	rm -f *.elf *.hex *.bin *.lss
+	rm -f $(OBJFILE)
 
