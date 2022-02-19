@@ -30,7 +30,7 @@ void init() {
 	eclic_priority_group_set(ECLIC_PRIGROUP_LEVEL3_PRIO1);
 	eclic_irq_enable(USART0_IRQn, 1, 0);
 
-	usart_interrupt_enable(USART0, USART_INT_TBE);
+	//usart_interrupt_enable(USART0, USART_INT_TBE);
 	usart_interrupt_enable(USART0, USART_INT_RBNE);
 
 	// trun off all LEDs

@@ -37,7 +37,7 @@ void usart_deinit(uint32_t usart_periph) {
  * baudval: baud rate value
  */
 void usart_baudrate_set(uint32_t usart_periph, uint32_t baudval) {
-	uint32_t uclk = 0U, intdiv = 0U, fradiv = 0U, udiv = 0U;
+	uint32_t uclk = 0, intdiv = 0, fradiv = 0, udiv = 0;
 	// get clock frequency
 	switch (usart_periph) {
 	case USART0:
@@ -59,11 +59,11 @@ void usart_baudrate_set(uint32_t usart_periph, uint32_t baudval) {
 		break;
 	}
 	// oversampling by 16, configure the value of USART_BAUD
-	udiv = (uclk + baudval / 2U) / baudval;
-	intdiv = udiv & (0x0000fff0U);
-	fradiv = udiv & (0x0000000fU);
+	udiv = (uclk + baudval / 2) / baudval;
+	intdiv = udiv & 0x0000fff0;
+	fradiv = udiv & 0x0000000f;
 	USART_BAUD(usart_periph) =
-		((USART_BAUD_FRADIV | USART_BAUD_INTDIV) & (intdiv | fradiv));
+		(USART_BAUD_FRADIV | USART_BAUD_INTDIV) & (intdiv | fradiv);
 }
 
 /*
@@ -157,7 +157,7 @@ void usart_data_transmit(uint32_t usart_periph, uint32_t data) {
  * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
  */
 uint16_t usart_data_receive(uint32_t usart_periph) {
-	return (uint16_t) (GET_BITS(USART_DATA(usart_periph), 0U, 8U));
+	return (uint16_t) (GET_BITS(USART_DATA(usart_periph), 0, 8));
 }
 
 /*
@@ -488,7 +488,7 @@ void usart_interrupt_disable(uint32_t usart_periph, uint32_t interrupt) {
  */
 enum flag_status usart_interrupt_flag_get(uint32_t usart_periph,
 		uint32_t int_flag) {
-	uint32_t intenable = 0U, flag = 0U;
+	uint32_t intenable = 0, flag = 0;
 
 	// get the interrupt enable bit status
 	intenable = (USART_REG_VAL(usart_periph, int_flag) &

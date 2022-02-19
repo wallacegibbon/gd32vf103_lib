@@ -1,5 +1,5 @@
-#ifndef __N200_FUNC_H__
-#define __N200_FUNC_H__
+#ifndef __N200_FUNC_H
+#define __N200_FUNC_H
 
 #include <stddef.h>
 #include "n200_timer.h"

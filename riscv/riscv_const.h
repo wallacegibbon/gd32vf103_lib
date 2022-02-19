@@ -1,5 +1,5 @@
-#ifndef __RISCV_CONST_H__
-#define __RISCV_CONST_H__
+#ifndef __RISCV_CONST_H
+#define __RISCV_CONST_H
 
 #ifdef __ASSEMBLER__
 #define _AC(X,Y)	X

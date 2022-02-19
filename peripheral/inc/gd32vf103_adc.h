@@ -1,5 +1,5 @@
-#ifndef __GD32VF103_ADC_H__
-#define __GD32VF103_ADC_H__
+#ifndef __GD32VF103_ADC_H
+#define __GD32VF103_ADC_H
 
 #include "gd32vf103.h"
 

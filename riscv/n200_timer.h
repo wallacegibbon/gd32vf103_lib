@@ -1,5 +1,5 @@
-#ifndef __N200_TIMER_H__
-#define __N200_TIMER_H__
+#ifndef __N200_TIMER_H
+#define __N200_TIMER_H
 
 #define TIMER_MSIP		0xFFC
 #define TIMER_MSIP_size		0x4

@@ -1,5 +1,5 @@
-#ifndef GD32VF103_SPI_H
-#define GD32VF103_SPI_H
+#ifndef __GD32VF103_SPI_H
+#define __GD32VF103_SPI_H
 
 #include "gd32vf103.h"
 

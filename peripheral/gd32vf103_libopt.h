@@ -1,5 +1,5 @@
-#ifndef __GD32VF103_LIBOPT_H__
-#define __GD32VF103_LIBOPT_H__
+#ifndef __GD32VF103_LIBOPT_H
+#define __GD32VF103_LIBOPT_H
 
 #include "gd32vf103_adc.h"
 #include "gd32vf103_bkp.h"

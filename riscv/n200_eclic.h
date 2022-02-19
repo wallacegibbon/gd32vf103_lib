@@ -1,5 +1,5 @@
-#ifndef __N200_ECLIC_H__
-#define __N200_ECLIC_H__
+#ifndef __N200_ECLIC_H
+#define __N200_ECLIC_H
 
 #include <riscv_const.h>
 

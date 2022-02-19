@@ -104,8 +104,10 @@ vtable:
 
 	.section .text.default_interrupt_handler, "ax", %progbits
 default_interrupt_handler:
-	/* should i use mret instead ? */
+	/*
 	j default_interrupt_handler
+	*/
+	mret
 
 	.global reset_handler
 	.type reset_handler, @function

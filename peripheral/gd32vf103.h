@@ -1,5 +1,5 @@
-#ifndef __GD32VF103_H__
-#define __GD32VF103_H__
+#ifndef __GD32VF103_H
+#define __GD32VF103_H
 
 #ifdef LONGON_NANO
 #define HXTAL_VALUE		((uint32_t) 8000000)

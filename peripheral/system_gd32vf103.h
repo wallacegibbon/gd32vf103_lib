@@ -1,5 +1,5 @@
-#ifndef __SYSTEM_GD32VF103_H__
-#define __SYSTEM_GD32VF103_H__
+#ifndef __SYSTEM_GD32VF103_H
+#define __SYSTEM_GD32VF103_H
 
 #include <stdint.h>
 

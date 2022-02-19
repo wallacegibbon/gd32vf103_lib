@@ -1,5 +1,5 @@
-#ifndef GD32VF103_FMC_H
-#define GD32VF103_FMC_H
+#ifndef __GD32VF103_FMC_H
+#define __GD32VF103_FMC_H
 
 #include "gd32vf103.h"
 

@@ -1,5 +1,5 @@
-#ifndef GD32VF103_RTC_H
-#define GD32VF103_RTC_H
+#ifndef __GD32VF103_RTC_H
+#define __GD32VF103_RTC_H
 
 #include "gd32vf103.h"
 
