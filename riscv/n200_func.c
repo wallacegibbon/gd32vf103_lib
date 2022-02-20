@@ -374,6 +374,11 @@ void eclic_set_negedge_trig(uint32_t source) {
 	eclic_set_intattr(source, new_intattr);
 }
 
+__attribute__((weak))
+uintptr_t handle_trap(uintptr_t mcause, uintptr_t sp) {
+	while (1);
+}
+
 //void wfe() {
 //	core_wfe();
 //}

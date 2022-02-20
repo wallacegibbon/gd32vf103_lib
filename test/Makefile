@@ -32,17 +32,16 @@ OBJCOPY = $(COMPILER_PREFIX)objcopy
 OBJDUMP = $(COMPILER_PREFIX)objdump
 SIZE = $(COMPILER_PREFIX)size
 
-STARTUP_FILE = ../boot/gd32vf103_boot.S
-STARTUP_OBJ = $(patsubst %.S, %.o, $(STARTUP_FILE))
-
 C_FILES = $(wildcard ../peripheral/*.c)
 C_FILES += $(wildcard ../peripheral/src/*.c)
 C_FILES += $(wildcard ../riscv/*.c)
 C_FILES += $(wildcard ./src/*.c)
 
-C_OBJ = $(patsubst %.c, %.o, $(C_FILES))
+C_OBJS = $(patsubst %.c, %.o, $(C_FILES))
 
-OBJFILE = $(C_OBJ) $(STARTUP_OBJ)
+STARTUP_OBJS = ../boot/start.o ../boot/entry.o
+
+OBJFILES = $(C_OBJS) $(STARTUP_OBJS)
 
 all: $(TARGET).hex
 $(TARGET).hex: $(TARGET).elf
@@ -51,10 +50,13 @@ $(TARGET).hex: $(TARGET).elf
 	$(SIZE) --format=sysv --radix=16 $<
 	$(SIZE) $<
 
-$(TARGET).elf: $(OBJFILE)
+$(TARGET).elf: $(OBJFILES)
 	$(LD) $(LDFLAGS) -o $@ $^
 
-$(STARTUP_OBJ): $(STARTUP_FILE)
+../boot/start.o: ../boot/start.S
+	$(CC) $(CFLAGS) -c $< -o $@
+
+../boot/entry.o: ../boot/entry.S
 	$(CC) $(CFLAGS) -c $< -o $@
 
 %.o: %.c
@@ -77,5 +79,5 @@ lss: $(TARGET).elf
 
 clean:
 	rm -f *.elf *.hex *.bin *.lss
-	rm -f $(OBJFILE)
+	rm -f $(OBJFILES)
 

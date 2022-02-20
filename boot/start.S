@@ -104,17 +104,18 @@ vtable:
 
 	.section .text.default_interrupt_handler, "ax", %progbits
 default_interrupt_handler:
-	/*
 	j default_interrupt_handler
-	*/
+	/*
 	mret
+	*/
 
 	.global reset_handler
 	.type reset_handler, @function
 reset_handler:
-	/* Disable interrupts until they are needed. */
+	/* disable interrupts until they are needed. */
 	csrc CSR_MSTATUS, MSTATUS_MIE
-	/* Move from 0x00000000 to 0x08000000 address space if necessary. */
+
+	/* move from 0x00000000 to 0x08000000 address space if necessary. */
 	la a0, in_address_space
 	li a1, 1
 	slli a1, a1, 27
@@ -122,19 +123,32 @@ reset_handler:
 	add a0, a0, a1
 	jr a0
 in_address_space:
-	/* Load the initial stack pointer value. */
+	/* load the initial stack pointer value. */
 	la sp, _sp
-	/* Set the vector table's base address. */
-	la a0, vtable
-	csrw CSR_MTVT, a0
 
-	/*
-	Set non-vectored interrupts to use the default handler.
-	(That will gracefully crash the program, so only use vectored
-	interrupts for now.)
-	*/
-	la a0, default_interrupt_handler
-	csrw CSR_MTVEC, a0
+	/* set the nmi base to share with mtvec */
+	li t0, 0x200
+	csrs CSR_MMISC_CTL, t0
+
+	/* set the vector table's base address. */
+	la t0, vtable
+	csrw CSR_MTVT, t0
+
+	/* init mtvt2 and enable it */
+	la t0, irq_entry
+	csrw CSR_MTVT2, t0
+	csrs CSR_MTVT2, 1
+
+	/* init csr mtvec for trap and nmi base addr */
+	la t0, trap_entry
+	csrw CSR_MTVEC, t0
+
+#ifdef __riscv_flen
+	/* enable fpu */
+	li t0, MSTATUS_FS
+	csrs mstatus, t0
+	csrw fcsr, x0
+#endif
 
 	/* initialized .data section and clear .bss section */
 	la a0, _etext

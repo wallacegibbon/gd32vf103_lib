@@ -4,7 +4,7 @@ char my_variable[] = "hello, world!\r\n";
 
 char buf[100];
 
-__attribute__((interrupt))
+//__attribute__((interrupt))
 void USART0_IRQn_handler() {
 	gpio_bit_reset(GPIOC, GPIO_PIN_13);
 	if (usart_interrupt_flag_get(USART0, USART_INT_FLAG_RBNE) != RESET) {
@@ -66,6 +66,13 @@ int puts(const char *str) {
 		_put_char(*str++);
 }
 
+int sleep(int t) {
+	volatile int r;
+	while (t--)
+		for (int i = 0; i < 1000000; i++)
+			r = i;
+}
+
 int main(int argc, const char **argv) {
 	init();
 
@@ -76,10 +83,12 @@ int main(int argc, const char **argv) {
 	puts("this is from the serial port\r\n");
 	puts(my_variable);
 
-	for (int i = 0; i < 100; i++)
-		buf[i] = my_variable[i % 10];
-
-	while (1);
+	while (1) {
+		gpio_bit_set(GPIOC, GPIO_PIN_13);
+		sleep(1);
+		gpio_bit_reset(GPIOC, GPIO_PIN_13);
+		sleep(1);
+	}
 
 	return 0;
 }
