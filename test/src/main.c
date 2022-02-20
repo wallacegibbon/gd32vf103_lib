@@ -1,6 +1,6 @@
 #include "gd32vf103.h"
 
-char my_variable[] = "hello, world!";
+char my_variable[] = "hello, world!\r\n";
 
 char buf[100];
 
@@ -16,7 +16,7 @@ void USART0_IRQn_handler() {
 }
 
 void init() {
-	system_init();
+	//system_init();
 
 	rcu_periph_clock_enable(RCU_GPIOA);
 	rcu_periph_clock_enable(RCU_GPIOC);
@@ -73,10 +73,11 @@ int main(int argc, const char **argv) {
 	//gpio_bit_reset(GPIOA, GPIO_PIN_2);
 	//gpio_bit_reset(GPIOC, GPIO_PIN_13);
 
+	puts("this is from the serial port\r\n");
+	puts(my_variable);
+
 	for (int i = 0; i < 100; i++)
 		buf[i] = my_variable[i % 10];
-
-	puts("hello, this is from the serial port\r\n");
 
 	while (1);
 

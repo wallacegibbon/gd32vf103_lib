@@ -45,7 +45,12 @@ void sys_core_clk_update() {
 	uint32_t scss = GET_BITS(RCU_CFG0, 2, 3);
 
 	// (notice: it should not be 3, maybe more checks should be put here)
-	if (scss == 0 || scss == 3) {
+	if (scss == 3) {
+		sys_core_clk = IRC8M_VALUE;
+		return;
+	}
+
+	if (scss == 0) {
 		sys_core_clk = IRC8M_VALUE;
 		return;
 	}
@@ -98,24 +103,21 @@ void sys_core_clk_update() {
 
 	if (pllmf == 15)
 		// PLL source clock multiply by 6.5
-		sys_core_clk = ck_src * 6U + ck_src / 2U;
+		sys_core_clk = ck_src * 6 + ck_src / 2;
 }
 
-static inline void enable_pll() {
+static void enable_pll() {
 	RCU_CTL |= RCU_CTL_PLLEN;
-	// wait until PLL is stable
 	while (!(RCU_CTL & RCU_CTL_PLLSTB));
 }
 
-static inline void enable_pll1() {
+static void enable_pll1() {
 	RCU_CTL |= RCU_CTL_PLL1EN;
-	// wait till PLL1 is ready
 	while (!(RCU_CTL & RCU_CTL_PLL1STB));
 }
 
-static inline void enable_pll2() {
+static void enable_pll2() {
 	RCU_CTL |= RCU_CTL_PLL2EN;
-	/* wait till PLL2 is ready */
 	while (!(RCU_CTL & RCU_CTL_PLL2STB));
 }
 
@@ -125,12 +127,10 @@ static void enable_hxtal() {
 
 	RCU_CTL |= RCU_CTL_HXTALEN;
 
-	// wait until HXTAL is stable or the startup time is longer than
-	// HXTAL_STARTUP_TIMEOUT
 	do {
 		timeout++;
 		stab_flag = (RCU_CTL & RCU_CTL_HXTALSTB);
-	} while (!stab_flag && (HXTAL_STARTUP_TIMEOUT != timeout));
+	} while (!stab_flag && (timeout != HXTAL_STARTUP_TIMEOUT));
 
 	// if it fails, the system die
 	if (!(RCU_CTL & RCU_CTL_HXTALSTB))
@@ -144,12 +144,10 @@ static void enable_irc8m() {
 
 	RCU_CTL |= RCU_CTL_IRC8MEN;
 
-	// wait until IRC8M is stable or the startup time is longer than
-	// IRC8M_STARTUP_TIMEOUT
 	do {
 		timeout++;
 		stab_flag = (RCU_CTL & RCU_CTL_IRC8MSTB);
-	} while (!stab_flag && (IRC8M_STARTUP_TIMEOUT != timeout));
+	} while (!stab_flag && (timeout != IRC8M_STARTUP_TIMEOUT));
 
 	// if it fails, the system die
 	if (!(RCU_CTL & RCU_CTL_IRC8MSTB))
@@ -157,7 +155,7 @@ static void enable_irc8m() {
 }
 
 
-static inline void xhtal_as_sys_clock() {
+static void xhtal_as_sys_clock() {
 	// select HXTAL as system clock
 	RCU_CFG0 &= ~RCU_CFG0_SCS;
 	RCU_CFG0 |= RCU_CKSYSSRC_HXTAL;
@@ -166,7 +164,7 @@ static inline void xhtal_as_sys_clock() {
 	while (!(RCU_CFG0 & RCU_SCSS_HXTAL));
 }
 
-static inline void pll_as_sys_clock() {
+static void pll_as_sys_clock() {
 	// select PLL as system clock
 	RCU_CFG0 &= ~RCU_CFG0_SCS;
 	RCU_CFG0 |= RCU_CKSYSSRC_PLL;
@@ -175,20 +173,34 @@ static inline void pll_as_sys_clock() {
 	while (!(RCU_CFG0 & RCU_SCSS_PLL));
 }
 
-static inline void pre_init_rcu() {
-	// AHB = SYSCLK
-	RCU_CFG0 |= RCU_AHB_CKSYS_DIV1;
-	// APB2 = AHB/1
-	RCU_CFG0 |= RCU_APB2_CKAHB_DIV1;
-	// APB1 = AHB/2
-	RCU_CFG0 |= RCU_APB1_CKAHB_DIV2;
+static void init_ahb_apb() {
+	// AHB = SYSCLK; APB2 = AHB/1; APB1 = AHB/2
+	RCU_CFG0 |=
+		RCU_AHB_CKSYS_DIV1 | RCU_APB2_CKAHB_DIV1 | RCU_APB1_CKAHB_DIV2;
+}
+
+static void set_ck_predv0_4m() {
+	RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PREDV0 | RCU_CFG1_PREDV1 |
+			RCU_CFG1_PLL1MF);
+	if (HXTAL_VALUE == 25000000) {
+		/* CK_PREDV0 = CK_HXTAL / 5 * 8 / 10 = 4 MHz */
+		RCU_CFG1 |=
+			RCU_PREDV0SRC_CKPLL1 | RCU_PREDV1_DIV5 |
+			RCU_PLL1_MUL8 | RCU_PREDV0_DIV10;
+
+		enable_pll1();
+
+	} else if (HXTAL_VALUE == 8000000) {
+		RCU_CFG1 |=
+			RCU_PREDV0SRC_HXTAL | RCU_PREDV0_DIV2;
+	}
 }
 
 #ifdef __SYSTEM_CLOCK_HXTAL
 
 static void system_clock_hxtal() {
 	enable_hxtal();
-	pre_init_rcu();
+	init_ahb_apb();
 	xhtal_as_sys_clock();
 }
 
@@ -196,26 +208,13 @@ static void system_clock_hxtal() {
 
 static void system_clock_24m_hxtal() {
 	enable_hxtal();
-	pre_init_rcu();
+	init_ahb_apb();
 
-	/* CK_PLL = (CK_PREDIV0) * 6 = 24 MHz */
+	/* CK_PLL = CK_PREDV0 * 6 = 24 MHz */
 	RCU_CFG0 &= ~(RCU_CFG0_PLLMF | RCU_CFG0_PLLMF_4);
-	RCU_CFG0 |= (RCU_PLLSRC_HXTAL | RCU_PLL_MUL6);
+	RCU_CFG0 |= RCU_PLLSRC_HXTAL | RCU_PLL_MUL6;
 
-	if (HXTAL_VALUE == 25000000) {
-		/* CK_PREDIV0 = (CK_HXTAL)/5 *8 /10 = 4 MHz */
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PLL1MF |
-				RCU_CFG1_PREDV1 | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_CKPLL1 | RCU_PLL1_MUL8 |
-				RCU_PREDV1_DIV5 | RCU_PREDV0_DIV10);
-
-		enable_pll1();
-
-	} else if (HXTAL_VALUE == 8000000) {
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PREDV1 |
-				RCU_CFG1_PLL1MF | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_HXTAL | RCU_PREDV0_DIV2);
-	}
+	set_ck_predv0_4m();
 
 	enable_pll();
 	pll_as_sys_clock();
@@ -225,26 +224,13 @@ static void system_clock_24m_hxtal() {
 
 static void system_clock_36m_hxtal() {
 	enable_hxtal();
-	pre_init_rcu();
+	init_ahb_apb();
 
-	/* CK_PLL = (CK_PREDIV0) * 9 = 36 MHz */
+	/* CK_PLL = CK_PREDV0 * 9 = 36 MHz */
 	RCU_CFG0 &= ~(RCU_CFG0_PLLMF | RCU_CFG0_PLLMF_4);
-	RCU_CFG0 |= (RCU_PLLSRC_HXTAL | RCU_PLL_MUL9);
+	RCU_CFG0 |= RCU_PLLSRC_HXTAL | RCU_PLL_MUL9;
 
-	if (HXTAL_VALUE == 25000000) {
-		/* CK_PREDIV0 = (CK_HXTAL)/5 *8 /10 = 4 MHz */
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PLL1MF |
-				RCU_CFG1_PREDV1 | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_CKPLL1 | RCU_PLL1_MUL8 |
-				RCU_PREDV1_DIV5 | RCU_PREDV0_DIV10);
-
-		enable_pll1();
-
-	} else if (HXTAL_VALUE == 8000000) {
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PREDV1 |
-				RCU_CFG1_PLL1MF | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_HXTAL | RCU_PREDV0_DIV2);
-	}
+	set_ck_predv0_4m();
 
 	enable_pll();
 	pll_as_sys_clock();
@@ -254,27 +240,13 @@ static void system_clock_36m_hxtal() {
 
 static void system_clock_48m_hxtal() {
 	enable_hxtal();
-	pre_init_rcu();
+	init_ahb_apb();
 
-	/* CK_PLL = (CK_PREDIV0) * 12 = 48 MHz */
+	/* CK_PLL = CK_PREDV0 * 12 = 48 MHz */
 	RCU_CFG0 &= ~(RCU_CFG0_PLLMF | RCU_CFG0_PLLMF_4);
-	RCU_CFG0 |= (RCU_PLLSRC_HXTAL | RCU_PLL_MUL12);
+	RCU_CFG0 |= RCU_PLLSRC_HXTAL | RCU_PLL_MUL12;
 
-	if (HXTAL_VALUE == 25000000) {
-
-		/* CK_PREDIV0 = (CK_HXTAL)/5 *8 /10 = 4 MHz */
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PLL1MF |
-				RCU_CFG1_PREDV1 | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_CKPLL1 | RCU_PLL1_MUL8 |
-				RCU_PREDV1_DIV5 | RCU_PREDV0_DIV10);
-
-		enable_pll1();
-
-	} else if (HXTAL_VALUE == 8000000) {
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PREDV1 |
-				RCU_CFG1_PLL1MF | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_HXTAL | RCU_PREDV0_DIV2);
-	}
+	set_ck_predv0_4m();
 
 	enable_pll();
 	pll_as_sys_clock();
@@ -284,26 +256,13 @@ static void system_clock_48m_hxtal() {
 
 static void system_clock_56m_hxtal() {
 	enable_hxtal();
-	pre_init_rcu();
+	init_ahb_apb();
 
-	/* CK_PLL = (CK_PREDIV0) * 14 = 56 MHz */
+	/* CK_PLL = CK_PREDV0 * 14 = 56 MHz */
 	RCU_CFG0 &= ~(RCU_CFG0_PLLMF | RCU_CFG0_PLLMF_4);
-	RCU_CFG0 |= (RCU_PLLSRC_HXTAL | RCU_PLL_MUL14);
+	RCU_CFG0 |= RCU_PLLSRC_HXTAL | RCU_PLL_MUL14;
 
-	if (HXTAL_VALUE == 25000000) {
-
-		/* CK_PREDIV0 = (CK_HXTAL)/5 *8 /10 = 4 MHz */
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PLL1MF |
-				RCU_CFG1_PREDV1 | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_CKPLL1 | RCU_PLL1_MUL8 |
-				RCU_PREDV1_DIV5 | RCU_PREDV0_DIV10);
-		enable_pll1();
-
-	} else if (HXTAL_VALUE == 8000000) {
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PREDV1 |
-				RCU_CFG1_PLL1MF | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_HXTAL | RCU_PREDV0_DIV2);
-	}
+	set_ck_predv0_4m();
 
 	enable_pll();
 	pll_as_sys_clock();
@@ -313,27 +272,13 @@ static void system_clock_56m_hxtal() {
 
 static void system_clock_72m_hxtal() {
 	enable_hxtal();
-	pre_init_rcu();
+	init_ahb_apb();
 
-	/* CK_PLL = (CK_PREDIV0) * 18 = 72 MHz */
+	/* CK_PLL = CK_PREDV0 * 18 = 72 MHz */
 	RCU_CFG0 &= ~(RCU_CFG0_PLLMF | RCU_CFG0_PLLMF_4);
-	RCU_CFG0 |= (RCU_PLLSRC_HXTAL | RCU_PLL_MUL18);
+	RCU_CFG0 |= RCU_PLLSRC_HXTAL | RCU_PLL_MUL18;
 
-	if (HXTAL_VALUE == 25000000) {
-
-		/* CK_PREDIV0 = (CK_HXTAL)/5 *8 /10 = 4 MHz */
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PLL1MF |
-				RCU_CFG1_PREDV1 | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_CKPLL1 | RCU_PLL1_MUL8 |
-				RCU_PREDV1_DIV5 | RCU_PREDV0_DIV10);
-
-		enable_pll1();
-
-	} else if (HXTAL_VALUE == 8000000) {
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PREDV1 |
-				RCU_CFG1_PLL1MF | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_HXTAL | RCU_PREDV0_DIV2);
-	}
+	set_ck_predv0_4m();
 
 	enable_pll();
 	pll_as_sys_clock();
@@ -343,26 +288,13 @@ static void system_clock_72m_hxtal() {
 
 static void system_clock_96m_hxtal() {
 	enable_hxtal();
-	pre_init_rcu();
+	init_ahb_apb();
 
-	/* CK_PLL = (CK_PREDIV0) * 24 = 96 MHz */
+	/* CK_PLL = CK_PREDV0 * 24 = 96 MHz */
 	RCU_CFG0 &= ~(RCU_CFG0_PLLMF | RCU_CFG0_PLLMF_4);
-	RCU_CFG0 |= (RCU_PLLSRC_HXTAL | RCU_PLL_MUL24);
+	RCU_CFG0 |= RCU_PLLSRC_HXTAL | RCU_PLL_MUL24;
 
-	if (HXTAL_VALUE == 25000000) {
-		/* CK_PREDIV0 = (CK_HXTAL)/5 *8 /10 = 4 MHz */
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PLL1MF |
-				RCU_CFG1_PREDV1 | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_CKPLL1 | RCU_PLL1_MUL8 |
-				RCU_PREDV1_DIV5 | RCU_PREDV0_DIV10);
-
-		enable_pll1();
-
-	} else if (HXTAL_VALUE == 8000000) {
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PREDV1 |
-				RCU_CFG1_PLL1MF | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_HXTAL | RCU_PREDV0_DIV2);
-	}
+	set_ck_predv0_4m();
 
 	enable_pll();
 	pll_as_sys_clock();
@@ -372,33 +304,13 @@ static void system_clock_96m_hxtal() {
 
 static void system_clock_108m_hxtal() {
 	enable_hxtal();
-	pre_init_rcu();
+	init_ahb_apb();
 
-	/* CK_PLL = (CK_PREDIV0) * 27 = 108 MHz */
+	/* CK_PLL = CK_PREDV0 * 27 = 108 MHz */
 	RCU_CFG0 &= ~(RCU_CFG0_PLLMF | RCU_CFG0_PLLMF_4);
-	RCU_CFG0 |= (RCU_PLLSRC_HXTAL | RCU_PLL_MUL27);
+	RCU_CFG0 |= RCU_PLLSRC_HXTAL | RCU_PLL_MUL27;
 
-	if (HXTAL_VALUE == 25000000) {
-		/* CK_PREDIV0 = (CK_HXTAL)/5 *8 /10 = 4 MHz */
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PREDV1 |
-				RCU_CFG1_PLL1MF | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_CKPLL1 | RCU_PREDV1_DIV5 |
-				RCU_PLL1_MUL8 | RCU_PREDV0_DIV10);
-
-		enable_pll1();
-		enable_pll2();
-
-	} else if (HXTAL_VALUE == 8000000) {
-		RCU_CFG1 &= ~(RCU_CFG1_PREDV0SEL | RCU_CFG1_PREDV1 |
-				RCU_CFG1_PLL1MF | RCU_CFG1_PREDV0);
-		RCU_CFG1 |= (RCU_PREDV0SRC_HXTAL | RCU_PREDV0_DIV2 |
-				RCU_PREDV1_DIV2 | RCU_PLL1_MUL20 |
-				RCU_PLL2_MUL20);
-
-		enable_pll1();
-		enable_pll2();
-
-	}
+	set_ck_predv0_4m();
 
 	enable_pll();
 	pll_as_sys_clock();
@@ -408,7 +320,7 @@ static void system_clock_108m_hxtal() {
 
 static void system_clock_48m_irc8m() {
 	enable_irc8m();
-	pre_init_rcu();
+	init_ahb_apb();
 
 	/* CK_PLL = (CK_IRC8M/2) * 12 = 48 MHz */
 	RCU_CFG0 &= ~(RCU_CFG0_PLLMF | RCU_CFG0_PLLMF_4);
@@ -422,7 +334,7 @@ static void system_clock_48m_irc8m() {
 
 static void system_clock_72m_irc8m() {
 	enable_irc8m();
-	pre_init_rcu();
+	init_ahb_apb();
 
 	/* CK_PLL = (CK_IRC8M/2) * 18 = 72 MHz */
 	RCU_CFG0 &= ~(RCU_CFG0_PLLMF | RCU_CFG0_PLLMF_4);
@@ -436,7 +348,7 @@ static void system_clock_72m_irc8m() {
 
 static void system_clock_108m_irc8m() {
 	enable_irc8m();
-	pre_init_rcu();
+	init_ahb_apb();
 
 	/* CK_PLL = (CK_IRC8M/2) * 27 = 108 MHz */
 	RCU_CFG0 &= ~(RCU_CFG0_PLLMF | RCU_CFG0_PLLMF_4);
@@ -482,9 +394,10 @@ void system_init() {
 	RCU_CTL |= RCU_CTL_IRC8MEN;
 
 	// reset SCS, AHBPSC, APB1PSC, APB2PSC, ADCPSC, CKOUT0SEL bits
-	RCU_CFG0 &= ~(RCU_CFG0_SCS | RCU_CFG0_AHBPSC | RCU_CFG0_APB1PSC |
-			RCU_CFG0_APB2PSC | RCU_CFG0_ADCPSC |
-			RCU_CFG0_ADCPSC_2 | RCU_CFG0_CKOUT0SEL);
+	RCU_CFG0 &=
+		~(RCU_CFG0_SCS | RCU_CFG0_AHBPSC | RCU_CFG0_APB1PSC |
+				RCU_CFG0_APB2PSC | RCU_CFG0_ADCPSC |
+				RCU_CFG0_ADCPSC_2 | RCU_CFG0_CKOUT0SEL);
 
 	// reset HXTALEN, CKMEN, PLLEN bits
 	RCU_CTL &= ~(RCU_CTL_HXTALEN | RCU_CTL_CKMEN | RCU_CTL_PLLEN);
@@ -493,16 +406,18 @@ void system_init() {
 	RCU_CTL &= ~(RCU_CTL_HXTALBPS);
 
 	// reset PLLSEL, PREDV0_LSB, PLLMF, USBFSPSC bits
-	RCU_CFG0 &= ~(RCU_CFG0_PLLSEL | RCU_CFG0_PREDV0_LSB | RCU_CFG0_PLLMF |
-			RCU_CFG0_USBFSPSC | RCU_CFG0_PLLMF_4);
-	RCU_CFG1 = 0x00000000U;
+	RCU_CFG0 &=
+		~(RCU_CFG0_PLLSEL | RCU_CFG0_PREDV0_LSB | RCU_CFG0_PLLMF |
+				RCU_CFG0_USBFSPSC | RCU_CFG0_PLLMF_4);
+	RCU_CFG1 = 0;
 
 	// Reset HXTALEN, CKMEN, PLLEN, PLL1EN and PLL2EN bits
-	RCU_CTL &= ~(RCU_CTL_PLLEN | RCU_CTL_PLL1EN | RCU_CTL_PLL2EN |
-			RCU_CTL_CKMEN | RCU_CTL_HXTALEN);
+	RCU_CTL &=
+		~(RCU_CTL_PLLEN | RCU_CTL_PLL1EN | RCU_CTL_PLL2EN |
+				RCU_CTL_CKMEN | RCU_CTL_HXTALEN);
 
 	// disable all interrupts
-	RCU_INT = 0x00FF0000U;
+	RCU_INT = 0x00FF0000;
 
 	// Configure the System clock source, PLL Multiplier,
 	// AHB/APBx prescalers and Flash settings

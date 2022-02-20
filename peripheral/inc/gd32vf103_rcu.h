@@ -6,7 +6,10 @@
 #define RCU				RCU_BASE
 
 #define RCU_CTL				REG32(RCU + 0x00U)
+
+// clock configuration register 1
 #define RCU_CFG0			REG32(RCU + 0x04U)
+
 // clock interrupt register
 #define RCU_INT				REG32(RCU + 0x08U)
 // APB2 reset register
@@ -25,8 +28,10 @@
 #define RCU_RSTSCK			REG32(RCU + 0x24U)
 // AHB reset register
 #define RCU_AHBRST			REG32(RCU + 0x28U)
+
 // clock configuration register 1
 #define RCU_CFG1			REG32(RCU + 0x2CU)
+
 // deep-sleep mode voltage register
 #define RCU_DSV				REG32(RCU + 0x34U)
 
@@ -36,9 +41,9 @@
 // IRC8M high speed internal oscillator stabilization flag
 #define RCU_CTL_IRC8MSTB		BIT(1)
 // high speed internal oscillator clock trim adjust value
-#define RCU_CTL_IRC8MADJ		BITS(3,7)
+#define RCU_CTL_IRC8MADJ		BITS(3, 7)
 // high speed internal oscillator calibration value register
-#define RCU_CTL_IRC8MCALIB		BITS(8,15)
+#define RCU_CTL_IRC8MCALIB		BITS(8, 15)
 // external high speed oscillator enable
 #define RCU_CTL_HXTALEN			BIT(16)
 // external crystal oscillator clock stabilization flag
@@ -62,27 +67,27 @@
 
 
 // system clock switch
-#define RCU_CFG0_SCS			BITS(0,1)
+#define RCU_CFG0_SCS			BITS(0, 1)
 // system clock switch status
-#define RCU_CFG0_SCSS			BITS(2,3)
+#define RCU_CFG0_SCSS			BITS(2, 3)
 // AHB prescaler selection
-#define RCU_CFG0_AHBPSC			BITS(4,7)
+#define RCU_CFG0_AHBPSC			BITS(4, 7)
 // APB1 prescaler selection
-#define RCU_CFG0_APB1PSC		BITS(8,10)
+#define RCU_CFG0_APB1PSC		BITS(8, 10)
 // APB2 prescaler selection
-#define RCU_CFG0_APB2PSC		BITS(11,13)
+#define RCU_CFG0_APB2PSC		BITS(11, 13)
 // ADC prescaler selection
-#define RCU_CFG0_ADCPSC			BITS(14,15)
+#define RCU_CFG0_ADCPSC			BITS(14, 15)
 // PLL clock source selection
 #define RCU_CFG0_PLLSEL			BIT(16)
 // the LSB of PREDV0 division factor
 #define RCU_CFG0_PREDV0_LSB		BIT(17)
 // PLL clock multiplication factor
-#define RCU_CFG0_PLLMF			BITS(18,21)
+#define RCU_CFG0_PLLMF			BITS(18, 21)
 // USBFS clock prescaler selection
-#define RCU_CFG0_USBFSPSC		BITS(22,23)
+#define RCU_CFG0_USBFSPSC		BITS(22, 23)
 // CKOUT0 clock source selection
-#define RCU_CFG0_CKOUT0SEL		BITS(24,27)
+#define RCU_CFG0_CKOUT0SEL		BITS(24, 27)
 // bit 2 of ADCPSC
 #define RCU_CFG0_ADCPSC_2		BIT(28)
 // bit 4 of PLLMF
@@ -222,7 +227,7 @@
 // LXTAL bypass mode enable
 #define RCU_BDCTL_LXTALBPS		BIT(2)
 // RTC clock entry selection
-#define RCU_BDCTL_RTCSRC		BITS(8,9)
+#define RCU_BDCTL_RTCSRC		BITS(8, 9)
 // RTC clock enable
 #define RCU_BDCTL_RTCEN			BIT(15)
 // backup domain reset
@@ -251,13 +256,13 @@
 #define RCU_AHBRST_USBFSRST		BIT(12)
 
 // PREDV0 division factor
-#define RCU_CFG1_PREDV0			BITS(0,3)
+#define RCU_CFG1_PREDV0			BITS(0, 3)
 // PREDV1 division factor
-#define RCU_CFG1_PREDV1			BITS(4,7)
+#define RCU_CFG1_PREDV1			BITS(4, 7)
 // PLL1 clock multiplication factor
-#define RCU_CFG1_PLL1MF			BITS(8,11)
+#define RCU_CFG1_PLL1MF			BITS(8, 11)
 // PLL2 clock multiplication factor
-#define RCU_CFG1_PLL2MF			BITS(12,15)
+#define RCU_CFG1_PLL2MF			BITS(12, 15)
 // PREDV0 input clock source selection
 #define RCU_CFG1_PREDV0SEL		BIT(16)
 // I2S1 clock source selection
@@ -266,7 +271,7 @@
 #define RCU_CFG1_I2S2SEL		BIT(18)
 
 // deep-sleep mode voltage select
-#define RCU_DSV_DSLPVS			BITS(0,1)
+#define RCU_DSV_DSLPVS			BITS(0, 1)
 
 // define the peripheral clock enable bit position and its register index offset
 #define RCU_REGIDX_BIT(regidx, bitpos) \
@@ -712,7 +717,7 @@ enum rcu_clock_freq {
 // system clock source select
 
 #define CFG0_SCS(regval) \
-	(BITS(0,1) & ((uint32_t) (regval) << 0))
+	(BITS(0, 1) & ((uint32_t) (regval) << 0))
 
 // system clock source select IRC8M
 #define RCU_CKSYSSRC_IRC8M		CFG0_SCS(0)
@@ -726,7 +731,7 @@ enum rcu_clock_freq {
 
 // system clock source select status
 #define CFG0_SCSS(regval)   \
-	(BITS(2,3) & ((uint32_t) (regval) << 2))
+	(BITS(2, 3) & ((uint32_t) (regval) << 2))
 
 // system clock source select IRC8M
 #define RCU_SCSS_IRC8M		CFG0_SCSS(0)
@@ -740,7 +745,7 @@ enum rcu_clock_freq {
 
 // AHB prescaler selection
 #define CFG0_AHBPSC(regval) \
-	(BITS(4,7) & ((uint32_t) (regval) << 4))
+	(BITS(4, 7) & ((uint32_t) (regval) << 4))
 
 // AHB prescaler select CK_SYS
 #define RCU_AHB_CKSYS_DIV1		CFG0_AHBPSC(0)
@@ -772,7 +777,7 @@ enum rcu_clock_freq {
 
 // APB1 prescaler selection
 #define CFG0_APB1PSC(regval) \
-	(BITS(8,10) & ((uint32_t) (regval) << 8))
+	(BITS(8, 10) & ((uint32_t) (regval) << 8))
 
 // APB1 prescaler select CK_AHB
 #define RCU_APB1_CKAHB_DIV1		CFG0_APB1PSC(0)
@@ -792,7 +797,7 @@ enum rcu_clock_freq {
 
 /* APB2 prescaler selection */
 #define CFG0_APB2PSC(regval) \
-	(BITS(11,13) & ((uint32_t) (regval) << 11))
+	(BITS(11, 13) & ((uint32_t) (regval) << 11))
 
 // APB2 prescaler select CK_AHB
 #define RCU_APB2_CKAHB_DIV1		CFG0_APB2PSC(0)
@@ -831,7 +836,7 @@ enum rcu_clock_freq {
 #define PLLMF_4				RCU_CFG0_PLLMF_4
 
 #define CFG0_PLLMF(regval) \
-	(BITS(18,21) & ((uint32_t) (regval) << 18))
+	(BITS(18, 21) & ((uint32_t) (regval) << 18))
 
 // PLL source clock multiply by 2/3/4/.../14/6.5/16/17/.../32
 #define RCU_PLL_MUL2			CFG0_PLLMF(0)
@@ -868,7 +873,7 @@ enum rcu_clock_freq {
 
 /* USBFS prescaler select */
 #define CFG0_USBPSC(regval) \
-	(BITS(22,23) & ((uint32_t) (regval) << 22))
+	(BITS(22, 23) & ((uint32_t) (regval) << 22))
 
 // USBFS prescaler select CK_PLL/1.5
 #define RCU_CKUSB_CKPLL_DIV1_5		CFG0_USBPSC(0)
@@ -881,7 +886,7 @@ enum rcu_clock_freq {
 
 // CKOUT0 clock source selection
 #define CFG0_CKOUT0SEL(regval) \
-	(BITS(24,27) & ((uint32_t) (regval) << 24))
+	(BITS(24, 27) & ((uint32_t) (regval) << 24))
 
 // no clock selected
 #define RCU_CKOUT0SRC_NONE		CFG0_CKOUT0SEL(0)
@@ -913,7 +918,7 @@ enum rcu_clock_freq {
 
 /* RTC clock entry selection */
 #define BDCTL_RTCSRC(regval) \
-	(BITS(8,9) & ((uint32_t) (regval) << 8))
+	(BITS(8, 9) & ((uint32_t) (regval) << 8))
 
 // no clock selected
 #define RCU_RTCSRC_NONE			BDCTL_RTCSRC(0)
@@ -930,7 +935,7 @@ enum rcu_clock_freq {
 
 // PREDV0 division factor
 #define CFG1_PREDV0(regval) \
-	(BITS(0,3) & ((uint32_t) (regval) << 0))
+	(BITS(0, 3) & ((uint32_t) (regval) << 0))
 
 // PREDV0 input source clock not divided, divided by 2/3/4/../16
 #define RCU_PREDV0_DIV1			CFG1_PREDV0(0)
@@ -953,7 +958,7 @@ enum rcu_clock_freq {
 
 // PREDV1 division factor
 #define CFG1_PREDV1(regval) \
-	(BITS(4,7) & ((uint32_t) (regval) << 4))
+	(BITS(4, 7) & ((uint32_t) (regval) << 4))
 
 // PREDV1 input source clock not divided, divided by 2/3/4/../16
 #define RCU_PREDV1_DIV1			CFG1_PREDV1(0)
@@ -976,7 +981,7 @@ enum rcu_clock_freq {
 
 // PLL1 clock multiplication factor
 #define CFG1_PLL1MF(regval) \
-	(BITS(8,11) & ((uint32_t) (regval) << 8))
+	(BITS(8, 11) & ((uint32_t) (regval) << 8))
 
 // PLL1 source clock multiply by 8/9/.../20
 #define RCU_PLL1_MUL8			CFG1_PLL1MF(6)
@@ -993,7 +998,7 @@ enum rcu_clock_freq {
 
 // PLL2 clock multiplication factor
 #define CFG1_PLL2MF(regval) \
-	(BITS(12,15) & ((uint32_t) (regval) << 12))
+	(BITS(12, 15) & ((uint32_t) (regval) << 12))
 
 // PLL2 source clock multiply by 8/9/.../20
 #define RCU_PLL2_MUL8			CFG1_PLL2MF(6)
@@ -1033,7 +1038,7 @@ enum rcu_clock_freq {
 
 // deep-sleep mode voltage
 #define DSV_DSLPVS(regval) \
-	(BITS(0,1) & ((uint32_t) (regval) << 0))
+	(BITS(0, 1) & ((uint32_t) (regval) << 0))
 
 // core voltage is 1.2V/1.1V/1.0V/0.9V in deep-sleep mode
 #define RCU_DEEPSLEEP_V_1_2		DSV_DSLPVS(0)

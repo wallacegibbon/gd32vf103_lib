@@ -136,7 +136,7 @@ in_address_space:
 	la a0, default_interrupt_handler
 	csrw CSR_MTVEC, a0
 
-	/* initialized .data */
+	/* initialized .data section and clear .bss section */
 	la a0, _etext
 	la a1, _sdata
 	la a2, _edata
@@ -148,7 +148,6 @@ in_address_space:
 	addi a1, a1, 4
 	bltu a1, a2, 1b
 2:
-	/* clear .bss */
 	la a0, _sbss
 	la a1, _ebss
 	bgeu a0, a1, 2f
