@@ -13,7 +13,7 @@
 	.endm
 
 vtable:
-	j reset_handler
+	j _start
 	.align 2
 	.word 0
 	.word 0
@@ -109,26 +109,22 @@ default_interrupt_handler:
 	mret
 	*/
 
-	.global reset_handler
-	.type reset_handler, @function
-reset_handler:
+	.global _start
+	.type _start, @function
+_start:
 	/* disable interrupts until they are needed. */
 	csrc CSR_MSTATUS, MSTATUS_MIE
 
 	/* move from 0x00000000 to 0x08000000 address space if necessary. */
-	la a0, in_address_space
+	la a0, _start_1
 	li a1, 1
 	slli a1, a1, 27
-	bleu a1, a0, in_address_space
+	bleu a1, a0, _start_1
 	add a0, a0, a1
 	jr a0
-in_address_space:
+_start_1:
 	/* load the initial stack pointer value. */
 	la sp, _sp
-
-	/* set the nmi base to share with mtvec */
-	li t0, 0x200
-	csrs CSR_MMISC_CTL, t0
 
 	/* set the vector table's base address. */
 	la t0, vtable
@@ -142,6 +138,10 @@ in_address_space:
 	/* init csr mtvec for trap and nmi base addr */
 	la t0, trap_entry
 	csrw CSR_MTVEC, t0
+
+	/* set the nmi base to share with mtvec */
+	li t0, 0x200
+	csrs CSR_MMISC_CTL, t0
 
 #ifdef __riscv_flen
 	/* enable fpu */
@@ -170,8 +170,24 @@ in_address_space:
 	addi a0, a0, 4
 	bltu a0, a1, 1b
 2:
+	call disable_mcycle_minstret
 	/* Call main(0, NULL) */
 	li a0, 0
 	li a1, 0
 	call main
+1:
+	j 1b
+
+	/* it can save power when the cycle/instret is disabled */
+	.global disable_mcycle_minstret
+	.type disable_mcycle_minstret, @function
+disable_mcycle_minstret:
+	csrsi CSR_MCOUNTINHIBIT, 5
+	ret
+
+	.global enable_mcycle_minstret
+	.type enable_mcycle_minstret, @function
+enable_mcycle_minstret:
+	csrci CSR_MCOUNTINHIBIT, 5
+	ret
 

@@ -1,6 +1,6 @@
 OUTPUT_ARCH("riscv")
 
-ENTRY(reset_handler)
+ENTRY(_start)
 
 MEMORY {
 	/* for GD32VF103C4, FLASH: 16K, RAM: 6K */

@@ -16,7 +16,9 @@ void USART0_IRQn_handler() {
 }
 
 void init() {
-	//system_init();
+	system_init();
+	eclic_init(ECLIC_NUM_INTERRUPTS);
+	eclic_mode_enable();
 
 	rcu_periph_clock_enable(RCU_GPIOA);
 	rcu_periph_clock_enable(RCU_GPIOC);
@@ -69,7 +71,7 @@ int puts(const char *str) {
 int sleep(int t) {
 	volatile int r;
 	while (t--)
-		for (int i = 0; i < 1000000; i++)
+		for (int i = 0; i < 10000000; i++)
 			r = i;
 }
 

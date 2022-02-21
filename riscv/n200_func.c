@@ -315,8 +315,8 @@ uint8_t eclic_get_irq_priority(uint32_t source) {
 
 void eclic_mode_enable() {
 	uint32_t mtvec_value = read_csr(mtvec);
-	mtvec_value = mtvec_value & 0xFFFFFFC0;
-	mtvec_value = mtvec_value | 0x00000003;
+	mtvec_value &= 0xFFFFFFC0;
+	mtvec_value |= 0x00000003;
 	write_csr(mtvec, mtvec_value);
 }
 
@@ -325,7 +325,7 @@ void eclic_set_vmode(uint32_t source) {
 	//read the current attr 
 	uint8_t old_intattr = eclic_get_intattr(source);
 	// Keep other bits unchanged and only set the LSB bit
-	uint8_t new_intattr = (old_intattr | 0x1);
+	uint8_t new_intattr = old_intattr | 1;
 
 	eclic_set_intattr(source, new_intattr);
 }
@@ -334,7 +334,7 @@ void eclic_set_nonvmode(uint32_t source) {
 	//read the current attr 
 	uint8_t old_intattr = eclic_get_intattr(source);
 	// Keep other bits unchanged and only clear the LSB bit
-	uint8_t new_intattr = (old_intattr & (~0x1));
+	uint8_t new_intattr = old_intattr & ~1;
 
 	eclic_set_intattr(source, new_intattr);
 }
@@ -347,7 +347,7 @@ void eclic_set_level_trig(uint32_t source) {
 	//read the current attr 
 	uint8_t old_intattr = eclic_get_intattr(source);
 	// Keep other bits unchanged and only clear the bit 1
-	uint8_t new_intattr = (old_intattr & (~0x2));
+	uint8_t new_intattr = old_intattr & ~2;
 
 	eclic_set_intattr(source, new_intattr);
 }
@@ -356,9 +356,9 @@ void eclic_set_posedge_trig(uint32_t source) {
 	//read the current attr 
 	uint8_t old_intattr = eclic_get_intattr(source);
 	// Keep other bits unchanged and only set the bit 1
-	uint8_t new_intattr = (old_intattr | 0x2);
+	uint8_t new_intattr = (old_intattr | 2);
 	// Keep other bits unchanged and only clear the bit 2
-	new_intattr = (old_intattr & (~0x4));
+	new_intattr = old_intattr & ~4;
 
 	eclic_set_intattr(source, new_intattr);
 }
@@ -367,9 +367,9 @@ void eclic_set_negedge_trig(uint32_t source) {
 	//read the current attr 
 	uint8_t old_intattr = eclic_get_intattr(source);
 	// Keep other bits unchanged and only set the bit 1
-	uint8_t new_intattr = (old_intattr | 0x2);
+	uint8_t new_intattr = old_intattr | 2;
 	// Keep other bits unchanged and only set the bit 2
-	new_intattr = (old_intattr | 0x4);
+	new_intattr = old_intattr | 4;
 
 	eclic_set_intattr(source, new_intattr);
 }
