@@ -1,5 +1,5 @@
 TARGET = simple_test
-PRJDIR = ../
+LIBDIR = ../
 
 COMPILER_PREFIX = /usr/local/nuclei-riscv-tools/gcc/bin/riscv-nuclei-elf-
 OPENOCD_CMD = /usr/local/riscv-openocd/bin/openocd
@@ -11,15 +11,15 @@ OPENOCD_ARGS = -f interface/ftdi/sipeed-rv-debugger.cfg \
 ## this works with the "-Wl,--gc-sections" parameter of the linker.
 
 CFLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
-	-I$(PRJDIR)/riscv -I$(PRJDIR)/peripheral \
-	-I$(PRJDIR)/peripheral/src -I$(PRJDIR)/peripheral/inc \
+	-I$(LIBDIR)/riscv -I$(LIBDIR)/peripheral \
+	-I$(LIBDIR)/peripheral/src -I$(LIBDIR)/peripheral/inc \
 	-I./src \
 	-march=rv32imac -mabi=ilp32 -DLONGON_NANO
 
 ## "-Wl,--gc-sections" will pass "--gc-sections" to linker to make it
 ## ignore unused sections.
 
-LDFLAGS = -T$(PRJDIR)/ldscript/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
+LDFLAGS = -T$(LIBDIR)/ldscript/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
 	-nostartfiles -nostdlib \
 	-march=rv32imac -mabi=ilp32 -DLONGON_NANO
 
@@ -30,14 +30,14 @@ OBJCOPY = $(COMPILER_PREFIX)objcopy
 OBJDUMP = $(COMPILER_PREFIX)objdump
 SIZE = $(COMPILER_PREFIX)size
 
-C_FILES = $(wildcard $(PRJDIR)/peripheral/*.c)
-C_FILES += $(wildcard $(PRJDIR)/peripheral/src/*.c)
-C_FILES += $(wildcard $(PRJDIR)/riscv/*.c)
+C_FILES = $(wildcard $(LIBDIR)/peripheral/*.c)
+C_FILES += $(wildcard $(LIBDIR)/peripheral/src/*.c)
+C_FILES += $(wildcard $(LIBDIR)/riscv/*.c)
 C_FILES += $(wildcard ./src/*.c)
 
 C_OBJS = $(patsubst %.c, %.o, $(C_FILES))
 
-STARTUP_OBJS = $(PRJDIR)/boot/start.o $(PRJDIR)/boot/entry.o
+STARTUP_OBJS = $(LIBDIR)/boot/start.o $(LIBDIR)/boot/entry.o
 
 OBJFILES = $(C_OBJS) $(STARTUP_OBJS)
 
@@ -51,10 +51,10 @@ $(TARGET).hex: $(TARGET).elf
 $(TARGET).elf: $(OBJFILES)
 	$(LD) $(LDFLAGS) -o $@ $^
 
-$(PRJDIR)/boot/start.o: $(PRJDIR)/boot/start.S
+$(LIBDIR)/boot/start.o: $(LIBDIR)/boot/start.S
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(PRJDIR)/boot/entry.o: $(PRJDIR)/boot/entry.S
+$(LIBDIR)/boot/entry.o: $(LIBDIR)/boot/entry.S
 	$(CC) $(CFLAGS) -c $< -o $@
 
 %.o: %.c
