@@ -116,10 +116,19 @@ _start:
 	csrc CSR_MSTATUS, MSTATUS_MIE
 
 	/* move from 0x00000000 to 0x08000000 address space if necessary. */
+
 	la a0, _start_1
+
+	/* compare with 2^29 (0x20000000) */
 	li a1, 1
-	slli a1, a1, 27
+	slli a1, a1, 29
 	bleu a1, a0, _start_1
+
+	/* compare with 2^27 (0x08000000) */
+	srli a1, a1, 2
+	bleu a1, a0, _start_1
+
+	la a0, _start_1
 	add a0, a0, a1
 	jr a0
 _start_1:
