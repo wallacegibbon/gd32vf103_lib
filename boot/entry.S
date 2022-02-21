@@ -11,7 +11,7 @@
 
 	.macro SAVE_CONTEXT
 #ifdef __riscv_flen
-	#if (__riscv_flen==64 )
+	#if (__riscv_flen == 64 )
 	addi sp, sp, -20*REGBYTES - 20*FPREGBYTES
 	#else
 	addi sp, sp, -20*REGBYTES
@@ -19,24 +19,24 @@
 #else
 	addi sp, sp, -20*REGBYTES
 #endif
-	STORE x1 ,  0*REGBYTES(sp)
-	STORE x4 ,  1*REGBYTES(sp)
-	STORE x5 ,  2*REGBYTES(sp)
-	STORE x6 ,  3*REGBYTES(sp)
-	STORE x7 ,  4*REGBYTES(sp)
-	STORE x10,  5*REGBYTES(sp)
-	STORE x11,  6*REGBYTES(sp)
-	STORE x12,  7*REGBYTES(sp)
-	STORE x13,  8*REGBYTES(sp)
-	STORE x14,  9*REGBYTES(sp)
-	STORE x15, 10*REGBYTES(sp)
+	STORE ra,  0*REGBYTES(sp)
+	STORE tp,  1*REGBYTES(sp)
+	STORE t0,  2*REGBYTES(sp)
+	STORE t1,  3*REGBYTES(sp)
+	STORE t2,  4*REGBYTES(sp)
+	STORE a0,  5*REGBYTES(sp)
+	STORE a1,  6*REGBYTES(sp)
+	STORE a2,  7*REGBYTES(sp)
+	STORE a3,  8*REGBYTES(sp)
+	STORE a4,  9*REGBYTES(sp)
+	STORE a5, 10*REGBYTES(sp)
 #ifndef __riscv_32e
-	STORE x16, 11*REGBYTES(sp)
-	STORE x17, 12*REGBYTES(sp)
-	STORE x28, 13*REGBYTES(sp)
-	STORE x29, 14*REGBYTES(sp)
-	STORE x30, 15*REGBYTES(sp)
-	STORE x31, 16*REGBYTES(sp)
+	STORE a6, 11*REGBYTES(sp)
+	STORE a7, 12*REGBYTES(sp)
+	STORE t3, 13*REGBYTES(sp)
+	STORE t4, 14*REGBYTES(sp)
+	STORE t5, 15*REGBYTES(sp)
+	STORE t6, 16*REGBYTES(sp)
 #endif
 #ifdef __riscv_flen
 	#if (__riscv_flen == 64)
@@ -66,27 +66,27 @@
 
 
 	.macro RESTORE_CONTEXT
-	LOAD x1 ,  0*REGBYTES(sp)
-	LOAD x4 ,  1*REGBYTES(sp)
-	LOAD x5 ,  2*REGBYTES(sp)
-	LOAD x6 ,  3*REGBYTES(sp)
-	LOAD x7 ,  4*REGBYTES(sp)
-	LOAD x10,  5*REGBYTES(sp)
-	LOAD x11,  6*REGBYTES(sp)
-	LOAD x12,  7*REGBYTES(sp)
-	LOAD x13,  8*REGBYTES(sp)
-	LOAD x14,  9*REGBYTES(sp)
-	LOAD x15, 10*REGBYTES(sp)
+	LOAD ra,  0*REGBYTES(sp)
+	LOAD tp,  1*REGBYTES(sp)
+	LOAD t0,  2*REGBYTES(sp)
+	LOAD t1,  3*REGBYTES(sp)
+	LOAD t2,  4*REGBYTES(sp)
+	LOAD a0,  5*REGBYTES(sp)
+	LOAD a1,  6*REGBYTES(sp)
+	LOAD a2,  7*REGBYTES(sp)
+	LOAD a3,  8*REGBYTES(sp)
+	LOAD a4,  9*REGBYTES(sp)
+	LOAD a5, 10*REGBYTES(sp)
 #ifndef __riscv_32e
-	LOAD x16, 11*REGBYTES(sp)
-	LOAD x17, 12*REGBYTES(sp)
-	LOAD x28, 13*REGBYTES(sp)
-	LOAD x29, 14*REGBYTES(sp)
-	LOAD x30, 15*REGBYTES(sp)
-	LOAD x31, 16*REGBYTES(sp)
+	LOAD a6, 11*REGBYTES(sp)
+	LOAD a7, 12*REGBYTES(sp)
+	LOAD t3, 13*REGBYTES(sp)
+	LOAD t4, 14*REGBYTES(sp)
+	LOAD t5, 15*REGBYTES(sp)
+	LOAD t6, 16*REGBYTES(sp)
 #endif
 #ifdef __riscv_flen
-	#if (__riscv_flen==64)
+	#if (__riscv_flen == 64)
 	/* Restore fp caller registers */
 	FPLOAD f0 , (20*REGBYTES +  0*FPREGBYTES)(sp)
 	FPLOAD f1 , (20*REGBYTES +  1*FPREGBYTES)(sp)
@@ -124,48 +124,48 @@
 
 
 	.macro RESTORE_CONTEXT_EXCPT_X5
-	LOAD x1,   0*REGBYTES(sp)
-	LOAD x6,   2*REGBYTES(sp)
-	LOAD x7,   3*REGBYTES(sp)
-	LOAD x10,  4*REGBYTES(sp)
-	LOAD x11,  5*REGBYTES(sp)
-	LOAD x12,  6*REGBYTES(sp)
-	LOAD x13,  7*REGBYTES(sp)
-	LOAD x14,  8*REGBYTES(sp)
-	LOAD x15,  9*REGBYTES(sp)
+	LOAD ra,  0*REGBYTES(sp)
+	LOAD t1,  2*REGBYTES(sp)
+	LOAD t2,  3*REGBYTES(sp)
+	LOAD a0,  4*REGBYTES(sp)
+	LOAD a1,  5*REGBYTES(sp)
+	LOAD a2,  6*REGBYTES(sp)
+	LOAD a3,  7*REGBYTES(sp)
+	LOAD a4,  8*REGBYTES(sp)
+	LOAD a5,  9*REGBYTES(sp)
 #ifndef __riscv_32e
-	LOAD x16, 10*REGBYTES(sp)
-	LOAD x17, 11*REGBYTES(sp)
-	LOAD x28, 12*REGBYTES(sp)
-	LOAD x29, 13*REGBYTES(sp)
-	LOAD x30, 14*REGBYTES(sp)
-	LOAD x31, 15*REGBYTES(sp)
+	LOAD a6, 10*REGBYTES(sp)
+	LOAD a7, 11*REGBYTES(sp)
+	LOAD t3, 12*REGBYTES(sp)
+	LOAD t4, 13*REGBYTES(sp)
+	LOAD t5, 14*REGBYTES(sp)
+	LOAD t6, 15*REGBYTES(sp)
 #endif
 	.endm
 
 
 	.macro RESTORE_CONTEXT_ONLY_X5
-	LOAD x5, 1*REGBYTES(sp)
+	LOAD t0, 1*REGBYTES(sp)
 	.endm
 
 
 	.macro SAVE_EPC_STATUS
-	csrr x5, CSR_MEPC
-	STORE x5, 16*REGBYTES(sp)
-	csrr x5, CSR_MSTATUS
-	STORE x5, 17*REGBYTES(sp)
-	csrr x5, CSR_MSUBM
-	STORE x5, 18*REGBYTES(sp)
+	csrr t0, CSR_MEPC
+	STORE t0, 16*REGBYTES(sp)
+	csrr t0, CSR_MSTATUS
+	STORE t0, 17*REGBYTES(sp)
+	csrr t0, CSR_MSUBM
+	STORE t0, 18*REGBYTES(sp)
 	.endm
 
 
 	.macro RESTORE_EPC_STATUS
-	LOAD x5, 16*REGBYTES(sp)
-	csrw CSR_MEPC, x5
-	LOAD x5, 17*REGBYTES(sp)
-	csrw CSR_MSTATUS, x5
-	LOAD x5, 18*REGBYTES(sp)
-	csrw CSR_MSUBM, x5
+	LOAD t0, 16*REGBYTES(sp)
+	csrw CSR_MEPC, t0
+	LOAD t0, 17*REGBYTES(sp)
+	csrw CSR_MSTATUS, t0
+	LOAD t0, 18*REGBYTES(sp)
+	csrw CSR_MSUBM, t0
 	.endm
 
 
@@ -210,12 +210,12 @@ irq_entry:
 
 	DISABLE_MIE
 
-	LOAD x5, 19*REGBYTES(sp)
-	csrw CSR_MSUBM, x5
-	LOAD x5, 18*REGBYTES(sp)
-	csrw CSR_MEPC, x5
-	LOAD x5, 17*REGBYTES(sp)
-	csrw CSR_MCAUSE, x5
+	LOAD t0, 19*REGBYTES(sp)
+	csrw CSR_MSUBM, t0
+	LOAD t0, 18*REGBYTES(sp)
+	csrw CSR_MEPC, t0
+	LOAD t0, 17*REGBYTES(sp)
+	csrw CSR_MCAUSE, t0
 
 	RESTORE_CONTEXT
 
