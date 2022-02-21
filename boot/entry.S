@@ -3,12 +3,13 @@
 #include "n200_eclic.h"
 #include "n200_timer.h"
 
+
 	.macro DISABLE_MIE
 	csrc CSR_MSTATUS, MSTATUS_MIE
 	.endm
 
-	.macro SAVE_CONTEXT
 
+	.macro SAVE_CONTEXT
 #ifdef __riscv_flen
 	#if (__riscv_flen==64 )
 	addi sp, sp, -20*REGBYTES - 20*FPREGBYTES
@@ -18,7 +19,6 @@
 #else
 	addi sp, sp, -20*REGBYTES
 #endif
-
 	STORE x1 ,  0*REGBYTES(sp)
 	STORE x4 ,  1*REGBYTES(sp)
 	STORE x5 ,  2*REGBYTES(sp)
@@ -38,7 +38,6 @@
 	STORE x30, 15*REGBYTES(sp)
 	STORE x31, 16*REGBYTES(sp)
 #endif
-
 #ifdef __riscv_flen
 	#if (__riscv_flen == 64)
 	FPSTORE f0 , (20*REGBYTES +  0*FPREGBYTES)(sp)
@@ -118,7 +117,7 @@
 	addi sp, sp, 20*REGBYTES
 	#endif
 #else
-	// De-allocate the stack space
+	/* De-allocate the stack space */
 	addi sp, sp, 20*REGBYTES
 #endif
 	.endm
@@ -144,13 +143,12 @@
 #endif
 	.endm
 
+
 	.macro RESTORE_CONTEXT_ONLY_X5
 	LOAD x5, 1*REGBYTES(sp)
 	.endm
 
 
-
-	// Save the mepc and mstatus
 	.macro SAVE_EPC_STATUS
 	csrr x5, CSR_MEPC
 	STORE x5, 16*REGBYTES(sp)
@@ -160,7 +158,7 @@
 	STORE x5, 18*REGBYTES(sp)
 	.endm
 
-	// Restore the mepc and mstatus
+
 	.macro RESTORE_EPC_STATUS
 	LOAD x5, 16*REGBYTES(sp)
 	csrw CSR_MEPC, x5
@@ -173,32 +171,24 @@
 
 
 	.section .text.trap
-	// In CLIC mode, the trap entry must be 64bytes aligned
+	/* In CLIC mode, the trap entry must be 64bytes aligned */
 	.align 6
 	.global trap_entry
 	.weak trap_entry
 trap_entry:
-	// Allocate the stack space
-	// addi sp, sp, -19*REGBYTES
+	//addi sp, sp, -19*REGBYTES
 
-	// Save the caller saving registers (context)
 	SAVE_CONTEXT
-	// Save the MEPC/Mstatus/Msubm reg
 	SAVE_EPC_STATUS
 
-	// Set the function argument
 	csrr a0, mcause
 	mv a1, sp
-	// Call the function
 	call handle_trap
 
-	// Restore the MEPC/Mstatus/Msubm reg
 	RESTORE_EPC_STATUS
-	// Restore the caller saving registers (context)
 	RESTORE_CONTEXT
 
-	// De-allocate the stack space
-	// addi sp, sp, 19*REGBYTES
+	//addi sp, sp, 19*REGBYTES
 	mret
 
 
@@ -207,16 +197,13 @@ trap_entry:
 	.global irq_entry
 	.weak irq_entry
 irq_entry:
-	// Allocate the stack space
 	SAVE_CONTEXT
 
 	csrrwi x0, CSR_PUSHMCAUSE, 17
 	csrrwi x0, CSR_PUSHMEPC, 18
 	csrrwi x0, CSR_PUSHMSUBM, 19
 
-service_loop:
-	// ID, if the ID is not 0, then automatically enable the mstatus.MIE,
-	// and jump to its vector-entry-label, and update the link register.
+	/* invoke the handler (with tail-chaining) */
 	csrrw ra, CSR_JALMNXTI, ra
 
 	//RESTORE_CONTEXT_EXCPT_X5
