@@ -4,6 +4,7 @@
 	.type vtable, %object
 	.section .vector_table, "a", %progbits
 
+	.extern system_init
 	.extern main
 
 	.macro IRQ handler
@@ -180,6 +181,7 @@ _start_1:
 	bltu a0, a1, 1b
 2:
 	call disable_mcycle_minstret
+	call system_init
 	/* Call main(0, NULL) */
 	li a0, 0
 	li a1, 0

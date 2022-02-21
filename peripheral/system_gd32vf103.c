@@ -387,6 +387,11 @@ static inline void system_clock_config() {
 #endif
 }
 
+static inline void interrupt_init() {
+	eclic_init(ECLIC_NUM_INTERRUPTS);
+	eclic_mode_enable();
+}
+
 void system_init() {
 	// reset the RCC clock configuration to the default reset state
 
@@ -422,5 +427,7 @@ void system_init() {
 	// Configure the System clock source, PLL Multiplier,
 	// AHB/APBx prescalers and Flash settings
 	system_clock_config();
+
+	interrupt_init();
 }
 

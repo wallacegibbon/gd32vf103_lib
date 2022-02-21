@@ -4,36 +4,28 @@ char my_variable[] = "hello, world!\r\n";
 
 char buf[100];
 
-//__attribute__((interrupt))
 void USART0_IRQn_handler() {
-	gpio_bit_reset(GPIOC, GPIO_PIN_13);
-	if (usart_interrupt_flag_get(USART0, USART_INT_FLAG_RBNE) != RESET) {
+	static int flag = 0;
+	if (flag)
 		gpio_bit_reset(GPIOA, GPIO_PIN_1);
-	}
-	if (usart_interrupt_flag_get(USART0, USART_INT_FLAG_TBE) != RESET) {
-		gpio_bit_reset(GPIOA, GPIO_PIN_2);
-	}
+	else
+		gpio_bit_set(GPIOA, GPIO_PIN_1);
+
+	flag = !flag;
 }
 
 void init() {
-	system_init();
-	eclic_init(ECLIC_NUM_INTERRUPTS);
-	eclic_mode_enable();
-
 	rcu_periph_clock_enable(RCU_GPIOA);
 	rcu_periph_clock_enable(RCU_GPIOC);
 	rcu_periph_clock_enable(RCU_USART0);
-
-	// IO for USART0
-	gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_9);
-	gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
 
 	eclic_global_interrupt_enable();
 	eclic_priority_group_set(ECLIC_PRIGROUP_LEVEL3_PRIO1);
 	eclic_irq_enable(USART0_IRQn, 1, 0);
 
-	//usart_interrupt_enable(USART0, USART_INT_TBE);
-	usart_interrupt_enable(USART0, USART_INT_RBNE);
+	// IO for USART0
+	gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_9);
+	gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
 
 	// trun off all LEDs
 	gpio_bit_set(GPIOA, GPIO_PIN_1 | GPIO_PIN_2);
@@ -54,6 +46,9 @@ void init() {
 	usart_receive_config(USART0, USART_RECEIVE_ENABLE);
 	usart_transmit_config(USART0, USART_TRANSMIT_ENABLE);
 	usart_enable(USART0);
+
+	// enable the interrupt after initializing the usart
+	usart_interrupt_enable(USART0, USART_INT_RBNE);
 }
 
 int _put_char(int ch) {

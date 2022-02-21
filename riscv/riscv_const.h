@@ -2,11 +2,11 @@
 #define __RISCV_CONST_H
 
 #ifdef __ASSEMBLER__
-#define _AC(X,Y)	X
-#define _AT(T,X)	X
+#define _AC(X, Y)	X
+#define _AT(T, X)	X
 #else
-#define _AC(X,Y)	(X##Y)
-#define _AT(T,X)	((T) (X))
+#define _AC(X, Y)	(X##Y)
+#define _AT(T, X)	((T) (X))
 #endif
 
 #define _BITUL(x)	(_AC(1, UL) << (x))

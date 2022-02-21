@@ -72,7 +72,7 @@
 #define USART_CTL0_UEN		BIT(13)
 
 // USARTx_CTL1
-#define USART_CTL1_ADDR		BITS(0, 3) // address of USART
+#define USART_CTL1_ADDR		BITS(0, 3)
 #define USART_CTL1_LBLEN	BIT(5) // LIN break frame length
 #define USART_CTL1_LBDIE	BIT(6) // LIN break detected interrupt eanble
 #define USART_CTL1_CLEN		BIT(8) // CK length
@@ -265,13 +265,13 @@ enum usart_interrupt {
 
 // USART receiver configure
 #define CTL0_REN(regval)  	(BIT(2) & ((uint32_t) (regval) << 2))
-#define USART_RECEIVE_ENABLE	CTL0_REN(1) // enable receiver
-#define USART_RECEIVE_DISABLE	CTL0_REN(0) // disable receiver
+#define USART_RECEIVE_ENABLE	CTL0_REN(1)
+#define USART_RECEIVE_DISABLE	CTL0_REN(0)
 
 // USART transmitter configure
 #define CTL0_TEN(regval)     	(BIT(3) & ((uint32_t) (regval) << 3))
-#define USART_TRANSMIT_ENABLE	CTL0_TEN(1) // enable transmitter
-#define USART_TRANSMIT_DISABLE	CTL0_TEN(0) // disable transmitter
+#define USART_TRANSMIT_ENABLE	CTL0_TEN(1)
+#define USART_TRANSMIT_DISABLE	CTL0_TEN(0)
 
 // USART parity bits definitions
 #define CTL0_PM(regval)		(BITS(9, 10) & ((uint32_t) (regval) << 9))
@@ -286,20 +286,20 @@ enum usart_interrupt {
 
 // USART word length definitions
 #define CTL0_WL(regval)		(BIT(12) & ((uint32_t) (regval) << 12))
-#define USART_WL_8BIT		CTL0_WL(0) // 8 bits
-#define USART_WL_9BIT		CTL0_WL(1) // 9 bits
+#define USART_WL_8BIT		CTL0_WL(0)
+#define USART_WL_9BIT		CTL0_WL(1)
 
 // USART stop bits definitions
 #define CTL1_STB(regval)	(BITS(12, 13) & ((uint32_t) (regval) << 12))
-#define USART_STB_1BIT		CTL1_STB(0) // 1 bit
-#define USART_STB_0_5BIT	CTL1_STB(1) // 0.5 bit
-#define USART_STB_2BIT		CTL1_STB(2) // 2 bits
-#define USART_STB_1_5BIT	CTL1_STB(3) // 1.5 bits
+#define USART_STB_1BIT		CTL1_STB(0)
+#define USART_STB_0_5BIT	CTL1_STB(1)
+#define USART_STB_2BIT		CTL1_STB(2)
+#define USART_STB_1_5BIT	CTL1_STB(3)
 
 // USART LIN break frame length
 #define CTL1_LBLEN(regval)	(BIT(5) & ((uint32_t) (regval) << 5))
-#define USART_LBLEN_10B		CTL1_LBLEN(0) // 10 bits
-#define USART_LBLEN_11B		CTL1_LBLEN(1) // 11 bits
+#define USART_LBLEN_10B		CTL1_LBLEN(0)
+#define USART_LBLEN_11B		CTL1_LBLEN(1)
 
 // USART CK length
 #define CTL1_CLEN(regval)	(BIT(8) & ((uint32_t) (regval) << 8))
@@ -343,13 +343,13 @@ enum usart_interrupt {
 
 // USART RTS configure
 #define CLT2_RTSEN(regval)	(BIT(8) & ((uint32_t) (regval) << 8))
-#define USART_RTS_ENABLE	CLT2_RTSEN(1) // RTS enable
-#define USART_RTS_DISABLE	CLT2_RTSEN(0) // RTS disable
+#define USART_RTS_ENABLE	CLT2_RTSEN(1)
+#define USART_RTS_DISABLE	CLT2_RTSEN(0)
 
 // USART CTS configure
 #define CLT2_CTSEN(regval)	(BIT(9) & ((uint32_t) (regval) << 9))
-#define USART_CTS_ENABLE	CLT2_CTSEN(1) // CTS enable
-#define USART_CTS_DISABLE	CLT2_CTSEN(0) // CTS disable
+#define USART_CTS_ENABLE	CLT2_CTSEN(1)
+#define USART_CTS_DISABLE	CLT2_CTSEN(0)
 
 // USART IrDA low-power enable
 #define CTL2_IRLP(regval)	(BIT(2) & ((uint32_t) (regval) << 2))

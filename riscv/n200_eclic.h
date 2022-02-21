@@ -26,21 +26,21 @@
 // 0x1002+4*i   1B/input	RW	eclicintattr[i]
 #define ECLIC_INT_ATTR_OFFSET	_AC(0x1002, UL)
 
-#define ECLIC_INT_ATTR_SHV		0x01
-#define ECLIC_INT_ATTR_TRIG_LEVEL	0x00
-#define ECLIC_INT_ATTR_TRIG_EDGE	0x02
-#define ECLIC_INT_ATTR_TRIG_POS		0x00
-#define ECLIC_INT_ATTR_TRIG_NEG		0x04
+#define ECLIC_INT_ATTR_SHV		1
+#define ECLIC_INT_ATTR_TRIG_LEVEL	0
+#define ECLIC_INT_ATTR_TRIG_EDGE	2
+#define ECLIC_INT_ATTR_TRIG_POS		0
+#define ECLIC_INT_ATTR_TRIG_NEG		4
 
 // 0x1003+4*i	1B/input	RW	eclicintctl[i]
-#define ECLIC_INT_CTRL_OFFSET	_AC(0x1003,UL)
+#define ECLIC_INT_CTRL_OFFSET	_AC(0x1003, UL)
 //
 //  ...
 //
 #define ECLIC_ADDR_BASE		0xd2000000
 
-#define ECLIC_CFG_NLBITS_MASK	_AC(0x1E,UL)
-#define ECLIC_CFG_NLBITS_LSB	(1u)
+#define ECLIC_CFG_NLBITS_MASK	_AC(0x1E, UL)
+#define ECLIC_CFG_NLBITS_LSB	1
 
 #define MSIP_HANDLER	eclic_msip_handler
 #define MTIME_HANDLER	eclic_mtip_handler
