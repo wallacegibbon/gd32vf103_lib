@@ -1,5 +1,5 @@
 TARGET = simple_test
-LIBDIR = ../
+LIBDIR = ..
 
 COMPILER_PREFIX = /usr/local/nuclei-riscv-tools/gcc/bin/riscv-nuclei-elf-
 OPENOCD_CMD = /usr/local/riscv-openocd/bin/openocd
