@@ -5,7 +5,8 @@ char my_variable[] = "hello, world!\r\n";
 char buf[100];
 
 void USART0_IRQn_handler() {
-	static int flag = 0;
+	static int flag = 1;
+	usart_data_receive(USART0);
 	if (flag)
 		gpio_bit_reset(GPIOA, GPIO_PIN_1);
 	else

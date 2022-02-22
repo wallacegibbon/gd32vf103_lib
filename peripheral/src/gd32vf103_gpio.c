@@ -1,20 +1,20 @@
 #include "gd32vf103_gpio.h"
 
-#define AFIO_EXTI_SOURCE_MASK		((uint8_t) 0x03U)
-#define AFIO_EXTI_SOURCE_FIELDS		((uint8_t) 0x04U)
-#define LSB_16BIT_MASK			((uint16_t) 0xFFFFU)
+#define AFIO_EXTI_SOURCE_MASK		((uint8_t) 3)
+#define AFIO_EXTI_SOURCE_FIELDS		((uint8_t) 4)
+#define LSB_16BIT_MASK			((uint16_t) 0xFFFF)
 // AFIO_PCF register position mask
-#define PCF_POSITION_MASK		((uint32_t) 0x000F0000U)
+#define PCF_POSITION_MASK		((uint32_t) 0x000F0000)
 // AFIO_PCF register SWJCFG mask
-#define PCF_SWJCFG_MASK			((uint32_t) 0xF0FFFFFFU)
+#define PCF_SWJCFG_MASK			((uint32_t) 0xF0FFFFFF)
 // AFIO_PCF register location1 mask
-#define PCF_LOCATION1_MASK		((uint32_t) 0x00200000U)
+#define PCF_LOCATION1_MASK		((uint32_t) 0x00200000)
 // AFIO_PCF register location2 mask
-#define PCF_LOCATION2_MASK		((uint32_t) 0x00100000U)
+#define PCF_LOCATION2_MASK		((uint32_t) 0x00100000)
 // select AFIO_PCF1 register
-#define AFIO_PCF1_FIELDS		((uint32_t) 0x80000000U)
+#define AFIO_PCF1_FIELDS		((uint32_t) 0x80000000)
 // GPIO event output port offset
-#define GPIO_OUTPUT_PORT_OFFSET		((uint32_t) 4U)
+#define GPIO_OUTPUT_PORT_OFFSET		((uint32_t) 4)
 
 void gpio_deinit(uint32_t gpio_periph) {
 	switch (gpio_periph) {
@@ -72,7 +72,7 @@ void gpio_init(uint32_t gpio_periph, uint32_t mode, uint32_t speed,
 	uint32_t reg = 0;
 
 	// GPIO mode configuration
-	uint32_t temp_mode = (mode & 0x0FU);
+	uint32_t temp_mode = (mode & 0x0F);
 
 	// GPIO speed configuration
 	if (mode & 0x10)
@@ -197,7 +197,7 @@ uint16_t gpio_output_port_get(uint32_t gpio_periph) {
  * newvalue: ENABLE or DISABLE
  */
 void gpio_pin_remap_config(uint32_t remap, enum control_status newvalue) {
-	uint32_t temp_reg = 0U;
+	uint32_t temp_reg = 0;
 
 	if (AFIO_PCF1_FIELDS == (remap & AFIO_PCF1_FIELDS))
 		// get AFIO_PCF1 regiter value
@@ -206,7 +206,7 @@ void gpio_pin_remap_config(uint32_t remap, enum control_status newvalue) {
 		// get AFIO_PCF0 regiter value
 		temp_reg = AFIO_PCF0;
 
-	uint32_t temp_mask = (remap & PCF_POSITION_MASK) >> 0x10U;
+	uint32_t temp_mask = (remap & PCF_POSITION_MASK) >> 0x10;
 	uint32_t remap1 = remap & LSB_16BIT_MASK;
 
 	// judge pin remap type
@@ -215,17 +215,17 @@ void gpio_pin_remap_config(uint32_t remap, enum control_status newvalue) {
 		temp_reg &= PCF_SWJCFG_MASK;
 		AFIO_PCF0 &= PCF_SWJCFG_MASK;
 	} else if (PCF_LOCATION2_MASK == (remap & PCF_LOCATION2_MASK)) {
-		uint32_t remap2 = 0x03U << temp_mask;
+		uint32_t remap2 = 3 << temp_mask;
 		temp_reg &= ~remap2;
 		temp_reg |= ~PCF_SWJCFG_MASK;
 	} else {
-		temp_reg &= ~(remap1 << ((remap >> 0x15U) * 0x10U));
+		temp_reg &= ~(remap1 << ((remap >> 0x15) * 0x10));
 		temp_reg |= ~PCF_SWJCFG_MASK;
 	}
 
 	// set pin remap value
 	if (DISABLE != newvalue)
-		temp_reg |= (remap1 << ((remap >> 0x15U) * 0x10U));
+		temp_reg |= (remap1 << ((remap >> 0x15) * 0x10));
 
 	if (AFIO_PCF1_FIELDS == (remap & AFIO_PCF1_FIELDS))
 		// set AFIO_PCF1 regiter value
@@ -246,32 +246,33 @@ void gpio_pin_remap_config(uint32_t remap, enum control_status newvalue) {
  * gpio_outputpin: GPIO_PIN_SOURCE_x(x=0..15)
  */
 void gpio_exti_source_select(uint8_t output_port, uint8_t output_pin) {
-	uint32_t source = 0x0FU << (AFIO_EXTI_SOURCE_FIELDS *
-			(output_pin & AFIO_EXTI_SOURCE_MASK));
+	uint32_t source =
+		0x0F << (AFIO_EXTI_SOURCE_FIELDS *
+				(output_pin & AFIO_EXTI_SOURCE_MASK));
 
 	if (GPIO_PIN_SOURCE_4 > output_pin) {
 		// select EXTI0/EXTI1/EXTI2/EXTI3
 		AFIO_EXTISS0 &= ~source;
-		AFIO_EXTISS0 |= output_port
-			<< (AFIO_EXTI_SOURCE_FIELDS *
+		AFIO_EXTISS0 |=
+			output_port << (AFIO_EXTI_SOURCE_FIELDS *
 					(output_pin & AFIO_EXTI_SOURCE_MASK));
 	} else if (GPIO_PIN_SOURCE_8 > output_pin) {
 		// select EXTI4/EXTI5/EXTI6/EXTI7
 		AFIO_EXTISS1 &= ~source;
-		AFIO_EXTISS1 |= output_port
-			<< (AFIO_EXTI_SOURCE_FIELDS *
+		AFIO_EXTISS1 |=
+			output_port << (AFIO_EXTI_SOURCE_FIELDS *
 					(output_pin & AFIO_EXTI_SOURCE_MASK));
 	} else if (GPIO_PIN_SOURCE_12 > output_pin) {
 		// select EXTI8/EXTI9/EXTI10/EXTI11
 		AFIO_EXTISS2 &= ~source;
-		AFIO_EXTISS2 |= output_port
-			<< (AFIO_EXTI_SOURCE_FIELDS *
+		AFIO_EXTISS2 |=
+			output_port << (AFIO_EXTI_SOURCE_FIELDS *
 					(output_pin & AFIO_EXTI_SOURCE_MASK));
 	} else {
 		// select EXTI12/EXTI13/EXTI14/EXTI15
 		AFIO_EXTISS3 &= ~source;
-		AFIO_EXTISS3 |= output_port
-			<< (AFIO_EXTI_SOURCE_FIELDS *
+		AFIO_EXTISS3 |=
+			output_port << (AFIO_EXTI_SOURCE_FIELDS *
 					(output_pin & AFIO_EXTI_SOURCE_MASK));
 	}
 }

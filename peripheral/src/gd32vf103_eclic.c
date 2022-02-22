@@ -48,7 +48,7 @@ void eclic_irq_disable(uint32_t source) {
 
 void eclic_system_reset() {
 	REG32(REG_DBGMCU2EN) = 0x4b5a6978;
-	REG32(REG_DBGMCU2) = 0x1;
+	REG32(REG_DBGMCU2) = 1;
 }
 
 void eclic_send_event() {

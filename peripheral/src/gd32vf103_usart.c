@@ -1,9 +1,5 @@
 #include "gd32vf103_usart.h"
 
-/*
- * reset USART/UART
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
- */
 void usart_deinit(uint32_t usart_periph) {
 	switch (usart_periph) {
 	case USART0:
@@ -31,11 +27,6 @@ void usart_deinit(uint32_t usart_periph) {
 	}
 }
 
-/*
- * configure USART baud rate value
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
- * baudval: baud rate value
- */
 void usart_baudrate_set(uint32_t usart_periph, uint32_t baudval) {
 	uint32_t uclk = 0, intdiv = 0, fradiv = 0, udiv = 0;
 	// get clock frequency
@@ -67,8 +58,6 @@ void usart_baudrate_set(uint32_t usart_periph, uint32_t baudval) {
 }
 
 /*
- * configure USART parity
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
  * paritycfg: configure USART parity
  * 	USART_PM_NONE: no parity
  * 	USART_PM_ODD:  odd parity
@@ -80,8 +69,6 @@ void usart_parity_config(uint32_t usart_periph, uint32_t paritycfg) {
 }
 
 /*
- * configure USART word length
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
  * wlen: USART word length configure
  * 	USART_WL_8BIT: 8 bits
  * 	USART_WL_9BIT: 9 bits
@@ -92,8 +79,6 @@ void usart_word_length_set(uint32_t usart_periph, uint32_t wlen) {
 }
 
 /*
- * configure USART stop bit length
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
  * stblen: USART stop bit configure
  * 	USART_STB_1BIT:   1 bit
  * 	USART_STB_0_5BIT: 0.5 bit, not available for UARTx(x=3,4)
@@ -114,8 +99,6 @@ void usart_disable(uint32_t usart_periph) {
 }
 
 /*
- * configure USART transmitter
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
  * txconfig: enable or disable USART transmitter
  * 	USART_TRANSMIT_ENABLE: enable USART transmission
  * 	USART_TRANSMIT_DISABLE: disable USART transmission
@@ -129,8 +112,6 @@ void usart_transmit_config(uint32_t usart_periph, uint32_t txconfig) {
 }
 
 /*
- * configure USART receiver
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
  * rxconfig: enable or disable USART receiver
  * 	USART_RECEIVE_ENABLE: enable USART reception
  * 	USART_RECEIVE_DISABLE: disable USART reception
@@ -143,52 +124,28 @@ void usart_receive_config(uint32_t usart_periph, uint32_t rxconfig) {
 	USART_CTL0(usart_periph) = ctl;
 }
 
-/*
- * USART transmit data function
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
- * data: data of transmission 
- */
 void usart_data_transmit(uint32_t usart_periph, uint32_t data) {
 	USART_DATA(usart_periph) = USART_DATA_DATA & data;
 }
 
-/*
- * USART receive data function
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
- */
 uint16_t usart_data_receive(uint32_t usart_periph) {
 	return (uint16_t) (GET_BITS(USART_DATA(usart_periph), 0, 8));
 }
 
-/*
- * configure the address of the USART in wake up by address match mode
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
- * addr: address of USART/UART
- */
 void usart_address_config(uint32_t usart_periph, uint8_t addr) {
 	USART_CTL1(usart_periph) &= ~(USART_CTL1_ADDR);
 	USART_CTL1(usart_periph) |= (USART_CTL1_ADDR & addr);
 }
 
-/*
- * receiver in mute mode
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
- */
 void usart_mute_mode_enable(uint32_t usart_periph) {
 	USART_CTL0(usart_periph) |= USART_CTL0_RWU;
 }
 
-/*
- * receiver in active mode
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
- */
 void usart_mute_mode_disable(uint32_t usart_periph) {
 	USART_CTL0(usart_periph) &= ~(USART_CTL0_RWU);
 }
 
 /*
- * configure wakeup method in mute mode
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
  * wmethod: two methods be used to enter or exit the mute mode
  * 	USART_WM_IDLE: idle line
  * 	USART_WM_ADDR: address mask
@@ -207,8 +164,6 @@ void usart_lin_mode_disable(uint32_t usart_periph) {
 }
 
 /*
- * configure lin break frame length
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
  * lblen: lin break frame length
  * 	USART_LBLEN_10B: 10 bits
  * 	USART_LBLEN_11B: 11 bits
@@ -312,7 +267,6 @@ void usart_irda_mode_disable(uint32_t usart_periph) {
 
 /*
  * configure the peripheral clock prescaler in USART IrDA low-power mode
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
  * psc: 0x00-0xFF
  */
 void usart_prescaler_config(uint32_t usart_periph, uint8_t psc) {
@@ -322,7 +276,6 @@ void usart_prescaler_config(uint32_t usart_periph, uint8_t psc) {
 
 /*
  * configure IrDA low-power
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3,4)
  * irlp: IrDA low-power or normal
  * 	USART_IRLP_LOW: low-power
  * 	USART_IRLP_NORMAL: normal
@@ -364,7 +317,7 @@ void usart_hardware_flow_cts_config(uint32_t usart_periph, uint32_t ctsconfig) {
 
 /*
  * configure USART DMA reception
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3)
+ * usart_periph: USARTx(x=0,1,2)/UART3
  * dmacmd: enable or disable DMA for reception
  * 	USART_DENR_ENABLE:  DMA enable for reception
  * 	USART_DENR_DISABLE: DMA disable for reception
@@ -379,7 +332,7 @@ void usart_dma_receive_config(uint32_t usart_periph, uint32_t dmacmd) {
 
 /*
  * configure USART DMA transmission
- * usart_periph: USARTx(x=0,1,2)/UARTx(x=3)
+ * usart_periph: USARTx(x=0,1,2)/UART3
  * dmacmd: enable or disable DMA for transmission
  * 	USART_DENT_ENABLE:  DMA enable for transmission
  * 	USART_DENT_DISABLE: DMA disable for transmission
