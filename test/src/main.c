@@ -4,17 +4,6 @@ char my_variable[] = "hello, world!\r\n";
 
 char buf[100];
 
-void USART0_IRQn_handler() {
-	static int flag = 1;
-	usart_data_receive(USART0);
-	if (flag)
-		gpio_bit_reset(GPIOA, GPIO_PIN_1);
-	else
-		gpio_bit_set(GPIOA, GPIO_PIN_1);
-
-	flag = !flag;
-}
-
 void init() {
 	rcu_periph_clock_enable(RCU_GPIOA);
 	rcu_periph_clock_enable(RCU_GPIOC);
@@ -89,5 +78,24 @@ int main(int argc, const char **argv) {
 	}
 
 	return 0;
+}
+
+void USART0_IRQn_handler() {
+	static int flag = ~0;
+	int key = usart_data_receive(USART0);
+	int mask = 0;
+
+	if (key == 'g')
+		mask = GPIO_PIN_1;
+	else if (key == 'b')
+		mask = GPIO_PIN_2;
+
+	if (flag & mask) {
+		gpio_bit_reset(GPIOA, mask);
+		flag &= ~mask;
+	} else {
+		gpio_bit_set(GPIOA, mask);
+		flag |= mask;
+	}
 }
 
