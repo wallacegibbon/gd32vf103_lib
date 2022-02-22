@@ -80,22 +80,26 @@ int main(int argc, const char **argv) {
 	return 0;
 }
 
+struct led_controller {
+	int port, pin, state;
+};
+
+struct led_controller leds[2] =
+	{{GPIOA, GPIO_PIN_1, 0}, {GPIOA, GPIO_PIN_2, 0}};
+
+void led_controller_toggle(struct led_controller *led) {
+	led->state = !led->state;
+	if (led->state)
+		gpio_bit_reset(led->port, led->pin);
+	else
+		gpio_bit_set(led->port, led->pin);
+}
+
 void USART0_IRQn_handler() {
-	static int flag = ~0;
 	int key = usart_data_receive(USART0);
-	int mask = 0;
-
 	if (key == 'g')
-		mask = GPIO_PIN_1;
+		led_controller_toggle(&leds[0]);
 	else if (key == 'b')
-		mask = GPIO_PIN_2;
-
-	if (flag & mask) {
-		gpio_bit_reset(GPIOA, mask);
-		flag &= ~mask;
-	} else {
-		gpio_bit_set(GPIOA, mask);
-		flag |= mask;
-	}
+		led_controller_toggle(&leds[1]);
 }
 
