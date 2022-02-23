@@ -1,9 +1,13 @@
 ## Introduction
 
-This is a library for GD32VF103xxxx RISC-V microcontrollers. It depends on the GNU toolchains (GCC, Binutils) for RV32IMAC.
+This is a library for GD32VF103xxxx RISC-V microcontrollers. It depends on the GNU toolchains (GCC, Binutils) for (at least) RV32I.
 
 
 ## Debugger Adaptor
+
+The `RV-Debugger-Lite` is the recommended one (for it's tiny size and cheap price).
+
+Configurations before using the debugger:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/platformio/platformio-core/master/scripts/99-platformio-udev.rules | sudo tee /etc/udev/rules.d/99-platformio-udev.rules
@@ -36,5 +40,5 @@ sudo cp misc/sipeed-rv-debugger.cfg /usr/local/riscv-openocd/share/openocd/scrip
 
 > This library is modified from [the official firmware library](https://www.gigadevice.com/products/microcontrollers/gd32/risc-v/) and [this template](https://github.com/WRansohoff/GD32VF103_templates).
 
-There is a sample Makefile in the `test` directory.
+There is a sample Makefile in the `sample` directory.
 

@@ -3,7 +3,6 @@
 #include "n200_eclic.h"
 #include "n200_timer.h"
 
-
 	.macro DISABLE_MIE
 	csrc CSR_MSTATUS, MSTATUS_MIE
 	.endm
@@ -123,32 +122,6 @@
 	.endm
 
 
-	.macro RESTORE_CONTEXT_EXCPT_X5
-	LOAD ra,  0*REGBYTES(sp)
-	LOAD t1,  2*REGBYTES(sp)
-	LOAD t2,  3*REGBYTES(sp)
-	LOAD a0,  4*REGBYTES(sp)
-	LOAD a1,  5*REGBYTES(sp)
-	LOAD a2,  6*REGBYTES(sp)
-	LOAD a3,  7*REGBYTES(sp)
-	LOAD a4,  8*REGBYTES(sp)
-	LOAD a5,  9*REGBYTES(sp)
-#ifndef __riscv_32e
-	LOAD a6, 10*REGBYTES(sp)
-	LOAD a7, 11*REGBYTES(sp)
-	LOAD t3, 12*REGBYTES(sp)
-	LOAD t4, 13*REGBYTES(sp)
-	LOAD t5, 14*REGBYTES(sp)
-	LOAD t6, 15*REGBYTES(sp)
-#endif
-	.endm
-
-
-	.macro RESTORE_CONTEXT_ONLY_X5
-	LOAD t0, 1*REGBYTES(sp)
-	.endm
-
-
 	.macro SAVE_EPC_STATUS
 	csrr t0, CSR_MEPC
 	STORE t0, 16*REGBYTES(sp)
@@ -167,7 +140,6 @@
 	LOAD t0, 18*REGBYTES(sp)
 	csrw CSR_MSUBM, t0
 	.endm
-
 
 
 	.section .text.trap
@@ -205,8 +177,6 @@ irq_entry:
 
 	/* invoke the handler (with tail-chaining) */
 	csrrw ra, CSR_JALMNXTI, ra
-
-	//RESTORE_CONTEXT_EXCPT_X5
 
 	DISABLE_MIE
 
