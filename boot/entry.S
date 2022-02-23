@@ -3,6 +3,7 @@
 #include "n200_eclic.h"
 #include "n200_timer.h"
 
+
 	.macro DISABLE_MIE
 	csrc CSR_MSTATUS, MSTATUS_MIE
 	.endm
@@ -124,20 +125,20 @@
 
 	.macro SAVE_EPC_STATUS
 	csrr t0, CSR_MEPC
-	STORE t0, 16*REGBYTES(sp)
-	csrr t0, CSR_MSTATUS
 	STORE t0, 17*REGBYTES(sp)
-	csrr t0, CSR_MSUBM
+	csrr t0, CSR_MSTATUS
 	STORE t0, 18*REGBYTES(sp)
+	csrr t0, CSR_MSUBM
+	STORE t0, 19*REGBYTES(sp)
 	.endm
 
 
 	.macro RESTORE_EPC_STATUS
-	LOAD t0, 16*REGBYTES(sp)
-	csrw CSR_MEPC, t0
 	LOAD t0, 17*REGBYTES(sp)
-	csrw CSR_MSTATUS, t0
+	csrw CSR_MEPC, t0
 	LOAD t0, 18*REGBYTES(sp)
+	csrw CSR_MSTATUS, t0
+	LOAD t0, 19*REGBYTES(sp)
 	csrw CSR_MSUBM, t0
 	.endm
 
@@ -148,8 +149,6 @@
 	.global trap_entry
 	.weak trap_entry
 trap_entry:
-	//addi sp, sp, -19*REGBYTES
-
 	SAVE_CONTEXT
 	SAVE_EPC_STATUS
 
@@ -160,8 +159,24 @@ trap_entry:
 	RESTORE_EPC_STATUS
 	RESTORE_CONTEXT
 
-	//addi sp, sp, 19*REGBYTES
 	mret
+
+
+	.macro SAVE_CSR_CONTEXT
+	csrrwi x0, CSR_PUSHMCAUSE, 17
+	csrrwi x0, CSR_PUSHMEPC, 18
+	csrrwi x0, CSR_PUSHMSUBM, 19
+	.endm
+
+
+	.macro RESTORE_CSR_CONTEXT
+	LOAD t0, 19*REGBYTES(sp)
+	csrw CSR_MSUBM, t0
+	LOAD t0, 18*REGBYTES(sp)
+	csrw CSR_MEPC, t0
+	LOAD t0, 17*REGBYTES(sp)
+	csrw CSR_MCAUSE, t0
+	.endm
 
 
 	.section .text.irq
@@ -170,23 +185,14 @@ trap_entry:
 	.weak irq_entry
 irq_entry:
 	SAVE_CONTEXT
-
-	csrrwi x0, CSR_PUSHMCAUSE, 17
-	csrrwi x0, CSR_PUSHMEPC, 18
-	csrrwi x0, CSR_PUSHMSUBM, 19
+	SAVE_CSR_CONTEXT
 
 	/* invoke the handler (with tail-chaining) */
 	csrrw ra, CSR_JALMNXTI, ra
 
 	DISABLE_MIE
 
-	LOAD t0, 19*REGBYTES(sp)
-	csrw CSR_MSUBM, t0
-	LOAD t0, 18*REGBYTES(sp)
-	csrw CSR_MEPC, t0
-	LOAD t0, 17*REGBYTES(sp)
-	csrw CSR_MCAUSE, t0
-
+	RESTORE_CSR_CONTEXT
 	RESTORE_CONTEXT
 
 	mret
