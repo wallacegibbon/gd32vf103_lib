@@ -1,14 +1,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-enum printf_state {
-	PRINTF_NORMAL,
-	PRINTF_FLAG,
-	PRINTF_FLAG_L,
-	PRINTF_WIDTH,
-	PRINTF_PRECISION
-};
-
 static inline char num_to_char(int num) {
 	if (num <= 9)
 		return num + '0';
@@ -18,7 +10,12 @@ static inline char num_to_char(int num) {
 		return '*';
 }
 
-static int print_int(int num, int radix) {
+/*
+ * doing 64bit division on 32bit system needs c-lib support. (__udivdi3)
+ * using `long` could elimitnate the need for c-lib and do not waste the power.
+ *	(long is efficient for both `-ilp32` and `-lp64`)
+ */
+static int print_int(long num, int radix) {
 	// 20 decimal characters is enough even for 64bit number
 	char buf[20];
 	int cnt = 0;
@@ -34,11 +31,11 @@ static int print_int(int num, int radix) {
 
 #if USE_FLOAT == 1
 static int print_float(double num) {
-	if (num > (unsigned int) -1)
-		return puts("<too big>");
+	if (num > (unsigned long) -1)
+		return putchar('*');
 
-	int int_part = (int) num;
-	int decimal_part = (int) ((num - int_part) * 10000);
+	long int_part = (long) num;
+	long decimal_part = (long) ((num - int_part) * 10000);
 	int cnt = print_int(int_part, 10);
 	cnt += putchar('.');
 	cnt += print_int(decimal_part, 10);
@@ -47,11 +44,18 @@ static int print_float(double num) {
 }
 #endif
 
+/* the printf function is basicly a state machine */
+enum printf_state {
+	PRINTF_NORMAL,
+	PRINTF_FLAG,
+	PRINTF_FLAG_L,
+	PRINTF_WIDTH,
+	PRINTF_PRECISION
+};
+
 static enum printf_state printf_sub(char ch, enum printf_state state,
 		int *cnt, va_list *ap) {
-#if USE_FLOAT != 1
-	int ignore;
-#endif
+
 	switch (state) {
 	case PRINTF_FLAG:
 		switch (ch) {
@@ -69,11 +73,10 @@ static enum printf_state printf_sub(char ch, enum printf_state state,
 			break;
 		case 'f':
 #if USE_FLOAT == 1
-			//*cnt += print_float(va_arg(*ap, float));
 			*cnt += print_float(va_arg(*ap, double));
 #else
-			ignore = va_arg(*ap, double);
-			*cnt += putchar('*');
+			va_arg(*ap, double);
+			*cnt += putchar('?');
 #endif
 			state = PRINTF_NORMAL;
 			break;
@@ -85,20 +88,21 @@ static enum printf_state printf_sub(char ch, enum printf_state state,
 			*cnt += putchar('%');
 			state = PRINTF_NORMAL;
 			break;
+		default:
+			va_arg(*ap, int);
+			*cnt += putchar('*');
 		}
 		break;
 	case PRINTF_FLAG_L:
-		if (ch == 'f') {
-#if USE_FLOAT == 1
-			*cnt += print_float(va_arg(*ap, double));
-#else
-			ignore = va_arg(*ap, double);
+		switch (ch) {
+		case 'd':
+			*cnt += print_int(va_arg(*ap, long), 10);
+			state = PRINTF_NORMAL;
+			break;
+		default:
 			*cnt += putchar('*');
-#endif
-		} else {
-			*cnt += putchar('*');
+			state = PRINTF_NORMAL;
 		}
-		state = PRINTF_NORMAL;
 		break;
 	case PRINTF_NORMAL:
 		if (ch == '%')
