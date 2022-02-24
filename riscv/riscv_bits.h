@@ -35,6 +35,15 @@
 #define LOG_REGBYTES	2
 #endif
 
+#if defined(__riscv_flen) && __riscv_flen == 64
+#define FPLOAD		fld
+#define FPSTORE		fsd
+#endif
+
 #define REGBYTES	(1 << LOG_REGBYTES)
+
+#if defined(__riscv_flen) && __riscv_flen == 64
+#define FPREGBYTES	(1 << LOG_REGBYTES)
+#endif
 
 #endif

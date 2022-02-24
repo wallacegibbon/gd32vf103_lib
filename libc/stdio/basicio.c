@@ -9,6 +9,6 @@ int puts(const char *s) {
 
 __attribute__((weak))
 int putchar(int ch) {
-	return ch;
+	return 1;
 }
 

@@ -1,7 +1,7 @@
 #include <gd32vf103.h>
 #include <stdio.h>
 
-char my_variable[] = "hello, world!\r\n";
+char my_variable[] = "hello, world!";
 
 char buf[100];
 
@@ -45,8 +45,7 @@ void init() {
 int putchar(int ch) {
 	usart_data_transmit(USART0, (uint8_t) ch);
 	while (usart_flag_get(USART0, USART_FLAG_TBE) == RESET);
-
-	return ch;
+	return 1;
 }
 
 int sleep(int t) {
@@ -59,14 +58,12 @@ int sleep(int t) {
 int main(int argc, const char **argv) {
 	init();
 
-	//gpio_bit_reset(GPIOA, GPIO_PIN_1);
-	//gpio_bit_reset(GPIOA, GPIO_PIN_2);
-	//gpio_bit_reset(GPIOC, GPIO_PIN_13);
-
 	int n = printf("this is from the serial port, %s\r\n", my_variable);
-	printf("the size of previous printf is %d\r\n", n);
-	printf("done.\r\n");
-	printf("test %d-%d-%d.\r\n", 3, 30, 300);
+	printf("the size of previous printf is %d(%x)\r\n", n, n);
+
+	// using floating-point number could increase the code size
+	printf("floating point number print, pi = %lf, e = %lf\r\n",
+			3.1415926, 2.718281);
 
 	while (1) {
 		gpio_bit_set(GPIOC, GPIO_PIN_13);
