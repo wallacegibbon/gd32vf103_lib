@@ -45,7 +45,7 @@ static int print_float(double num) {
 #endif
 
 /* the printf function is basicly a state machine */
-enum printf_state {
+enum printf_state_flag {
 	PRINTF_NORMAL,
 	PRINTF_FLAG,
 	PRINTF_FLAG_L,
@@ -53,81 +53,81 @@ enum printf_state {
 	PRINTF_PRECISION
 };
 
-static enum printf_state printf_sub(char ch, enum printf_state state,
-		int *cnt, va_list *ap) {
+struct printf_state {
+	enum printf_state_flag state;
+	va_list ap;
+	const char *fmt;
+	int cnt;
+};
 
-	switch (state) {
+void printf_sub(struct printf_state *st) {
+	char ch = *st->fmt++;
+	switch (st->state) {
 	case PRINTF_FLAG:
 		switch (ch) {
 		case 'X':
 		case 'x':
-			*cnt += print_int(va_arg(*ap, int), 16);
-			state = PRINTF_NORMAL;
+			st->cnt += print_int(va_arg(st->ap, int), 16);
+			st->state = PRINTF_NORMAL;
 			break;
 		case 'd':
-			*cnt += print_int(va_arg(*ap, int), 10);
-			state = PRINTF_NORMAL;
+			st->cnt += print_int(va_arg(st->ap, int), 10);
+			st->state = PRINTF_NORMAL;
 			break;
 		case 'l':
-			state = PRINTF_FLAG_L;
+			st->state = PRINTF_FLAG_L;
 			break;
 		case 'f':
 #if USE_FLOAT == 1
-			*cnt += print_float(va_arg(*ap, double));
+			st->cnt += print_float(va_arg(st->ap, double));
 #else
-			va_arg(*ap, double);
-			*cnt += putchar('?');
+			va_arg(st->ap, double);
+			st->cnt += putchar('?');
 #endif
-			state = PRINTF_NORMAL;
+			st->state = PRINTF_NORMAL;
 			break;
 		case 's':
-			*cnt += puts(va_arg(*ap, char *));
-			state = PRINTF_NORMAL;
+			st->cnt += puts(va_arg(st->ap, char *));
+			st->state = PRINTF_NORMAL;
 			break;
 		case '%':
-			*cnt += putchar('%');
-			state = PRINTF_NORMAL;
+			st->cnt += putchar('%');
+			st->state = PRINTF_NORMAL;
 			break;
 		default:
-			va_arg(*ap, int);
-			*cnt += putchar('*');
+			va_arg(st->ap, int);
+			st->cnt += putchar('*');
 		}
 		break;
 	case PRINTF_FLAG_L:
 		switch (ch) {
 		case 'd':
-			*cnt += print_int(va_arg(*ap, long), 10);
-			state = PRINTF_NORMAL;
+			st->cnt += print_int(va_arg(st->ap, long), 10);
+			st->state = PRINTF_NORMAL;
 			break;
 		default:
-			*cnt += putchar('*');
-			state = PRINTF_NORMAL;
+			st->cnt += putchar('*');
+			st->state = PRINTF_NORMAL;
 		}
 		break;
 	case PRINTF_NORMAL:
 		if (ch == '%')
-			state = PRINTF_FLAG;
+			st->state = PRINTF_FLAG;
 		else
-			*cnt += putchar(ch);
+			st->cnt += putchar(ch);
 		break;
 	}
-
-	return state;
 }
 
 int printf(const char *fmt, ...) {
-	va_list ap;
-	va_start(ap, fmt);
+	struct printf_state state = {PRINTF_NORMAL, NULL, fmt, 0};
+	va_start(state.ap, fmt);
 
-	const char *p = fmt;
-	char ch;
-	enum printf_state state = PRINTF_NORMAL;
-	int cnt = 0;
+	while (*state.fmt)
+		printf_sub(&state);
 
-	while (ch = *p++)
-		state = printf_sub(ch, state, &cnt, &ap);
+	va_end(state.ap);
 
-	va_end(ap);
-	return cnt;
+	return state.cnt;
 }
 
