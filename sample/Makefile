@@ -11,6 +11,7 @@ OPENOCD_ARGS = -f interface/ftdi/sipeed-rv-debugger.cfg \
 ## this works with the "-Wl,--gc-sections" parameter of the linker.
 
 CFLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
+	-fno-builtin \
 	-I$(LIBDIR)/riscv -I$(LIBDIR)/peripheral \
 	-I$(LIBDIR)/peripheral/src -I$(LIBDIR)/peripheral/inc \
 	-I./src \
@@ -33,6 +34,7 @@ SIZE = $(COMPILER_PREFIX)size
 C_FILES = $(wildcard $(LIBDIR)/peripheral/*.c)
 C_FILES += $(wildcard $(LIBDIR)/peripheral/src/*.c)
 C_FILES += $(wildcard $(LIBDIR)/riscv/*.c)
+C_FILES += $(wildcard $(LIBDIR)/libc/*/*.c)
 C_FILES += $(wildcard ./src/*.c)
 
 C_OBJS = $(patsubst %.c, %.o, $(C_FILES))

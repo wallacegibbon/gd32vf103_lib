@@ -1,4 +1,5 @@
-#include "gd32vf103.h"
+#include <gd32vf103.h>
+#include <stdio.h>
 
 char my_variable[] = "hello, world!\r\n";
 
@@ -41,16 +42,11 @@ void init() {
 	usart_interrupt_enable(USART0, USART_INT_RBNE);
 }
 
-int _put_char(int ch) {
+int putchar(int ch) {
 	usart_data_transmit(USART0, (uint8_t) ch);
 	while (usart_flag_get(USART0, USART_FLAG_TBE) == RESET);
 
 	return ch;
-}
-
-int puts(const char *str) {
-	while (*str != '\0')
-		_put_char(*str++);
 }
 
 int sleep(int t) {
@@ -67,8 +63,10 @@ int main(int argc, const char **argv) {
 	//gpio_bit_reset(GPIOA, GPIO_PIN_2);
 	//gpio_bit_reset(GPIOC, GPIO_PIN_13);
 
-	puts("this is from the serial port\r\n");
-	puts(my_variable);
+	int n = printf("this is from the serial port, %s\r\n", my_variable);
+	printf("the size of previous printf is %d\r\n", n);
+	printf("done.\r\n");
+	printf("test %d-%d-%d.\r\n", 3, 30, 300);
 
 	while (1) {
 		gpio_bit_set(GPIOC, GPIO_PIN_13);
