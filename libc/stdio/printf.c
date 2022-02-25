@@ -18,10 +18,14 @@ static inline char num_to_char(int num) {
 static int print_int(long num, int radix) {
 	// 20 decimal characters is enough even for 64bit number
 	char buf[20];
-	int cnt = 0;
+	int cnt = 0, sign_cnt = 0;
 
-	if (num == 0)
+	if (num == 0) {
 		return putchar('0');
+	} else if (num < 0) {
+		sign_cnt = putchar('-');
+		num = -num;
+	}
 
 	for (; cnt < 20 && num > 0; cnt++, num /= radix)
 		buf[cnt] = num_to_char(num % radix);
@@ -29,17 +33,24 @@ static int print_int(long num, int radix) {
 	for (int i = cnt - 1; i >= 0; i--)
 		putchar(buf[i]);
 
-	return cnt;
+	return cnt + sign_cnt;
 }
 
 #if USE_FLOAT == 1
 static int print_float(double num) {
-	if (num > (unsigned long) -1)
+	int cnt = 0;
+
+	if (num > (unsigned long) -1 || -num > (unsigned long) -1)
 		return putchar('*');
+
+	if (num < 0) {
+		cnt += putchar('-');
+		num = -num;
+	}
 
 	long int_part = (long) num;
 	long decimal_part = (long) ((num - int_part) * 10000);
-	int cnt = print_int(int_part, 10);
+	cnt += print_int(int_part, 10);
 	cnt += putchar('.');
 	cnt += print_int(decimal_part, 10);
 
@@ -73,6 +84,7 @@ void printf_handle_flag(struct printf_state *st) {
 	switch (st->ch) {
 	case 'X':
 	case 'x':
+	case 'p':
 		st->cnt += print_int(va_arg(st->ap, int), 16);
 		st->state = PRINTF_NORMAL;
 		break;

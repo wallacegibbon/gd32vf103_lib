@@ -1,5 +1,6 @@
 #include <gd32vf103.h>
 #include <stdio.h>
+#include <string.h>
 
 char my_variable[] = "hello, world!";
 
@@ -55,6 +56,32 @@ int sleep(int t) {
 			r = i;
 }
 
+void c_lib_test() {
+	char buf1[] = "hello, this is from buffer 1.";
+	char buf2[] = "hello, quick brown fox jumps over the lazy dog.";
+
+	printf("buf1(%p): %s\r\nbuf2(%p): %s\r\n", buf1, buf1, buf2, buf2);
+
+	printf("strcmp(buf1, buf2) = %d\r\n", strcmp(buf1, buf2));
+	printf("strcmp(buf2, buf1) = %d\r\n", strcmp(buf2, buf1));
+
+	printf("memcmp(buf1, buf2, 3) = %d\r\n", memcmp(buf1, buf2, 3));
+	printf("memcmp(buf2, buf1, 3) = %d\r\n", memcmp(buf2, buf1, 3));
+
+	printf("memcmp(buf1, buf2, 10) = %d\r\n", memcmp(buf1, buf2, 10));
+	printf("memcmp(buf2, buf1, 10) = %d\r\n", memcmp(buf2, buf1, 10));
+
+	printf("strlen(buf1) = %d\r\n", strlen(buf1));
+
+	printf("memcpy(buf1, buf2, 10): %p\r\n", memcpy(buf1, buf2, 10));
+	printf("buf1(%p): %s\r\nbuf2(%p): %s\r\n", buf1, buf1, buf2, buf2);
+
+	printf("memset(buf1, 'a', 10): %p\r\n", memset(buf1, 'a', 10));
+	printf("buf1(%p): %s\r\nbuf2(%p): %s\r\n", buf1, buf1, buf2, buf2);
+
+	printf("\r\n");
+}
+
 int main(int argc, const char **argv) {
 	init();
 
@@ -62,8 +89,11 @@ int main(int argc, const char **argv) {
 	printf("the size of previous printf is %d(%x)\r\n", n, n);
 
 	// using floating-point number will increase the code size.
-	printf("floating point number print, pi = %f, e = %f.\r\n",
-			3.1415926, 2.718281);
+	printf("floating point number print:\r\n\tpi = %f, e = %f, "
+			"-pi = %f, -e = %f.\r\n",
+			3.1415926, 2.718281, -3.1415926, -2.718281);
+
+	c_lib_test();
 
 	while (1) {
 		gpio_bit_set(GPIOC, GPIO_PIN_13);
