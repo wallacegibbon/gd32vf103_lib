@@ -37,10 +37,13 @@ static int print_int(long num, int radix) {
 }
 
 #if USE_FLOAT == 1
+
+#define MAX_UNSIGNED_LONG ((unsigned long) -1)
+
 static int print_float(double num) {
 	int cnt = 0;
 
-	if (num > (unsigned long) -1 || -num > (unsigned long) -1)
+	if (num > MAX_UNSIGNED_LONG || -num > MAX_UNSIGNED_LONG)
 		return putchar('*');
 
 	if (num < 0) {
@@ -69,8 +72,8 @@ enum printf_state_flag {
 
 struct printf_state {
 	enum printf_state_flag state;
-	va_list ap;
 	const char *fmt;
+	va_list ap;
 	int cnt;
 	char ch;
 };
@@ -82,14 +85,14 @@ int printf_state_nextchar(struct printf_state *st) {
 
 void printf_handle_flag(struct printf_state *st) {
 	switch (st->ch) {
+	case 'd':
+		st->cnt += print_int(va_arg(st->ap, int), 10);
+		st->state = PRINTF_NORMAL;
+		break;
 	case 'X':
 	case 'x':
 	case 'p':
 		st->cnt += print_int(va_arg(st->ap, int), 16);
-		st->state = PRINTF_NORMAL;
-		break;
-	case 'd':
-		st->cnt += print_int(va_arg(st->ap, int), 10);
 		st->state = PRINTF_NORMAL;
 		break;
 	case 'l':
@@ -106,6 +109,10 @@ void printf_handle_flag(struct printf_state *st) {
 		break;
 	case 's':
 		st->cnt += puts(va_arg(st->ap, char *));
+		st->state = PRINTF_NORMAL;
+		break;
+	case 'c':
+		st->cnt += putchar(va_arg(st->ap, int));
 		st->state = PRINTF_NORMAL;
 		break;
 	case '%':
@@ -155,7 +162,7 @@ void printf_sub(struct printf_state *st) {
 }
 
 int printf(const char *fmt, ...) {
-	struct printf_state state = {PRINTF_NORMAL, NULL, fmt, 0, '@'};
+	struct printf_state state = {PRINTF_NORMAL, fmt, NULL, 0, '@'};
 	va_start(state.ap, fmt);
 
 	while (printf_state_nextchar(&state))

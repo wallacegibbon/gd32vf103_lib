@@ -86,7 +86,7 @@ int main(int argc, const char **argv) {
 	init();
 
 	int n = printf("this is from the serial port, %s\r\n", my_variable);
-	printf("the size of previous printf is %d(%x)\r\n", n, n);
+	printf("the size of previous printf is %d(%x)%c\r\n", n, n, '~');
 
 	// using floating-point number will increase the code size.
 	printf("floating point number print:\r\n\tpi = %f, e = %f, "
