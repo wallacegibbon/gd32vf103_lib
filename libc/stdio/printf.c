@@ -20,6 +20,9 @@ static int print_int(long num, int radix) {
 	char buf[20];
 	int cnt = 0;
 
+	if (num == 0)
+		return putchar('0');
+
 	for (; cnt < 20 && num > 0; cnt++, num /= radix)
 		buf[cnt] = num_to_char(num % radix);
 
