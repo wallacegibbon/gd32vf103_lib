@@ -90,13 +90,15 @@ int main(int argc, const char **argv) {
 
 	// using floating-point number will increase the code size.
 	printf("floating point number print:\r\n"
-			"\t pi = %010.3f,\t e = %10.3f\r\n"
-			"\t-pi = %010.3f,\t-e = %10.3f\r\n"
-			"\t pi = %.4f,\t e = %10f, -e = %10f\r\n"
+			"\t pi = %010.3f\t e = %10.3f\r\n"
+			"\t-pi = %010.3f\t-e = %10.3f\r\n"
+			"\t pi = %.4f\t\t e = %10f\r\n"
+			"\t-pi = %10f\t-e = %10f\r\n"
 			"\t pi = %3f\r\n",
 			3.1415926, 2.718281,
 			-3.1415926, -2.718281,
-			3.1415926, 2.718281, -2.718281,
+			3.1415926, 2.718281,
+			-3.1415926, -2.718281,
 			3.1415926);
 
 	// pointer printing test

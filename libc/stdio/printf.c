@@ -14,16 +14,16 @@ static int print_int(long num, int radix, int width, char fill_char) {
 	int cnt = 0, fill_cnt = 0, is_minus = 0;
 
 	if (num == 0) {
-		if (width > 0) {
+		if (width > 0)
 			return putchar_n(fill_char, width - 1);
-		} else {
+		else
 			return putchar('0');
-		}
-	} else if (num < 0) {
+	}
+
+	if (num < 0) {
 		is_minus = 1;
 		num = -num;
 	}
-
 
 	for (; cnt < 20 && num > 0; cnt++, num /= radix)
 		buf[cnt] = num_to_char(num % radix);
@@ -53,14 +53,14 @@ static int print_int(long num, int radix, int width, char fill_char) {
 
 #define MAX_UNSIGNED_LONG ((unsigned long) -1)
 
-long pow(long x, long y) {
+static inline long pow(long x, long y) {
 	int r = 1;
 	while (y--)
 		r *= x;
 	return r;
 }
 
-int length_of_num(long num) {
+static inline int length_of_num(long num) {
 	int r = 1;
 	while (num /= 10)
 		r++;
@@ -80,6 +80,7 @@ static int print_float(double num, int width, int decimal_width,
 	}
 
 	long int_part = (long) num;
+
 	int int_width = length_of_num(int_part) + is_minus;
 
 	if (decimal_width == 0) {
@@ -90,6 +91,9 @@ static int print_float(double num, int width, int decimal_width,
 			decimal_width = 1;
 		}
 	}
+
+	// update int_width by the decimal_width which may have changed.
+	int_width = width - decimal_width - 1;
 
 	long decimal_part =
 		(long) ((num - int_part) * pow(10, decimal_width));
@@ -121,8 +125,6 @@ struct printf_state {
 	int fmt_idx;
 	va_list ap;
 	int total_width, decimal_width;
-	int buff_idx;
-	char buff[10];
 	char fill_char;
 	char ch;
 	int cnt;
@@ -136,7 +138,6 @@ void printf_state_init(struct printf_state *st, const char *fmt) {
 	st->decimal_width = 0;
 	st->cnt = 0;
 	st->fill_char = ' ';
-	st->buff_idx = 0;
 }
 
 int printf_state_next_char(struct printf_state *st) {
