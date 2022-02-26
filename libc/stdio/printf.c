@@ -60,6 +60,13 @@ long pow(long x, long y) {
 	return r;
 }
 
+int length_of_num(long num) {
+	int r = 1;
+	while (num /= 10)
+		r++;
+	return r;
+}
+
 static int print_float(double num, int width, int decimal_width,
 		char fill_char) {
 	int cnt = 0, is_minus = 0;
@@ -72,10 +79,17 @@ static int print_float(double num, int width, int decimal_width,
 		num = -num;
 	}
 
-	if (decimal_width == 0)
-		decimal_width = 6;
-
 	long int_part = (long) num;
+	int int_width = length_of_num(int_part) + is_minus;
+
+	if (decimal_width == 0) {
+		// the int_width + '.' + at least one decial number
+		if (width > int_width + 1) {
+			decimal_width = width - int_width - 1;
+		} else {
+			decimal_width = 1;
+		}
+	}
 
 	long decimal_part =
 		(long) ((num - int_part) * pow(10, decimal_width));
@@ -84,7 +98,7 @@ static int print_float(double num, int width, int decimal_width,
 	if (is_minus)
 		int_part = -int_part;
 
-	cnt += print_int(int_part, 10, width - decimal_width - 1, fill_char);
+	cnt += print_int(int_part, 10, int_width, fill_char);
 	cnt += putchar('.');
 	cnt += print_int(decimal_part, 10, decimal_width, '0');
 
@@ -130,7 +144,7 @@ int printf_state_next_char(struct printf_state *st) {
 	return st->ch;
 }
 
-int printf_reset_width_and_fill(struct printf_state *st) {
+int printf_state_reset_flag_arg(struct printf_state *st) {
 	st->total_width = 0;
 	st->decimal_width = 0;
 	st->fill_char = ' ';
@@ -141,20 +155,20 @@ void printf_handle_flag(struct printf_state *st) {
 	case 'd':
 		st->cnt += print_int(va_arg(st->ap, int), 10, st->total_width,
 				st->fill_char);
-		printf_reset_width_and_fill(st);
+		printf_state_reset_flag_arg(st);
 		st->state = PRINTF_NORMAL;
 		break;
 	case 'X':
 	case 'x':
 		st->cnt += print_int(va_arg(st->ap, int), 16, st->total_width,
 				st->fill_char);
-		printf_reset_width_and_fill(st);
+		printf_state_reset_flag_arg(st);
 		st->state = PRINTF_NORMAL;
 		break;
 	case 'p':
 		st->cnt += print_int(va_arg(st->ap, int), 16,
 				sizeof(int *) * 2, '0');
-		printf_reset_width_and_fill(st);
+		printf_state_reset_flag_arg(st);
 		st->state = PRINTF_NORMAL;
 		break;
 	case 'l':
@@ -165,7 +179,7 @@ void printf_handle_flag(struct printf_state *st) {
 		st->cnt += print_float(va_arg(st->ap, double),
 				st->total_width, st->decimal_width,
 				st->fill_char);
-		printf_reset_width_and_fill(st);
+		printf_state_reset_flag_arg(st);
 #else
 		va_arg(st->ap, double);
 		st->cnt += putchar('?');
@@ -206,7 +220,7 @@ void printf_handle_flag_l(struct printf_state *st) {
 	switch (st->ch) {
 	case 'd':
 		st->cnt += print_int(va_arg(st->ap, long), 10, 0, ' ');
-		printf_reset_width_and_fill(st);
+		printf_state_reset_flag_arg(st);
 		st->state = PRINTF_NORMAL;
 		break;
 	default:
