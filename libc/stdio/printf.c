@@ -9,10 +9,6 @@
  */
 static int print_int(long num, int radix, int width, char fill_char) {
 	// 20 decimal characters is enough even for 64bit number
-	char buf[20];
-
-	int cnt = 0, fill_cnt = 0, is_minus = 0;
-
 	if (num == 0) {
 		if (width > 0)
 			return putchar_n(fill_char, width - 1);
@@ -20,27 +16,33 @@ static int print_int(long num, int radix, int width, char fill_char) {
 			return putchar('0');
 	}
 
+	int is_minus = 0;
 	if (num < 0) {
 		is_minus = 1;
 		num = -num;
 	}
 
+	char buf[20];
+	int cnt = 0;
+
 	for (; cnt < 20 && num > 0; cnt++, num /= radix)
 		buf[cnt] = num_to_char(num % radix);
+
+	int num_to_fill = width - cnt - is_minus;
+
+	int fill_cnt = 0;
 
 	// "-0003" & "   -3"
 	if (fill_char == ' ') {
 		if (width > cnt)
-			fill_cnt = putchar_n(fill_char,
-					width - cnt - is_minus);
+			fill_cnt = putchar_n(fill_char, num_to_fill);
 		if (is_minus)
 			putchar('-');
 	} else {
 		if (is_minus)
 			putchar('-');
 		if (width > cnt)
-			fill_cnt = putchar_n(fill_char,
-					width - cnt - is_minus);
+			fill_cnt = putchar_n(fill_char, num_to_fill);
 	}
 
 	for (int i = cnt - 1; i >= 0; i--)
@@ -69,31 +71,35 @@ static inline int length_of_num(long num) {
 
 static int print_float(double num, int width, int decimal_width,
 		char fill_char) {
-	int cnt = 0, is_minus = 0;
 
 	if (num > MAX_UNSIGNED_LONG || -num > MAX_UNSIGNED_LONG)
 		return putchar('*');
 
+	int is_minus = 0;
 	if (num < 0) {
 		is_minus = 1;
 		num = -num;
 	}
 
+	// put the int part and decimal part into 2 long integers.
 	long int_part = (long) num;
 
 	int int_width = length_of_num(int_part) + is_minus;
 
+	// adjust int_width and decimal_width
 	if (decimal_width == 0) {
-		// the int_width + '.' + at least one decial number
 		if (width > int_width + 1) {
 			decimal_width = width - int_width - 1;
-		} else {
+		} else if (width > 0) {
 			decimal_width = 1;
+		} else {
+			// both width and decimal_width are 0
+			decimal_width = 6;
 		}
+	} else {
+		if (width > int_width + decimal_width + 1)
+			int_width = width - decimal_width - 1;
 	}
-
-	// update int_width by the decimal_width which may have changed.
-	int_width = width - decimal_width - 1;
 
 	long decimal_part =
 		(long) ((num - int_part) * pow(10, decimal_width));
@@ -102,7 +108,7 @@ static int print_float(double num, int width, int decimal_width,
 	if (is_minus)
 		int_part = -int_part;
 
-	cnt += print_int(int_part, 10, int_width, fill_char);
+	int cnt = print_int(int_part, 10, int_width, fill_char);
 	cnt += putchar('.');
 	cnt += print_int(decimal_part, 10, decimal_width, '0');
 

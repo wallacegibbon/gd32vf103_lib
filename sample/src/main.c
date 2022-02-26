@@ -94,12 +94,12 @@ int main(int argc, const char **argv) {
 			"\t-pi = %010.3f\t-e = %10.3f\r\n"
 			"\t pi = %.4f\t\t e = %10f\r\n"
 			"\t-pi = %10f\t-e = %10f\r\n"
-			"\t pi = %3f\r\n",
+			"\t pi = %3f\t\t e = %f\r\n",
 			3.1415926, 2.718281,
 			-3.1415926, -2.718281,
 			3.1415926, 2.718281,
 			-3.1415926, -2.718281,
-			3.1415926);
+			3.1415926, 2.718281);
 
 	// pointer printing test
 	printf("the address of a string literal: %p\r\n", "hi");
