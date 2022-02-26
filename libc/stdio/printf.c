@@ -53,8 +53,6 @@ static int print_int(long num, int radix, int width, char fill_char) {
 
 #if USE_FLOAT == 1
 
-#define MAX_UNSIGNED_LONG ((unsigned long) -1)
-
 static inline long pow(long x, long y) {
 	int r = 1;
 	while (y--)
@@ -69,10 +67,13 @@ static inline int length_of_num(long num) {
 	return r;
 }
 
+#define MAX_LONG_VALUE ((long) (((unsigned long) -1) / 2))
+#define MIN_LONG_VALUE (-MAX_LONG_VALUE - 1)
+
 static int print_float(double num, int width, int decimal_width,
 		char fill_char) {
 
-	if (num > MAX_UNSIGNED_LONG || -num > MAX_UNSIGNED_LONG)
+	if (num > MAX_LONG_VALUE || num < MIN_LONG_VALUE)
 		return putchar('*');
 
 	int is_minus = 0;
