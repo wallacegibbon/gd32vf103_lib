@@ -28,9 +28,8 @@ static int print_int(long num, int radix, int width, char fill_char) {
 	for (; cnt < 20 && num > 0; cnt++, num /= radix)
 		buf[cnt] = num_to_char(num % radix);
 
-	int num_to_fill = width - cnt - is_minus;
-
 	int fill_cnt = 0;
+	int num_to_fill = width - cnt - is_minus;
 
 	// "-0003" & "   -3"
 	if (fill_char == ' ') {
@@ -50,6 +49,10 @@ static int print_int(long num, int radix, int width, char fill_char) {
 
 	return cnt + is_minus + fill_cnt;
 }
+
+/* 4294967296(2**32, 10 based) has 10 characters, so 9999999999 is invalid */
+#define MAX_DECIMAL_WIDTH 9
+#define MAX_TOTAL_WIDTH 80
 
 #if USE_FLOAT == 1
 
@@ -84,13 +87,16 @@ static int print_float(double num, int width, int decimal_width,
 
 	// put the int part and decimal part into 2 long integers.
 	long int_part = (long) num;
-
 	int int_width = length_of_num(int_part) + is_minus;
 
 	// adjust int_width and decimal_width
 	if (decimal_width == 0) {
 		if (width > int_width + 1) {
 			decimal_width = width - int_width - 1;
+			if (decimal_width > MAX_DECIMAL_WIDTH) {
+				decimal_width = MAX_DECIMAL_WIDTH;
+				int_width = width - MAX_DECIMAL_WIDTH - 1;
+			}
 		} else if (width > 0) {
 			decimal_width = 1;
 		} else {
@@ -237,27 +243,42 @@ void printf_handle_flag_l(struct printf_state *st) {
 	}
 }
 
+static inline void limit_value(int *value, int limit) {
+	if (*value > limit)
+		*value = limit;
+}
+
 void printf_handle_width(struct printf_state *st) {
 	if (is_decimal_char(st->ch)) {
 		st->total_width = st->total_width * 10 + (st->ch - '0');
-	} else if (st->ch == '.') {
+		return;
+	}
+
+	if (st->ch == '.') {
 		st->state = PRINTF_DECIMAL_WIDTH;
 	} else {
 		st->fmt_idx--;
 		st->state = PRINTF_FLAG;
 	}
+
+	limit_value(&st->total_width, MAX_TOTAL_WIDTH);
 }
 
 void printf_handle_decimal_width(struct printf_state *st) {
 	if (is_decimal_char(st->ch)) {
 		st->decimal_width = st->decimal_width * 10 + (st->ch - '0');
-	} else if (st->ch == '.') {
-		// this should never happen
+		return;
+	}
+
+	if (st->ch == '.') {
+		// although '.' after '.' is invalid ...
 		st->state = PRINTF_NORMAL;
 	} else {
 		st->fmt_idx--;
 		st->state = PRINTF_FLAG;
 	}
+
+	limit_value(&st->decimal_width, MAX_DECIMAL_WIDTH);
 }
 
 void printf_handle_normal(struct printf_state *st) {

@@ -101,6 +101,8 @@ int main(int argc, const char **argv) {
 			-3.1415926, -2.718281,
 			3.1415926, 2.718281);
 
+	printf("too big width test: %0100f\r\n", -3.1415926);
+
 	// pointer printing test
 	printf("the address of a string literal: %p\r\n", "hi");
 
