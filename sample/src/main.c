@@ -114,6 +114,9 @@ int main(int argc, const char **argv) {
 	printf("string pad test: |%10.3s|\r\n", "hello");
 	printf("string pad test: |%010.3s|\r\n", "hello");
 	printf("string pad test: |%-10.3s|\r\n", "hello");
+	printf("string pad test: |%-20s|\r\n", "hello");
+	printf("string pad test: |%-20.8s|\r\n", "hello");
+	printf("string pad test: |%20.8s|\r\n", "hello");
 
 	// pointer printing test
 	printf("the address of a string literal: %p\r\n", "hi");

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdarg.h>
+#include <string.h>
 #include "common_util.h"
 
 /*
@@ -190,18 +191,38 @@ int printf_state_reset_flag_arg(struct printf_state *st) {
 	st->pad_char = ' ';
 }
 
+void print_str_with_pad(struct printf_state *st, char *str) {
+	int str_real_len = strlen(str);
+	int pad_width = st->total_width - str_real_len;
+
+	if (st->decimal_width > 0 && str_real_len > st->decimal_width)
+		pad_width = st->total_width - st->decimal_width;
+
+	if (!st->pad_tail)
+		st->cnt += putchar_n(' ', pad_width);
+
+	int fixed_padwidth = st->total_width - pad_width;
+	for (int i = 0; i < fixed_padwidth; i++)
+		putchar(str[i]);
+
+	st->cnt += fixed_padwidth;
+
+	if (st->pad_tail)
+		st->cnt += putchar_n(' ', pad_width);
+}
+
 void printf_handle_flag(struct printf_state *st) {
 	switch (st->ch) {
 	case 'd':
-		st->cnt += print_int(va_arg(st->ap, int), 10, st->total_width,
-				st->pad_char, st->pad_tail);
+		st->cnt += print_int(va_arg(st->ap, int), 10,
+				st->total_width, st->pad_char, st->pad_tail);
 		printf_state_reset_flag_arg(st);
 		st->state = PRINTF_NORMAL;
 		break;
 	case 'X':
 	case 'x':
-		st->cnt += print_int(va_arg(st->ap, int), 16, st->total_width,
-				st->pad_char, st->pad_tail);
+		st->cnt += print_int(va_arg(st->ap, int), 16,
+				st->total_width, st->pad_char, st->pad_tail);
 		printf_state_reset_flag_arg(st);
 		st->state = PRINTF_NORMAL;
 		break;
@@ -227,7 +248,7 @@ void printf_handle_flag(struct printf_state *st) {
 		st->state = PRINTF_NORMAL;
 		break;
 	case 's':
-		st->cnt += puts(va_arg(st->ap, char *));
+		print_str_with_pad(st, va_arg(st->ap, char *));
 		st->state = PRINTF_NORMAL;
 		break;
 	case 'c':
@@ -266,8 +287,8 @@ void printf_handle_flag(struct printf_state *st) {
 void printf_handle_flag_l(struct printf_state *st) {
 	switch (st->ch) {
 	case 'd':
-		st->cnt += print_int(va_arg(st->ap, long), 10, 0, ' ',
-				st->pad_tail);
+		st->cnt += print_int(va_arg(st->ap, long), 10,
+				0, ' ', st->pad_tail);
 		printf_state_reset_flag_arg(st);
 		st->state = PRINTF_NORMAL;
 		break;
