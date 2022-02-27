@@ -82,13 +82,7 @@ void c_lib_test() {
 	printf("\r\n");
 }
 
-int main(int argc, const char **argv) {
-	init();
-
-	int n = printf("this is from the serial port, %s\r\n", my_variable);
-	printf("the size of previous printf is %04d(%04x)%c\r\n", n, n, '~');
-
-	// using floating-point number will increase the code size.
+void printf_float_test() {
 	printf("floating point number print:\r\n"
 			"\t pi = |%010.3f|,  e = |%10.3f|\r\n"
 			"\t-pi = |%010.3f|, -e = |%10.3f|\r\n"
@@ -102,7 +96,9 @@ int main(int argc, const char **argv) {
 			3.1415926, 2.718281,
 			-3.1415926, -2.718281,
 			3.1415926, 2.718281);
+}
 
+void printf_width_test() {
 	printf("too big width test:\r\n|%0100f|\r\n", -3.1415926);
 	printf("too big width test:\r\n|%100f|\r\n", -3.1415926);
 	printf("too big width test:\r\n|%-0100f|\r\n", -3.1415926);
@@ -114,12 +110,22 @@ int main(int argc, const char **argv) {
 	printf("string pad test: |%10.3s|\r\n", "hello");
 	printf("string pad test: |%010.3s|\r\n", "hello");
 	printf("string pad test: |%-10.3s|\r\n", "hello");
-	printf("string pad test: |%-20s|\r\n", "hello");
-	printf("string pad test: |%-20.8s|\r\n", "hello");
-	printf("string pad test: |%20.8s|\r\n", "hello");
+	printf("string pad test: |%-10s|\r\n", "hello");
+	printf("string pad test: |%-10.8s|\r\n", "hello");
+	printf("string pad test: |%10.8s|\r\n", "hello");
+}
+
+int main(int argc, const char **argv) {
+	init();
+
+	int n = printf("this is from the serial port, %s\r\n", my_variable);
+	printf("the size of previous printf is %04d(%04x)%c\r\n", n, n, '~');
 
 	// pointer printing test
 	printf("the address of a string literal: %p\r\n", "hi");
+
+	printf_float_test();
+	printf_width_test();
 
 	c_lib_test();
 

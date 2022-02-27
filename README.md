@@ -3,6 +3,11 @@
 This is a library for GD32VF103xxxx RISC-V microcontrollers. It depends on the GNU toolchains (GCC, Binutils) for (at least) RV32I.
 
 
+## C library
+
+A simple (and incomplete) C library is included in this repository.
+
+
 ## Debugger Adaptor
 
 The `RV-Debugger-Lite` is the recommended one (for it's tiny size and cheap price).
