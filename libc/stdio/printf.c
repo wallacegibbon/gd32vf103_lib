@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdarg.h>
-#include <string.h>
 #include "common_util.h"
 
 /*
@@ -192,7 +191,23 @@ int printf_state_reset_flag_arg(struct printf_state *st) {
 }
 
 void print_str_with_pad(struct printf_state *st, char *str) {
-	int str_real_len = strlen(str);
+	if (st->total_width == 0 && st->decimal_width == 0) {
+		st->cnt += puts(str);
+		return;
+	}
+
+	if (st->total_width == 0 && st->decimal_width > 0) {
+		for (int i = 0; i < st->decimal_width && str[i] != '\0'; i++)
+			st->cnt += putchar(str[i]);
+		return;
+	}
+
+	// st->total_width > 0
+
+	int str_real_len = 0;
+	for (int i = 0; i <= st->total_width && str[i] != '\0'; i++)
+		str_real_len = i + 1;
+
 	int pad_width = st->total_width - str_real_len;
 
 	if (st->decimal_width > 0 && str_real_len > st->decimal_width)
@@ -201,11 +216,11 @@ void print_str_with_pad(struct printf_state *st, char *str) {
 	if (!st->pad_tail)
 		st->cnt += putchar_n(' ', pad_width);
 
-	int fixed_padwidth = st->total_width - pad_width;
-	for (int i = 0; i < fixed_padwidth; i++)
+	int fixed_strlen = st->total_width - pad_width;
+	for (int i = 0; i < fixed_strlen; i++)
 		putchar(str[i]);
 
-	st->cnt += fixed_padwidth;
+	st->cnt += fixed_strlen;
 
 	if (st->pad_tail)
 		st->cnt += putchar_n(' ', pad_width);
