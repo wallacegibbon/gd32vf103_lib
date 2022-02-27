@@ -8,12 +8,12 @@
  *	(long is efficient for both `-ilp32` and `-lp64`)
  */
 static int print_int(long num, int radix, int width,
-		char fill_char, int fill_tail) {
+		char pad_char, int pad_tail) {
 
 	// 20 decimal characters is enough even for 64bit number
 	if (num == 0) {
 		if (width > 0)
-			return putchar_n(fill_char, width - 1);
+			return putchar_n(pad_char, width - 1);
 		else
 			return putchar('0');
 	}
@@ -30,21 +30,21 @@ static int print_int(long num, int radix, int width,
 	for (; cnt < 20 && num > 0; cnt++, num /= radix)
 		buf[cnt] = num_to_char(num % radix);
 
-	int fill_cnt = 0;
-	int num_to_fill = width - cnt - is_minus;
+	int pad_cnt = 0;
+	int num_to_pad = width - cnt - is_minus;
 
 	// "-0003" & "   -3" & "-3   "
-	if (!fill_tail) {
-		if (fill_char == ' ') {
+	if (!pad_tail) {
+		if (pad_char == ' ') {
 			if (width > cnt)
-				fill_cnt = putchar_n(fill_char, num_to_fill);
+				pad_cnt = putchar_n(pad_char, num_to_pad);
 			if (is_minus)
 				putchar('-');
 		} else {
 			if (is_minus)
 				putchar('-');
 			if (width > cnt)
-				fill_cnt = putchar_n(fill_char, num_to_fill);
+				pad_cnt = putchar_n(pad_char, num_to_pad);
 		}
 	} else {
 		if (is_minus)
@@ -54,15 +54,18 @@ static int print_int(long num, int radix, int width,
 	for (int i = cnt - 1; i >= 0; i--)
 		putchar(buf[i]);
 
-	if (fill_tail && width > cnt)
-		fill_cnt = putchar_n(' ', num_to_fill);
+	if (pad_tail && width > cnt)
+		pad_cnt = putchar_n(' ', num_to_pad);
 
-	return cnt + is_minus + fill_cnt;
+	return cnt + is_minus + pad_cnt;
 }
 
 /* 4294967296(2**32, 10 based) has 10 characters, so 9999999999 is invalid */
 #define MAX_DECIMAL_WIDTH 9
-#define MAX_TOTAL_WIDTH 80
+
+#ifndef PRINTF_MAX_WIDTH
+#define PRINTF_MAX_WIDTH 80
+#endif
 
 #if USE_FLOAT == 1
 
@@ -84,10 +87,10 @@ static inline int length_of_num(long num) {
 #define MIN_LONG_VALUE (-MAX_LONG_VALUE - 1)
 
 static int print_float(double num, int width, int decimal_width,
-		char fill_char, int fill_tail) {
+		char pad_char, int pad_tail) {
 
 	if (num > MAX_LONG_VALUE || num < MIN_LONG_VALUE)
-		return putchar('*');
+		return putchar('!');
 
 	int is_minus = 0;
 	if (num < 0) {
@@ -123,9 +126,9 @@ static int print_float(double num, int width, int decimal_width,
 	long decimal_part =
 		(long) ((num - int_part) * pow(10, decimal_width));
 
-	// the pad is in int or decial part depending on the fill_tail
+	// the pad is in int or decial part depending on the pad_tail
 	if (extra_width) {
-		if (fill_tail)
+		if (pad_tail)
 			decimal_width += extra_width;
 		else
 			int_width += extra_width;
@@ -135,9 +138,9 @@ static int print_float(double num, int width, int decimal_width,
 	if (is_minus)
 		int_part = -int_part;
 
-	int cnt = print_int(int_part, 10, int_width, fill_char, 0);
+	int cnt = print_int(int_part, 10, int_width, pad_char, 0);
 	cnt += putchar('.');
-	cnt += print_int(decimal_part, 10, decimal_width, '0', fill_tail);
+	cnt += print_int(decimal_part, 10, decimal_width, '0', pad_tail);
 
 	return cnt;
 }
@@ -158,8 +161,8 @@ struct printf_state {
 	int fmt_idx;
 	va_list ap;
 	int total_width, decimal_width;
-	int fill_tail;
-	char fill_char;
+	int pad_tail;
+	char pad_char;
 	char ch;
 	int cnt;
 };
@@ -171,8 +174,8 @@ void printf_state_init(struct printf_state *st, const char *fmt) {
 	st->total_width = 0;
 	st->decimal_width = 0;
 	st->cnt = 0;
-	st->fill_tail = 0;
-	st->fill_char = ' ';
+	st->pad_tail = 0;
+	st->pad_char = ' ';
 }
 
 int printf_state_next_char(struct printf_state *st) {
@@ -183,28 +186,28 @@ int printf_state_next_char(struct printf_state *st) {
 int printf_state_reset_flag_arg(struct printf_state *st) {
 	st->total_width = 0;
 	st->decimal_width = 0;
-	st->fill_tail = 0;
-	st->fill_char = ' ';
+	st->pad_tail = 0;
+	st->pad_char = ' ';
 }
 
 void printf_handle_flag(struct printf_state *st) {
 	switch (st->ch) {
 	case 'd':
 		st->cnt += print_int(va_arg(st->ap, int), 10, st->total_width,
-				st->fill_char, st->fill_tail);
+				st->pad_char, st->pad_tail);
 		printf_state_reset_flag_arg(st);
 		st->state = PRINTF_NORMAL;
 		break;
 	case 'X':
 	case 'x':
 		st->cnt += print_int(va_arg(st->ap, int), 16, st->total_width,
-				st->fill_char, st->fill_tail);
+				st->pad_char, st->pad_tail);
 		printf_state_reset_flag_arg(st);
 		st->state = PRINTF_NORMAL;
 		break;
 	case 'p':
 		st->cnt += print_int(va_arg(st->ap, int), 16,
-				sizeof(int *) * 2, '0', st->fill_tail);
+				sizeof(int *) * 2, '0', st->pad_tail);
 		printf_state_reset_flag_arg(st);
 		st->state = PRINTF_NORMAL;
 		break;
@@ -215,7 +218,7 @@ void printf_handle_flag(struct printf_state *st) {
 #if USE_FLOAT == 1
 		st->cnt += print_float(va_arg(st->ap, double),
 				st->total_width, st->decimal_width,
-				st->fill_char, st->fill_tail);
+				st->pad_char, st->pad_tail);
 		printf_state_reset_flag_arg(st);
 #else
 		va_arg(st->ap, double);
@@ -236,14 +239,18 @@ void printf_handle_flag(struct printf_state *st) {
 		st->state = PRINTF_NORMAL;
 		break;
 	case '0':
-		st->fill_char = '0';
+		st->pad_char = '0';
 		st->state = PRINTF_WIDTH;
 		break;
 	case '.':
 		st->state = PRINTF_DECIMAL_WIDTH;
 		break;
 	case '-':
-		st->fill_tail = 1;
+		st->pad_tail = 1;
+		break;
+	case '*':
+		st->fmt_idx--;
+		st->state = PRINTF_WIDTH;
 		break;
 	default:
 		if (is_decimal_char(st->ch)) {
@@ -251,7 +258,7 @@ void printf_handle_flag(struct printf_state *st) {
 			st->state = PRINTF_WIDTH;
 		} else {
 			va_arg(st->ap, int);
-			st->cnt += putchar('*');
+			st->cnt += putchar('!');
 		}
 	}
 }
@@ -260,12 +267,12 @@ void printf_handle_flag_l(struct printf_state *st) {
 	switch (st->ch) {
 	case 'd':
 		st->cnt += print_int(va_arg(st->ap, long), 10, 0, ' ',
-				st->fill_tail);
+				st->pad_tail);
 		printf_state_reset_flag_arg(st);
 		st->state = PRINTF_NORMAL;
 		break;
 	default:
-		st->cnt += putchar('*');
+		st->cnt += putchar('!');
 		st->state = PRINTF_NORMAL;
 	}
 }
@@ -283,12 +290,14 @@ void printf_handle_width(struct printf_state *st) {
 
 	if (st->ch == '.') {
 		st->state = PRINTF_DECIMAL_WIDTH;
+	} else if (st->ch == '*') {
+		st->total_width = va_arg(st->ap, int);
 	} else {
 		st->fmt_idx--;
 		st->state = PRINTF_FLAG;
 	}
 
-	limit_value(&st->total_width, MAX_TOTAL_WIDTH);
+	limit_value(&st->total_width, PRINTF_MAX_WIDTH);
 }
 
 void printf_handle_decimal_width(struct printf_state *st) {
@@ -300,6 +309,9 @@ void printf_handle_decimal_width(struct printf_state *st) {
 	if (st->ch == '.') {
 		// although '.' after '.' is invalid ...
 		st->state = PRINTF_NORMAL;
+	} else if (st->ch == '*') {
+		st->decimal_width = va_arg(st->ap, int);
+		st->state = PRINTF_FLAG;
 	} else {
 		st->fmt_idx--;
 		st->state = PRINTF_FLAG;

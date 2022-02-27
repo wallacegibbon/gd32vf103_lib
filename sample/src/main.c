@@ -107,6 +107,14 @@ int main(int argc, const char **argv) {
 	printf("too big width test:\r\n|%100f|\r\n", -3.1415926);
 	printf("too big width test:\r\n|%-0100f|\r\n", -3.1415926);
 
+	printf("star test: |%*.*f|\r\n", 10, 3, 3.1415926);
+	printf("star test: |%0*.*f|\r\n", 10, 3, 3.1415926);
+	printf("star test: |%-0*.*f|\r\n", 10, 3, 3.1415926);
+
+	printf("string pad test: |%10.3s|\r\n", "hello");
+	printf("string pad test: |%010.3s|\r\n", "hello");
+	printf("string pad test: |%-10.3s|\r\n", "hello");
+
 	// pointer printing test
 	printf("the address of a string literal: %p\r\n", "hi");
 
