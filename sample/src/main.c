@@ -115,6 +115,7 @@ void printf_width_test() {
 	printf("string pad test: |%-.8s|\r\n", "hello");
 	printf("string pad test: |%-10.8s|\r\n", "hello");
 	printf("string pad test: |%10.8s|\r\n", "hello");
+	printf("string pad test: |%4s|\r\n", "hello");
 }
 
 int main(int argc, const char **argv) {

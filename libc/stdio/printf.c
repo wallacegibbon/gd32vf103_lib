@@ -207,23 +207,23 @@ void print_str_with_pad(struct printf_state *st, char *str) {
 
 	// st->total_width > 0
 
-	int str_real_len = 0;
-	for (int i = 0; i <= st->total_width && str[i] != '\0'; i++)
-		str_real_len = i + 1;
+	int len = 0;
+	while (len < st->total_width && str[len] != '\0')
+		len++;
 
-	int pad_width = st->total_width - str_real_len;
+	int pad_width = st->total_width - len;
 
-	if (st->decimal_width > 0 && str_real_len > st->decimal_width)
+	if (st->decimal_width > 0 && len > st->decimal_width)
 		pad_width = st->total_width - st->decimal_width;
 
 	if (!st->pad_tail)
 		st->cnt += putchar_n(' ', pad_width);
 
-	int fixed_strlen = st->total_width - pad_width;
-	for (int i = 0; i < fixed_strlen; i++)
+	int fixed_len = st->total_width - pad_width;
+	for (int i = 0; i < fixed_len; i++)
 		putchar(str[i]);
 
-	st->cnt += fixed_strlen;
+	st->cnt += fixed_len;
 
 	if (st->pad_tail)
 		st->cnt += putchar_n(' ', pad_width);
