@@ -2,15 +2,20 @@
 #include <stdarg.h>
 #include "common_util.h"
 
+#ifndef USE_TINY_PRINTF
+
 /*
  * doing 64bit division on 32bit system needs c-lib support. (__udivdi3)
  * using `long` could elimitnate the need for c-lib and do not waste the power.
  *	(long is efficient for both `-ilp32` and `-lp64`)
  */
-static int print_int(long num, int radix, int width,
-		char pad_char, int pad_tail) {
+static int print_int(long num, int radix, int width, char pad_char,
+		int pad_tail) {
 
 	// 20 decimal characters is enough even for 64bit number
+	char buf[20];
+	int cnt = 0;
+
 	if (num == 0) {
 		if (width > 0)
 			return putchar_n(pad_char, width - 1);
@@ -23,9 +28,6 @@ static int print_int(long num, int radix, int width,
 		is_minus = 1;
 		num = -num;
 	}
-
-	char buf[20];
-	int cnt = 0;
 
 	for (; cnt < 20 && num > 0; cnt++, num /= radix)
 		buf[cnt] = num_to_char(num % radix);
@@ -86,8 +88,8 @@ static inline int length_of_num(long num) {
 #define MAX_LONG_VALUE ((long) (((unsigned long) -1) / 2))
 #define MIN_LONG_VALUE (-MAX_LONG_VALUE - 1)
 
-static int print_float(double num, int width, int decimal_width,
-		char pad_char, int pad_tail) {
+static int print_float(double num, int width, int decimal_width, char pad_char,
+		int pad_tail) {
 
 	if (num > MAX_LONG_VALUE || num < MIN_LONG_VALUE)
 		return putchar('!');
@@ -104,7 +106,7 @@ static int print_float(double num, int width, int decimal_width,
 
 	int extra_width = 0;
 
-	// adjust int_width and decimal_width
+	// adjust decimal_width and extra_width
 	if (decimal_width == 0) {
 		if (width > int_width + 1) {
 			decimal_width = width - int_width - 1;
@@ -144,6 +146,7 @@ static int print_float(double num, int width, int decimal_width,
 
 	return cnt;
 }
+
 #endif
 
 /* the printf function is basicly a state machine */
@@ -400,4 +403,6 @@ int printf(const char *fmt, ...) {
 
 	return state.cnt;
 }
+
+#endif
 
