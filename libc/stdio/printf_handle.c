@@ -115,6 +115,7 @@ static inline int adjust_zero_decimal_width(struct printf_handle *ph,
 		int int_width) {
 
 	int extra_width = 0;
+
 	if (ph->total_width > int_width + 1) {
 		ph->decimal_width = ph->total_width - int_width - 1;
 		if (ph->decimal_width > MAX_DECIMAL_WIDTH) {
@@ -122,6 +123,7 @@ static inline int adjust_zero_decimal_width(struct printf_handle *ph,
 			ph->decimal_width = MAX_DECIMAL_WIDTH;
 		}
 	} else if (ph->total_width > 0) {
+		// total_width too small, sacrifice space for decimal part
 		ph->decimal_width = 1;
 	} else {
 		// both width and decimal_width are 0
@@ -131,11 +133,12 @@ static inline int adjust_zero_decimal_width(struct printf_handle *ph,
 	return extra_width;
 }
 
-static inline int adjust_non_zero_decimal_width(struct printf_handle *ph,
-		int int_width) {
+static inline int calc_extra_width(struct printf_handle *ph, int int_width) {
 
-	if (ph->total_width > int_width + ph->decimal_width + 1)
-		return ph->total_width - int_width - ph->decimal_width - 1;
+	int r = ph->total_width - int_width - ph->decimal_width - 1;
+
+	if (r > 0)
+		return r;
 	else
 		return 0;
 }
@@ -144,7 +147,7 @@ static inline int adjust_decimal_width(struct printf_handle *ph, int int_width) 
 	if (ph->decimal_width == 0)
 		return adjust_zero_decimal_width(ph, int_width);
 	else
-		return adjust_non_zero_decimal_width(ph, int_width);
+		return calc_extra_width(ph, int_width);
 }
 
 static int print_float(struct printf_handle *ph, double num) {
