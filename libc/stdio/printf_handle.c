@@ -21,7 +21,7 @@ static inline int print_zero_with_width(struct printf_handle *ph, int width,
 		return ph->print_char('0');
 }
 
-static inline int print_pad_and_sign(struct printf_handle *ph, int is_minus,
+static int print_pad_and_sign(struct printf_handle *ph, int is_minus,
 		int rest_space, char pad_char) {
 
 	int cnt = 0;
@@ -111,9 +111,7 @@ static inline int length_of_num(long num) {
 #define MAX_LONG_VALUE ((long) (((unsigned long) -1) / 2))
 #define MIN_LONG_VALUE (-MAX_LONG_VALUE - 1)
 
-static inline int adjust_zero_decimal_width(struct printf_handle *ph,
-		int int_width) {
-
+static int adjust_zero_decimal_width(struct printf_handle *ph, int int_width) {
 	int extra_width = 0;
 
 	if (ph->total_width > int_width + 1) {
@@ -144,7 +142,9 @@ static inline int calc_extra_width(struct printf_handle *ph, int int_width) {
 		return 0;
 }
 
-static inline int adjust_decimal_width(struct printf_handle *ph, int int_width) {
+static inline int adjust_decimal_width(struct printf_handle *ph,
+		int int_width) {
+
 	if (ph->decimal_width == 0)
 		return adjust_zero_decimal_width(ph, int_width);
 	else
@@ -222,7 +222,7 @@ static void print_str_with_pad(struct printf_handle *ph, char *str) {
 		ph->cnt += print_char_n(ph, ' ', pad_width);
 }
 
-static int printf_handle_reset_flag_arg(struct printf_handle *ph) {
+static inline void printf_handle_reset_flag_arg(struct printf_handle *ph) {
 	ph->total_width = 0;
 	ph->decimal_width = 0;
 	ph->pad_tail = 0;
