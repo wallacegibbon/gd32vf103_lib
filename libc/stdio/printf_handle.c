@@ -123,7 +123,8 @@ static inline int adjust_zero_decimal_width(struct printf_handle *ph,
 			ph->decimal_width = MAX_DECIMAL_WIDTH;
 		}
 	} else if (ph->total_width > 0) {
-		// total_width too small, sacrifice space for decimal part
+		// when the `total_width` is too small,
+		// the space for decimal part should be sacrificed.
 		ph->decimal_width = 1;
 	} else {
 		// both width and decimal_width are 0
