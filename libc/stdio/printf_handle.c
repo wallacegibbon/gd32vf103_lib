@@ -21,7 +21,7 @@ static inline int print_zero_with_width(struct printf_handle *ph, int width,
 		return ph->print_char('0');
 }
 
-static int print_pad_and_sign(struct printf_handle *ph, int is_minus,
+static int print_sign_and_pad(struct printf_handle *ph, int is_minus,
 		int rest_space, char pad_char) {
 
 	int cnt = 0;
@@ -39,7 +39,7 @@ static int print_pad_and_sign(struct printf_handle *ph, int is_minus,
 	return cnt;
 }
 
-static inline int print_only_sign(struct printf_handle *ph, int is_minus) {
+static inline int print_sign_only(struct printf_handle *ph, int is_minus) {
 	if (is_minus)
 		ph->print_char('-');
 }
@@ -69,10 +69,10 @@ static int print_int(struct printf_handle *ph, long num, int radix, int width,
 
 	// "-0003" & "   -3" & "-3   "
 	if (!ph->pad_tail)
-		pad_cnt = print_pad_and_sign(ph, is_minus, rest_space,
+		pad_cnt = print_sign_and_pad(ph, is_minus, rest_space,
 				pad_char);
 	else
-		print_only_sign(ph, is_minus);
+		print_sign_only(ph, is_minus);
 
 	for (int i = cnt - 1; i >= 0; i--)
 		ph->print_char(buf[i]);
@@ -83,19 +83,12 @@ static int print_int(struct printf_handle *ph, long num, int radix, int width,
 	return cnt + is_minus + pad_cnt;
 }
 
-/* 4294967296(2**32, 10 based) has 10 characters, so 9999999999 is invalid */
-#define MAX_DECIMAL_WIDTH 9
-
-#ifndef PRINTF_MAX_WIDTH
-#define PRINTF_MAX_WIDTH 80
-#endif
-
 #if USE_FLOAT == 1
 
-static inline long pow(long x, long y) {
+static inline long pow(long num, long exponent) {
 	int r = 1;
-	while (y--)
-		r *= x;
+	while (exponent--)
+		r *= num;
 
 	return r;
 }
@@ -108,8 +101,8 @@ static inline int length_of_num(long num) {
 	return r;
 }
 
-#define MAX_LONG_VALUE ((long) (((unsigned long) -1) / 2))
-#define MIN_LONG_VALUE (-MAX_LONG_VALUE - 1)
+/* 4294967296(2**32, 10 based) has 10 characters, so 9999999999 is invalid */
+#define MAX_DECIMAL_WIDTH 9
 
 static int adjust_zero_decimal_width(struct printf_handle *ph, int int_width) {
 	int extra_width = 0;
@@ -150,6 +143,9 @@ static inline int adjust_decimal_width(struct printf_handle *ph,
 	else
 		return calc_extra_width(ph, int_width);
 }
+
+#define MAX_LONG_VALUE ((long) (((unsigned long) -1) / 2))
+#define MIN_LONG_VALUE (-MAX_LONG_VALUE - 1)
 
 static int print_float(struct printf_handle *ph, double num) {
 	if (num > MAX_LONG_VALUE || num < MIN_LONG_VALUE)
@@ -318,6 +314,10 @@ static inline void limit_value(int *value, int limit) {
 		*value = limit;
 }
 
+#ifndef PRINTF_MAX_WIDTH
+#define PRINTF_MAX_WIDTH 80
+#endif
+
 static void printf_handle_width(struct printf_handle *ph) {
 	if (is_decimal_char(ph->ch)) {
 		ph->total_width = ph->total_width * 10 + (ph->ch - '0');
@@ -372,7 +372,7 @@ static void printf_handle_normal(struct printf_handle *ph) {
 	}
 }
 
-// With Caution: A `va_start(ph_var_name.ap, fmt_p_str);` should also be called.
+// With Caution: A `va_start(ph.ap, fmt);` should also be called.
 void printf_handle_init(struct printf_handle *ph, const char *fmt,
 		int (*print_char)(int)) {
 
@@ -387,7 +387,7 @@ void printf_handle_init(struct printf_handle *ph, const char *fmt,
 	ph->print_char = print_char;
 }
 
-static int printf_handle_next_char(struct printf_handle *ph) {
+static inline int printf_handle_next_char(struct printf_handle *ph) {
 	ph->ch = ph->fmt[ph->fmt_idx++];
 	return ph->ch;
 }

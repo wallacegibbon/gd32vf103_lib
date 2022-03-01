@@ -1,6 +1,7 @@
 #include <gd32vf103.h>
 #include <stdio.h>
 #include <string.h>
+#include "custom/fd.h"
 
 char my_variable[] = "hello, world!";
 
@@ -41,6 +42,10 @@ void init() {
 
 	// enable the interrupt after initializing the usart
 	usart_interrupt_enable(USART0, USART_INT_RBNE);
+}
+
+void init_fd() {
+	bind_file_descriptor(1, putchar);
 }
 
 int putchar(int ch) {
@@ -127,6 +132,7 @@ void printf_width_test() {
 
 int main(int argc, const char **argv) {
 	init();
+	init_fd();
 
 	int n = printf("this is from the serial port, %s\r\n", my_variable);
 	printf("the size of previous printf is %04d(%04x)%c\r\n", n, n, '~');
@@ -138,6 +144,8 @@ int main(int argc, const char **argv) {
 	printf_width_test();
 
 	c_lib_test();
+
+	dprintf(1, "hello, this is message from dprintf. (%010.3f)\r\n", 3.1415926);
 
 	while (1) {
 		gpio_bit_set(GPIOC, GPIO_PIN_13);

@@ -16,7 +16,7 @@ CFLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
 	-fno-builtin \
 	-I$(LIBDIR)/riscv -I$(LIBDIR)/peripheral \
 	-I$(LIBDIR)/peripheral/src -I$(LIBDIR)/peripheral/inc \
-	-I./src \
+	-I$(LIBDIR)/libc -I./src \
 	-march=rv32imac -mabi=ilp32 -DLONGON_NANO -DUSE_FLOAT=$(USE_FLOAT)
 
 ## "-Wl,--gc-sections" will pass "--gc-sections" to linker to make it ignore
