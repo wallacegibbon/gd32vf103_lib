@@ -14,16 +14,5 @@ static inline char num_to_char(int num) {
 		return '*';
 }
 
-static inline int putchar_n(int ch, int n) {
-	int r = n;
-	if (n <= 0)
-		return 0;
-
-	while (n--)
-		putchar(ch);
-
-	return r;
-}
-
 #endif
 

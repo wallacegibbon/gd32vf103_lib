@@ -80,19 +80,19 @@ struct printf_state {
 	int cnt;
 };
 
-void printf_state_init(struct printf_state *st, const char *fmt) {
+static void printf_state_init(struct printf_state *st, const char *fmt) {
 	st->state = PRINTF_NORMAL;
 	st->fmt = fmt;
 	st->fmt_idx = 0;
 	st->cnt = 0;
 }
 
-int printf_state_next_char(struct printf_state *st) {
+static int printf_state_next_char(struct printf_state *st) {
 	st->ch = st->fmt[st->fmt_idx++];
 	return st->ch;
 }
 
-void printf_handle_flag(struct printf_state *st) {
+static void printf_handle_flag(struct printf_state *st) {
 	switch (st->ch) {
 	case 'd':
 		st->cnt += print_int(va_arg(st->ap, int), 10);
@@ -149,7 +149,7 @@ void printf_handle_flag(struct printf_state *st) {
 	}
 }
 
-void printf_handle_flag_l(struct printf_state *st) {
+static void printf_handle_flag_l(struct printf_state *st) {
 	switch (st->ch) {
 	case 'd':
 		st->cnt += print_int(va_arg(st->ap, long), 10);
@@ -161,7 +161,7 @@ void printf_handle_flag_l(struct printf_state *st) {
 	}
 }
 
-void printf_handle_normal(struct printf_state *st) {
+static void printf_handle_normal(struct printf_state *st) {
 	switch (st->ch) {
 	case '%':
 		st->state = PRINTF_FLAG;
@@ -171,7 +171,7 @@ void printf_handle_normal(struct printf_state *st) {
 	}
 }
 
-void printf_sub(struct printf_state *st) {
+static void printf_sub(struct printf_state *st) {
 	switch (st->state) {
 	case PRINTF_FLAG:
 		printf_handle_flag(st);
