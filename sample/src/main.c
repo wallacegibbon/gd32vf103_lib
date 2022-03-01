@@ -3,6 +3,8 @@
 #include <string.h>
 #include "custom/fd.h"
 
+// This array will be put in the `.data` section and it will be initialized by
+// the startup code (in the assembly language file)
 char my_variable[] = "hello, world!";
 
 char buf[100];
@@ -145,7 +147,7 @@ int main(int argc, const char **argv) {
 
 	c_lib_test();
 
-	dprintf(1, "hello, this is message from dprintf. (%010.3f)\r\n", 3.1415926);
+	dprintf(1, "dprintf test: |%010.3f|\r\n", 3.1415926);
 
 	while (1) {
 		gpio_bit_set(GPIOC, GPIO_PIN_13);
