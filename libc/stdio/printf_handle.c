@@ -324,11 +324,14 @@ static void printf_handle_width(struct printf_handle *ph) {
 		return;
 	}
 
-	if (ph->ch == '.') {
+	switch (ph->ch) {
+	case '.':
 		ph->state = PRINTF_DECIMAL_WIDTH;
-	} else if (ph->ch == '*') {
+		break;
+	case '*':
 		ph->total_width = va_arg(ph->ap, int);
-	} else {
+		break;
+	default:
 		ph->fmt_idx--;
 		ph->state = PRINTF_FLAG;
 	}
@@ -342,13 +345,16 @@ static void printf_handle_decimal_width(struct printf_handle *ph) {
 		return;
 	}
 
-	if (ph->ch == '.') {
+	switch (ph->ch) {
+	case '.':
 		// although '.' after '.' is invalid ...
 		ph->state = PRINTF_NORMAL;
-	} else if (ph->ch == '*') {
+		break;
+	case '*':
 		ph->decimal_width = va_arg(ph->ap, int);
 		ph->state = PRINTF_FLAG;
-	} else {
+		break;
+	default:
 		ph->fmt_idx--;
 		ph->state = PRINTF_FLAG;
 	}
