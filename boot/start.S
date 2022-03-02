@@ -1,8 +1,8 @@
 #include "riscv_encoding.h"
 
 	.global vtable
-	.type vtable, %object
-	.section .vector_table, "a", %progbits
+	.type vtable, @object
+	.section .vector_table, "a", @progbits
 
 	.extern system_init
 	.extern main
@@ -103,7 +103,7 @@ vtable:
 	IRQ CAN1_EWMC_IRQn_handler
 	IRQ USB_IRQn_handler
 
-	.section .text.default_interrupt_handler, "ax", %progbits
+	.section .text.default_interrupt_handler, "ax", @progbits
 default_interrupt_handler:
 	j default_interrupt_handler
 	/*

@@ -3,7 +3,6 @@
 #include "n200_eclic.h"
 #include "n200_timer.h"
 
-
 	.macro DISABLE_MIE
 	csrc CSR_MSTATUS, MSTATUS_MIE
 	.endm
