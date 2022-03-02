@@ -1,11 +1,11 @@
 #include "riscv_encoding.h"
 
+	.extern system_init
+	.extern main
+
 	.global vtable
 	.type vtable, @object
 	.section .vector_table, "a", @progbits
-
-	.extern system_init
-	.extern main
 
 	.macro IRQ handler
 	.word \handler

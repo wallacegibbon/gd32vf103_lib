@@ -1,6 +1,6 @@
 #include "gd32vf103_timer.h"
 
-// TIMER init parameter aligne dmode mask
+// TIMER init parameter aligned mode mask
 #define ALIGNEDMODE_MASK	((uint32_t)0x00000060U)
 
 // TIMER init parameter counter direction mask
@@ -45,7 +45,7 @@ void timer_deinit(uint32_t timer_periph) {
 	}
 }
 
-void timer_struct_para_init(struct timer_param * initpara) {
+void timer_struct_para_init(struct timer_param *initpara) {
 	initpara->prescaler = 0;
 	initpara->alignedmode = TIMER_COUNTER_EDGE;
 	initpara->counterdirection = TIMER_COUNTER_UP;
@@ -71,7 +71,7 @@ void timer_struct_para_init(struct timer_param * initpara) {
  * 	repetitioncounter:
  * 		counter repetition value, 0~255
  */
-void timer_init(uint32_t timer_periph, struct timer_param * initpara) {
+void timer_init(uint32_t timer_periph, struct timer_param *initpara) {
 	TIMER_PSC(timer_periph) = initpara->prescaler;
 
 	if ((timer_periph == TIMER0) || (timer_periph == TIMER1) ||
@@ -451,7 +451,7 @@ void timer_channel_control_shadow_update_config(uint32_t timer_periph,
 	}
 }
 
-void timer_channel_output_struct_para_init(struct timer_oc_param * ocpara) {
+void timer_channel_output_struct_para_init(struct timer_oc_param *ocpara) {
 	ocpara->outputstate = TIMER_CCX_DISABLE;
 	ocpara->outputnstate = TIMER_CCXN_DISABLE;
 	ocpara->ocpolarity = TIMER_OC_POLARITY_HIGH;
@@ -476,7 +476,7 @@ void timer_channel_output_struct_para_init(struct timer_oc_param * ocpara) {
  * 	ocnidlestate: TIMER_OCN_IDLE_STATE_LOW, TIMER_OCN_IDLE_STATE_HIGH
  */
 void timer_channel_output_config(uint32_t timer_periph, uint16_t channel,
-		struct timer_oc_param * ocpara) {
+		struct timer_oc_param *ocpara) {
 
 	switch (channel) {
 	case TIMER_CH_0:
@@ -1042,7 +1042,7 @@ uint32_t timer_channel_capture_value_register_read(uint32_t timer_periph,
  * 	icfilter: 0~15
  */
 void timer_input_pwm_capture_config(uint32_t timer_periph, uint16_t channel,
-		struct timer_ic_param * icpwm) {
+		struct timer_ic_param *icpwm) {
 	uint16_t icpolarity = 0;
 	uint16_t icselection = 0;
 

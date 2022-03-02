@@ -7,8 +7,6 @@
 // the startup code (in the assembly language file)
 char my_variable[] = "hello, world!";
 
-char buf[100];
-
 void init() {
 	rcu_periph_clock_enable(RCU_GPIOA);
 	rcu_periph_clock_enable(RCU_GPIOC);

@@ -12,7 +12,7 @@ OPENOCD_ARGS = -f interface/ftdi/sipeed-rv-debugger.cfg \
 ## "-ffunction-sections -fdata-sections" will make every function a section.
 ## this works with the "-Wl,--gc-sections" parameter of the linker.
 
-CFLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
+C_ASM_FLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
 	-fno-builtin \
 	-I$(LIBDIR)/riscv -I$(LIBDIR)/peripheral \
 	-I$(LIBDIR)/peripheral/src -I$(LIBDIR)/peripheral/inc \
@@ -31,7 +31,7 @@ else
 	FLOAT_RELATED_LD_FLAG = -nostdlib
 endif
 
-LDFLAGS = -T$(LIBDIR)/ldscript/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
+LD_FLAGS = -T$(LIBDIR)/ldscript/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
 	-nostartfiles $(FLOAT_RELATED_LD_FLAG) \
 	-march=rv32imac -mabi=ilp32 -DLONGON_NANO
 
@@ -47,12 +47,14 @@ C_FILES += $(wildcard $(LIBDIR)/peripheral/src/*.c)
 C_FILES += $(wildcard $(LIBDIR)/riscv/*.c)
 C_FILES += $(wildcard $(LIBDIR)/libc/*/*.c)
 C_FILES += $(wildcard ./src/*.c)
-
 C_OBJS = $(patsubst %.c, %.o, $(C_FILES))
 
-STARTUP_OBJS = $(LIBDIR)/boot/start.o $(LIBDIR)/boot/entry.o
+ASM_FILES = $(wildcard $(LIBDIR)/boot/*.S)
+ASM_FILES += $(wildcard $(LIBDIR)/riscv/*.S)
+ASM_FILES += $(wildcard ./src/*.S)
+ASM_OBJS = $(patsubst %.S, %.o, $(ASM_FILES))
 
-OBJFILES = $(C_OBJS) $(STARTUP_OBJS)
+OBJ_FILES = $(C_OBJS) $(ASM_OBJS)
 
 all: $(TARGET).hex
 $(TARGET).hex: $(TARGET).elf
@@ -61,18 +63,16 @@ $(TARGET).hex: $(TARGET).elf
 	$(SIZE) --format=sysv --radix=16 $<
 	$(SIZE) $<
 
-$(TARGET).elf: $(OBJFILES)
-	$(LD) $(LDFLAGS) -o $@ $^
-
-$(LIBDIR)/boot/start.o: $(LIBDIR)/boot/start.S
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(LIBDIR)/boot/entry.o: $(LIBDIR)/boot/entry.S
-	$(CC) $(CFLAGS) -c $< -o $@
+$(TARGET).elf: $(OBJ_FILES)
+	$(LD) $(LD_FLAGS) -o $@ $^
 
 %.o: %.c
 	$(warning $<)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(C_ASM_FLAGS) -c $< -o $@
+
+%.o: %.S
+	$(warning $<)
+	$(CC) $(C_ASM_FLAGS) -c $< -o $@
 
 .PHONY: load openocd debug lss clean
 
@@ -86,5 +86,5 @@ debug:
 lss:
 	$(OBJDUMP) -S -D $(TARGET).elf > $(TARGET).lss
 clean:
-	rm -f *.elf *.hex *.bin *.lss $(OBJFILES)
+	rm -f *.elf *.hex *.bin *.lss $(OBJ_FILES)
 
