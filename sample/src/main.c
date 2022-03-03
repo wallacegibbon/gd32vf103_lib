@@ -151,6 +151,7 @@ int main(int argc, const char **argv) {
 		gpio_bit_set(GPIOC, GPIO_PIN_13);
 		sleep(1);
 		pmu_to_sleepmode(WFI_CMD);
+		//pmu_to_deepsleepmode(PMU_LDO_NORMAL, WFI_CMD);
 		//pmu_to_standbymode(WFI_CMD);
 		gpio_bit_reset(GPIOC, GPIO_PIN_13);
 		sleep(1);
