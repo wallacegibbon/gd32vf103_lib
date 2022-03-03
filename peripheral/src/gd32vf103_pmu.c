@@ -30,11 +30,9 @@ void pmu_lvd_disable() {
 	PMU_CTL &= ~PMU_CTL_LVDEN;
 }
 
-static inline void call_wfe() {
+static inline void wfe_safe() {
 	clear_csr(mstatus, MSTATUS_MIE);
-	set_csr(0x810, 1);
-	__WFI();
-	clear_csr(0x810, 1);
+	__WFE();
 	set_csr(mstatus, MSTATUS_MIE);
 }
 
@@ -42,7 +40,7 @@ static inline void call_wfi_or_wfe(enum wfi_wfe_cmd sleepmodecmd) {
 	if (sleepmodecmd == WFI_CMD)
 		__WFI();
 	else
-		call_wfe();
+		wfe_safe();
 }
 
 void pmu_to_sleepmode(enum wfi_wfe_cmd sleepmodecmd) {

@@ -18,7 +18,6 @@ void switch_m2u_mode();
 uint32_t get_mtime_freq();
 
 uint32_t mtime_lo(void);
-
 uint32_t mtime_hi(void);
 
 uint64_t get_mtime_value();
@@ -73,22 +72,24 @@ void eclic_set_vmode(uint32_t source);
 void eclic_set_nonvmode(uint32_t source);
 
 void eclic_set_level_trig(uint32_t source);
+
 void eclic_set_posedge_trig(uint32_t source);
+
 void eclic_set_negedge_trig(uint32_t source);
 
 // Wait For Interrupt is a hint instruction that suspends execution
 // until one of a number of events occurs.
-__attribute__((always_inline)) static inline void __WFI(void) {
+__attribute__((always_inline)) static inline void __WFI() {
 	__asm volatile ("wfi");
 }
 
 
 // Wait For Event is a hint instruction that permits the processor to enter
 // a low-power state until one of a number of events occurs.
-__attribute__((always_inline)) static inline void __WFE(void) {
-	__asm volatile ("csrs 0x810, 0x1");
+__attribute__((always_inline)) static inline void __WFE() {
+	__asm volatile ("csrs 0x810, 1");
 	__asm volatile ("wfi");
-	__asm volatile ("csrc 0x810, 0x1");
+	__asm volatile ("csrc 0x810, 1");
 }
 
 #endif
