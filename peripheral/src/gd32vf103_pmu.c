@@ -19,99 +19,70 @@ void pmu_deinit() {
  * 	PMU_LVDT_7: voltage threshold is 2.9V
  */
 void pmu_lvd_select(uint32_t lvdt_n) {
-	// disable LVD
-	PMU_CTL &= ~PMU_CTL_LVDEN;
-	// clear LVDT bits
-	PMU_CTL &= ~PMU_CTL_LVDT;
-	// set LVDT bits according to lvdt_n
-	PMU_CTL |= lvdt_n;
-	// enable LVD
-	PMU_CTL |= PMU_CTL_LVDEN;
+	PMU_CTL &= ~PMU_CTL_LVDEN; // disable LVD
+	PMU_CTL &= ~PMU_CTL_LVDT; // clear LVDT bits
+	PMU_CTL |= lvdt_n; // set LVDT bits according to lvdt_n
+	PMU_CTL |= PMU_CTL_LVDEN; // enable LVD
 }
 
 void pmu_lvd_disable() {
 	PMU_CTL &= ~PMU_CTL_LVDEN;
 }
 
-/*
- * PMU work at sleep mode
- * sleepmodecmd:
- * 	WFI_CMD: use WFI command
- * 	WFE_CMD: use WFE command
- */
-void pmu_to_sleepmode(uint8_t sleepmodecmd) {
-	// clear sleepdeep bit of RISC-V system control register
-	clear_csr(0x811, 1);
+static inline void call_wfe() {
+	clear_csr(mstatus, MSTATUS_MIE);
+	set_csr(0x810, 1);
+	__WFI();
+	clear_csr(0x810, 1);
+	set_csr(mstatus, MSTATUS_MIE);
+}
 
-	// select WFI or WFE command to enter sleep mode
-	if (WFI_CMD == sleepmodecmd) {
+static inline void call_wfi_or_wfe_by_cmd(enum wfi_wfe_cmd sleepmodecmd,
+		int is_deepsleep) {
+
+	// set/clear CSR_SLEEPVALUE bit to select/unselect deepsleep or standby
+	if (is_deepsleep)
+		set_csr(0x811, 1);
+	else
+		clear_csr(0x811, 1);
+
+	if (sleepmodecmd == WFI_CMD)
 		__WFI();
-	} else {
-		clear_csr(mstatus, MSTATUS_MIE);
-		set_csr(0x810, 1);
-		__WFI();
-		clear_csr(0x810, 1);
-		set_csr(mstatus, MSTATUS_MIE);
-	}
+	else
+		call_wfe();
+
+	if (is_deepsleep)
+		clear_csr(0x811, 1);
+}
+
+void pmu_to_sleepmode(enum wfi_wfe_cmd sleepmodecmd) {
+	call_wfi_or_wfe_by_cmd(sleepmodecmd, 0);
 }
 
 /*
  * PMU work at deepsleep mode
  * ldo:
  * 	PMU_LDO_NORMAL:
- * 		LDO work at normal power mode when pmu enter
- * 		deepsleep mode
+ * 		LDO work at normal power mode when pmu enter deepsleep mode
  * 	PMU_LDO_LOWPOWER:
  * 		LDO work at low power mode when pmu enter deepsleep mode
- * deepsleepmodecmd:
- * 	WFI_CMD: use WFI command
- * 	WFE_CMD: use WFE command
  */
-void pmu_to_deepsleepmode(uint32_t ldo, uint8_t deepsleepmodecmd) {
+void pmu_to_deepsleepmode(uint32_t ldo, enum wfi_wfe_cmd deepsleepmodecmd) {
 	// clear stbmod and ldolp bits
 	PMU_CTL &= ~((uint32_t) (PMU_CTL_STBMOD | PMU_CTL_LDOLP));
 	// set ldolp bit according to pmu_ldo
 	PMU_CTL |= ldo;
-	// set CSR_SLEEPVALUE bit of RISC-V system control register
-	set_csr(0x811, 1);
-	// select WFI or WFE command to enter deepsleep mode
-	if (WFI_CMD == deepsleepmodecmd) {
-		__WFI();
-	} else {
-		clear_csr(mstatus, MSTATUS_MIE);
-		set_csr(0x810, 1);
-		__WFI();
-		clear_csr(0x810, 1);
-		set_csr(mstatus, MSTATUS_MIE);
-	}
-	// reset sleepdeep bit of RISC-V system control register
-	clear_csr(0x811, 1);
+
+	call_wfi_or_wfe_by_cmd(deepsleepmodecmd, 1);
 }
 
-/*
- * pmu work at standby mode
- * standbymodecmd:
- * 	WFI_CMD: use WFI command
- * 	WFE_CMD: use WFE command
- */
-void pmu_to_standbymode(uint8_t standbymodecmd) {
-	// set CSR_SLEEPVALUE bit of RISC-V system control register
-	set_csr(0x811, 1);
+void pmu_to_standbymode(enum wfi_wfe_cmd standbymodecmd) {
 	// set stbmod bit
 	PMU_CTL |= PMU_CTL_STBMOD;
 	// reset wakeup flag
 	PMU_CTL |= PMU_CTL_WURST;
-	// select WFI or WFE command to enter standby mode
-	if (WFI_CMD == standbymodecmd) {
-		__WFI();
-	} else {
-		clear_csr(mstatus, MSTATUS_MIE);
-		set_csr(0x810, 1);
-		__WFI();
-		clear_csr(0x810, 1);
-		set_csr(mstatus, MSTATUS_MIE);
-	}
-	clear_csr(0x811, 1);
+
+	call_wfi_or_wfe_by_cmd(standbymodecmd, 1);
 }
 
 void pmu_wakeup_pin_enable() {
@@ -146,12 +117,7 @@ enum flag_status pmu_flag_get(uint32_t flag) {
 		return RESET;
 }
 
-/*
- * flag_reset:
- * 	PMU_FLAG_RESET_WAKEUP: reset wakeup flag
- * 	PMU_FLAG_RESET_STANDBY: reset standby flag
- */
-void pmu_flag_clear(uint32_t flag_reset) {
+void pmu_flag_clear(enum pmu_flag_reset flag_reset) {
 	switch (flag_reset) {
 	case PMU_FLAG_RESET_WAKEUP:
 		PMU_CTL |= PMU_CTL_WURST;
@@ -163,3 +129,4 @@ void pmu_flag_clear(uint32_t flag_reset) {
 		break;
 	}
 }
+

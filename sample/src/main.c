@@ -150,6 +150,8 @@ int main(int argc, const char **argv) {
 	while (1) {
 		gpio_bit_set(GPIOC, GPIO_PIN_13);
 		sleep(1);
+		pmu_to_sleepmode(WFI_CMD);
+		//pmu_to_standbymode(WFI_CMD);
 		gpio_bit_reset(GPIOC, GPIO_PIN_13);
 		sleep(1);
 	}

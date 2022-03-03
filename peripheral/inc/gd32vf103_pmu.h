@@ -4,9 +4,9 @@
 #include "gd32vf103.h"
 
 #define PMU				PMU_BASE
-#define PMU_CTL				REG32(PMU + 0x00U)
+#define PMU_CTL				REG32(PMU + 0)
 // PMU control and status register
-#define PMU_CS				REG32(PMU + 0x04U)
+#define PMU_CS				REG32(PMU + 4)
 
 
 // LDO low power mode
@@ -20,7 +20,7 @@
 // low voltage detector enable
 #define PMU_CTL_LVDEN			BIT(4)
 // low voltage detector threshold
-#define PMU_CTL_LVDT			BITS(5,7)
+#define PMU_CTL_LVDT			BITS(5, 7)
 // backup domain write enable
 #define PMU_CTL_BKPWEN			BIT(8)
 
@@ -64,35 +64,35 @@
 
 // PMU ldo definitions
 // LDO normal work when PMU enter deepsleep mode
-#define PMU_LDO_NORMAL			((uint32_t) 0x00000000U)
+#define PMU_LDO_NORMAL			((uint32_t) 0)
 // LDO work at low power status when PMU enter deepsleep mode
 #define PMU_LDO_LOWPOWER		PMU_CTL_LDOLP
 
 // PMU flag reset definitions
-// wakeup flag reset
-#define PMU_FLAG_RESET_WAKEUP		((uint8_t) 0x00U)
-// standby flag reset
-#define PMU_FLAG_RESET_STANDBY		((uint8_t) 0x01U)
+enum pmu_flag_reset {
+	PMU_FLAG_RESET_WAKEUP,
+	PMU_FLAG_RESET_STANDBY
+};
 
 // PMU command constants definitions
-#define WFI_CMD				((uint8_t) 0x00U)
-#define WFE_CMD				((uint8_t) 0x01U)
+enum wfi_wfe_cmd {
+	WFI_CMD,
+	WFE_CMD
+};
 
 void pmu_deinit(void);
 
 // select low voltage detector threshold
 void pmu_lvd_select(uint32_t lvdt_n);
-// disable PMU lvd
+
 void pmu_lvd_disable(void);
 
-// PMU work at sleep mode
-void pmu_to_sleepmode(uint8_t sleepmodecmd);
-// PMU work at deepsleep mode
-void pmu_to_deepsleepmode(uint32_t ldo, uint8_t deepsleepmodecmd);
-// PMU work at standby mode
-void pmu_to_standbymode(uint8_t standbymodecmd);
-void pmu_wakeup_pin_enable(void);
-void pmu_wakeup_pin_disable(void);
+void pmu_to_sleepmode(enum wfi_wfe_cmd sleepmodecmd);
+void pmu_to_deepsleepmode(uint32_t ldo, enum wfi_wfe_cmd deepsleepmodecmd);
+void pmu_to_standbymode(enum wfi_wfe_cmd standbymodecmd);
+
+void pmu_wakeup_pin_enable();
+void pmu_wakeup_pin_disable();
 
 // backup related functions
 
@@ -101,6 +101,6 @@ void pmu_backup_write_disable(void);
 
 // flag functions
 enum flag_status pmu_flag_get(uint32_t flag);
-void pmu_flag_clear(uint32_t flag_reset);
+void pmu_flag_clear(enum pmu_flag_reset flag_reset);
 
 #endif
