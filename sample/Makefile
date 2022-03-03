@@ -82,7 +82,8 @@ load:
 openocd:
 	$(OPENOCD_CMD) $(OPENOCD_ARGS)
 debug:
-	$(GDB)
+	$(GDB) $(TARGET).elf \
+		--eval-command="target extended-remote localhost:3333"
 lss:
 	$(OBJDUMP) -S -D $(TARGET).elf > $(TARGET).lss
 clean:
