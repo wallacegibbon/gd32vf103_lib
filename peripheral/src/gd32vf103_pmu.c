@@ -60,7 +60,6 @@ void pmu_to_sleepmode(enum wfi_wfe_cmd sleepmodecmd) {
 }
 
 /*
- * PMU work at deepsleep mode
  * ldo:
  * 	PMU_LDO_NORMAL:
  * 		LDO work at normal power mode when pmu enter deepsleep mode
@@ -69,7 +68,7 @@ void pmu_to_sleepmode(enum wfi_wfe_cmd sleepmodecmd) {
  */
 void pmu_to_deepsleepmode(uint32_t ldo, enum wfi_wfe_cmd deepsleepmodecmd) {
 	// clear stbmod and ldolp bits
-	PMU_CTL &= ~((uint32_t) (PMU_CTL_STBMOD | PMU_CTL_LDOLP));
+	PMU_CTL &= ~(PMU_CTL_STBMOD | PMU_CTL_LDOLP);
 	// set ldolp bit according to pmu_ldo
 	PMU_CTL |= ldo;
 
