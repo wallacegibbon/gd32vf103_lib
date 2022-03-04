@@ -9,7 +9,7 @@ enum printf_handle_flag {
 	PRINTF_FLAG,
 	PRINTF_FLAG_L,
 	PRINTF_WIDTH,
-	PRINTF_DECIMAL_WIDTH
+	PRINTF_PRECISION_WIDTH
 };
 
 struct printf_handle {
@@ -17,7 +17,7 @@ struct printf_handle {
 	const char *fmt;
 	int fmt_idx;
 	va_list ap;
-	int total_width, decimal_width;
+	int total_width, precision_width;
 	int pad_tail;
 	char pad_char;
 	char ch;

@@ -102,44 +102,43 @@ static inline int length_of_num(long num) {
 }
 
 /* 4294967296(2**32, 10 based) has 10 characters, so 9999999999 is invalid */
-#define MAX_DECIMAL_WIDTH 9
+#define MAX_PRECISION_WIDTH 9
 
-static int adjust_zero_decimal_width(struct printf_handle *ph, int int_width) {
+static int adjust_zero_precision_width(struct printf_handle *ph,
+		int int_width) {
+
 	int extra_width = 0;
-
 	if (ph->total_width > int_width + 1) {
-		ph->decimal_width = ph->total_width - int_width - 1;
-		if (ph->decimal_width > MAX_DECIMAL_WIDTH) {
-			extra_width = ph->decimal_width - MAX_DECIMAL_WIDTH;
-			ph->decimal_width = MAX_DECIMAL_WIDTH;
+		ph->precision_width = ph->total_width - int_width - 1;
+		if (ph->precision_width > MAX_PRECISION_WIDTH) {
+			extra_width = ph->precision_width - MAX_PRECISION_WIDTH;
+			ph->precision_width = MAX_PRECISION_WIDTH;
 		}
 	} else if (ph->total_width > 0) {
 		// when the `total_width` is too small,
 		// the space for decimal part should be sacrificed.
-		ph->decimal_width = 1;
+		ph->precision_width = 1;
 	} else {
-		// both width and decimal_width are 0
-		ph->decimal_width = 6;
+		// both width and precision_width are 0
+		ph->precision_width = 6;
 	}
 
 	return extra_width;
 }
 
 static inline int calc_extra_width(struct printf_handle *ph, int int_width) {
-
-	int r = ph->total_width - int_width - ph->decimal_width - 1;
-
+	int r = ph->total_width - int_width - ph->precision_width - 1;
 	if (r > 0)
 		return r;
 	else
 		return 0;
 }
 
-static inline int adjust_decimal_width(struct printf_handle *ph,
+static inline int adjust_precision_width(struct printf_handle *ph,
 		int int_width) {
 
-	if (ph->decimal_width == 0)
-		return adjust_zero_decimal_width(ph, int_width);
+	if (ph->precision_width == 0)
+		return adjust_zero_precision_width(ph, int_width);
 	else
 		return calc_extra_width(ph, int_width);
 }
@@ -157,14 +156,14 @@ static int print_float(struct printf_handle *ph, double num) {
 	long int_part = (long) num;
 	int int_width = length_of_num(int_part) + is_minus;
 
-	int extra_width = adjust_decimal_width(ph, int_width);
+	int extra_width = adjust_precision_width(ph, int_width);
 
 	long decimal_part =
-		(long) ((num - int_part) * pow(10, ph->decimal_width));
+		(long) ((num - int_part) * pow(10, ph->precision_width));
 
 	// the pad is in int or decial part depending on the pad_tail
 	if (ph->pad_tail)
-		ph->decimal_width += extra_width;
+		ph->precision_width += extra_width;
 	else
 		int_width += extra_width;
 
@@ -174,7 +173,7 @@ static int print_float(struct printf_handle *ph, double num) {
 
 	int cnt = print_int(ph, int_part, 10, int_width, ph->pad_char);
 	cnt += ph->print_char('.');
-	cnt += print_int(ph, decimal_part, 10, ph->decimal_width, '0');
+	cnt += print_int(ph, decimal_part, 10, ph->precision_width, '0');
 
 	return cnt;
 }
@@ -182,14 +181,13 @@ static int print_float(struct printf_handle *ph, double num) {
 #endif
 
 static void print_str_with_pad(struct printf_handle *ph, char *str) {
-	if (ph->total_width == 0 && ph->decimal_width == 0) {
+	if (ph->total_width == 0 && ph->precision_width == 0) {
 		for (int i = 0; str[i] != '\0'; i++)
 			ph->cnt += ph->print_char(str[i]);
 		return;
 	}
-
-	if (ph->total_width == 0 && ph->decimal_width > 0) {
-		for (int i = 0; i < ph->decimal_width && str[i] != '\0'; i++)
+	if (ph->total_width == 0 && ph->precision_width > 0) {
+		for (int i = 0; i < ph->precision_width && str[i] != '\0'; i++)
 			ph->cnt += ph->print_char(str[i]);
 		return;
 	}
@@ -200,15 +198,23 @@ static void print_str_with_pad(struct printf_handle *ph, char *str) {
 	while (len < ph->total_width && str[len] != '\0')
 		len++;
 
-	int pad_width = ph->total_width - len;
+	// if `precision_width` is smaller than string length,
+	// 	truncate the string size to `precision_width`
 
-	if (ph->decimal_width > 0 && len > ph->decimal_width)
-		pad_width = ph->total_width - ph->decimal_width;
+	// if `precision_width` is bigger than string length,
+	// 	just ignore `precision_width`
+
+	int pad_width = ph->total_width - len;
+	if (ph->precision_width > 0 && len > ph->precision_width)
+		pad_width = ph->total_width - ph->precision_width;
+
+	int fixed_len = ph->total_width - pad_width;
+
+	// the padding may be printed before or after the string
 
 	if (!ph->pad_tail)
 		ph->cnt += print_char_n(ph, ' ', pad_width);
 
-	int fixed_len = ph->total_width - pad_width;
 	for (int i = 0; i < fixed_len; i++)
 		ph->print_char(str[i]);
 
@@ -220,7 +226,7 @@ static void print_str_with_pad(struct printf_handle *ph, char *str) {
 
 static inline void printf_handle_reset_flag_arg(struct printf_handle *ph) {
 	ph->total_width = 0;
-	ph->decimal_width = 0;
+	ph->precision_width = 0;
 	ph->pad_tail = 0;
 	ph->pad_char = ' ';
 }
@@ -276,7 +282,7 @@ static void printf_handle_flag(struct printf_handle *ph) {
 		ph->state = PRINTF_WIDTH;
 		break;
 	case '.':
-		ph->state = PRINTF_DECIMAL_WIDTH;
+		ph->state = PRINTF_PRECISION_WIDTH;
 		break;
 	case '-':
 		ph->pad_tail = 1;
@@ -326,7 +332,7 @@ static void printf_handle_width(struct printf_handle *ph) {
 
 	switch (ph->ch) {
 	case '.':
-		ph->state = PRINTF_DECIMAL_WIDTH;
+		ph->state = PRINTF_PRECISION_WIDTH;
 		break;
 	case '*':
 		ph->total_width = va_arg(ph->ap, int);
@@ -339,9 +345,9 @@ static void printf_handle_width(struct printf_handle *ph) {
 	limit_value(&ph->total_width, PRINTF_MAX_WIDTH);
 }
 
-static void printf_handle_decimal_width(struct printf_handle *ph) {
+static void printf_handle_precision_width(struct printf_handle *ph) {
 	if (is_decimal_char(ph->ch)) {
-		ph->decimal_width = ph->decimal_width * 10 + (ph->ch - '0');
+		ph->precision_width = ph->precision_width * 10 + (ph->ch - '0');
 		return;
 	}
 
@@ -351,7 +357,7 @@ static void printf_handle_decimal_width(struct printf_handle *ph) {
 		ph->state = PRINTF_NORMAL;
 		break;
 	case '*':
-		ph->decimal_width = va_arg(ph->ap, int);
+		ph->precision_width = va_arg(ph->ap, int);
 		ph->state = PRINTF_FLAG;
 		break;
 	default:
@@ -359,7 +365,7 @@ static void printf_handle_decimal_width(struct printf_handle *ph) {
 		ph->state = PRINTF_FLAG;
 	}
 
-	limit_value(&ph->decimal_width, MAX_DECIMAL_WIDTH);
+	limit_value(&ph->precision_width, MAX_PRECISION_WIDTH);
 }
 
 static void printf_handle_normal(struct printf_handle *ph) {
@@ -380,7 +386,7 @@ void printf_handle_init(struct printf_handle *ph, const char *fmt,
 	ph->fmt = fmt;
 	ph->fmt_idx = 0;
 	ph->total_width = 0;
-	ph->decimal_width = 0;
+	ph->precision_width = 0;
 	ph->cnt = 0;
 	ph->pad_tail = 0;
 	ph->pad_char = ' ';
@@ -403,8 +409,8 @@ static void printf_handle_entry(struct printf_handle *ph) {
 	case PRINTF_WIDTH:
 		printf_handle_width(ph);
 		break;
-	case PRINTF_DECIMAL_WIDTH:
-		printf_handle_decimal_width(ph);
+	case PRINTF_PRECISION_WIDTH:
+		printf_handle_precision_width(ph);
 		break;
 	case PRINTF_NORMAL:
 		printf_handle_normal(ph);
