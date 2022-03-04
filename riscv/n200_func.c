@@ -81,8 +81,8 @@ uint32_t __attribute__((noinline)) measure_cpu_freq(size_t n) {
 
 	uint32_t delta_mcycle = read_csr(mcycle) - start_mcycle;
 
-	return (delta_mcycle / delta_mtime) * mtime_freq
-		+ ((delta_mcycle % delta_mtime) * mtime_freq) / delta_mtime;
+	return (delta_mcycle / delta_mtime) * mtime_freq +
+		((delta_mcycle % delta_mtime) * mtime_freq) / delta_mtime;
 }
 
 uint32_t get_cpu_freq() {
@@ -201,13 +201,13 @@ void eclic_set_irq_lvl(uint32_t source, uint8_t lvl) {
 		nlbits = ECLICINTCTLBITS;
 
 	// mask off unused bits
-	lvl = lvl >> (8 - nlbits);
-	lvl = lvl << (8 - nlbits);
+	lvl >>= (8 - nlbits);
+	lvl <<= (8 - nlbits);
 
 	uint8_t current_intctrl = eclic_get_intctrl(source);
 	// mask off unused bits
-	current_intctrl = current_intctrl << nlbits;
-	current_intctrl = current_intctrl >> nlbits;
+	current_intctrl <<= nlbits;
+	current_intctrl >>= nlbits;
 
 	eclic_set_intctrl(source, (current_intctrl | lvl));
 }
@@ -219,8 +219,7 @@ uint8_t eclic_get_irq_lvl(uint32_t source) {
 		nlbits = ECLICINTCTLBITS;
 
 	uint8_t intctrl = eclic_get_intctrl(source);
-
-	intctrl = intctrl >> (8 - nlbits);
+	intctrl >>= (8 - nlbits);
 	return intctrl << (8 - nlbits);
 }
 
@@ -234,8 +233,8 @@ void eclic_set_irq_lvl_abs(uint32_t source, uint8_t lvl_abs) {
 	uint8_t current_intctrl = eclic_get_intctrl(source);
 
 	// mask off unused bits
-	current_intctrl = current_intctrl << nlbits;
-	current_intctrl = current_intctrl >> nlbits;
+	current_intctrl <<= nlbits;
+	current_intctrl >>= nlbits;
 
 	eclic_set_intctrl(source, current_intctrl | lvl);
 }
@@ -263,8 +262,8 @@ uint8_t eclic_set_irq_priority(uint32_t source, uint8_t priority) {
 	//write to eclicintctrl
 	uint8_t current_intctrl = eclic_get_intctrl(source);
 	// mask off unused bits
-	current_intctrl = current_intctrl >> (8 - nlbits);
-	current_intctrl = current_intctrl << (8 - nlbits);
+	current_intctrl >>= (8 - nlbits);
+	current_intctrl <<= (8 - nlbits);
 
 	eclic_set_intctrl(source, (current_intctrl | priority));
 
@@ -326,6 +325,3 @@ uintptr_t handle_trap(uintptr_t mcause, uintptr_t sp) {
 	while (1);
 }
 
-//void wfe() {
-//	core_wfe();
-//}

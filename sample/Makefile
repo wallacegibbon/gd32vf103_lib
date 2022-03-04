@@ -1,4 +1,4 @@
-TARGET = simple_test
+TARGET = sample
 LIBDIR = ..
 USE_FLOAT = 1
 #USE_FLOAT = 0
@@ -74,7 +74,7 @@ $(TARGET).elf: $(OBJ_FILES)
 	$(warning $<)
 	$(CC) $(C_ASM_FLAGS) -c $< -o $@
 
-.PHONY: load openocd debug lss clean
+.PHONY: load openocd debug lss tags clean
 
 load:
 	$(OPENOCD_CMD) $(OPENOCD_ARGS) -d1 \
@@ -86,6 +86,8 @@ debug:
 		--eval-command="target extended-remote localhost:3333"
 lss:
 	$(OBJDUMP) -S -D $(TARGET).elf > $(TARGET).lss
+tags:
+	find $(LIBDIR) . -regex '.*\.[ch]' | xargs ctags
 clean:
-	rm -f *.elf *.hex *.bin *.lss $(OBJ_FILES)
+	rm -f $(OBJ_FILES) *.elf *.hex *.bin *.lss tags
 
