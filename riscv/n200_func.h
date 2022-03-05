@@ -32,7 +32,9 @@ uint32_t __attribute__((noinline)) measure_cpu_freq(size_t n);
 
 // ECLIC relevant functions
 void eclic_init(uint32_t num_irq);
+
 uint64_t get_timer_value();
+
 void eclic_enable_interrupt(uint32_t source);
 void eclic_disable_interrupt(uint32_t source);
 
@@ -93,3 +95,4 @@ __attribute__((always_inline)) static inline void __WFE() {
 }
 
 #endif
+

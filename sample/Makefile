@@ -16,7 +16,7 @@ C_ASM_FLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
 	-fno-builtin \
 	-I$(LIBDIR)/riscv -I$(LIBDIR)/peripheral \
 	-I$(LIBDIR)/peripheral/src -I$(LIBDIR)/peripheral/inc \
-	-I$(LIBDIR)/libc -I./src \
+	-I$(LIBDIR)/libc -I$(LIBDIR)/longan -I./src \
 	-march=rv32imac -mabi=ilp32 -DLONGON_NANO -DUSE_FLOAT=$(USE_FLOAT)
 
 ## "-Wl,--gc-sections" will pass "--gc-sections" to linker to make it ignore
@@ -46,11 +46,13 @@ C_FILES = $(wildcard $(LIBDIR)/peripheral/*.c)
 C_FILES += $(wildcard $(LIBDIR)/peripheral/src/*.c)
 C_FILES += $(wildcard $(LIBDIR)/riscv/*.c)
 C_FILES += $(wildcard $(LIBDIR)/libc/*/*.c)
+C_FILES += $(wildcard $(LIBDIR)/longan/*.c)
 C_FILES += $(wildcard ./src/*.c)
 C_OBJS = $(patsubst %.c, %.o, $(C_FILES))
 
 ASM_FILES = $(wildcard $(LIBDIR)/boot/*.S)
 ASM_FILES += $(wildcard $(LIBDIR)/riscv/*.S)
+ASM_FILES += $(wildcard $(LIBDIR)/longan/*.S)
 ASM_FILES += $(wildcard ./src/*.S)
 ASM_OBJS = $(patsubst %.S, %.o, $(ASM_FILES))
 

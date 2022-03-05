@@ -1,7 +1,10 @@
 #include <gd32vf103.h>
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include "custom/fd.h"
+#include "util.h"
+#include "longan_lcd.h"
 
 // This array will be put in the `.data` section and it will be initialized by
 // the startup code (in the assembly language file)
@@ -44,7 +47,7 @@ void init() {
 	usart_interrupt_enable(USART0, USART_INT_RBNE);
 }
 
-void init_fd() {
+void fd_init() {
 	bind_file_descriptor(1, putchar);
 }
 
@@ -52,13 +55,6 @@ int putchar(int ch) {
 	usart_data_transmit(USART0, (uint8_t) ch);
 	while (usart_flag_get(USART0, USART_FLAG_TBE) == RESET);
 	return 1;
-}
-
-int sleep(int t) {
-	volatile int r;
-	while (t--)
-		for (int i = 0; i < 10000000; i++)
-			r = i;
 }
 
 void c_lib_test() {
@@ -132,7 +128,13 @@ void printf_width_test() {
 
 int main(int argc, const char **argv) {
 	init();
-	init_fd();
+	fd_init();
+	longan_lcd_init();
+
+	longan_lcd_clear(BLACK);
+	longan_lcd_draw_circle(50, 40, 10, RED);
+	//longan_lcd_draw_rectangle(60, 30 - 1, 120, 50 - 1, BLUE);
+	longan_lcd_fill(60, 30 - 1, 120, 50 - 1, BLUE);
 
 	int n = printf("this is from the serial port, %s\r\n", my_variable);
 	printf("the size of previous printf is %04d(%04x)%c\r\n", n, n, '~');
@@ -149,12 +151,12 @@ int main(int argc, const char **argv) {
 
 	while (1) {
 		gpio_bit_set(GPIOC, GPIO_PIN_13);
-		sleep(1);
-		pmu_to_sleepmode(WFI_CMD);
+		delay_ms(1000);
+		//pmu_to_sleepmode(WFI_CMD);
 		//pmu_to_deepsleepmode(PMU_LDO_NORMAL, WFI_CMD);
 		//pmu_to_standbymode(WFI_CMD);
 		gpio_bit_reset(GPIOC, GPIO_PIN_13);
-		sleep(1);
+		delay_ms(1000);
 	}
 
 	return 0;
