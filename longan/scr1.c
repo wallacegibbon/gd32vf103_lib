@@ -143,10 +143,9 @@ void scr1_draw_circle(struct scr1_handle *scr, int x0, int y0,
 	}
 }
 
-/* display 160x40 16bit (RGB565) picture */
 void scr1_draw_buffer(struct scr1_handle *scr, int x1, int y1, int x2, int y2) {
 	scr1_addr_set(scr, x1, y1, x2, y2);
-	for (int i = 0; i < 12800; i++)
+	for (int i = 0; i < scr->buffer_size; i++)
 		scr1_write_data8(scr, scr->buffer[i]);
 }
 

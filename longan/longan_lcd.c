@@ -3,12 +3,12 @@
 #include "util.h"
 #include "longan_lcd.h"
 
-unsigned char scr_buffer[12800];
+unsigned char scr_buffer[160 * 80 * 2];
 
 struct scr1_handle longan_lcd_handle = {
 	.width = 160,
 	.height = 80,
-	.buffer_size = 160 * 80,
+	.buffer_size = 160 * 80 * 2,
 	.buffer = scr_buffer,
 	.spi_dev = SPI0,
 	.rst_port = GPIOB,

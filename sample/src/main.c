@@ -132,6 +132,12 @@ int main(int argc, const char **argv) {
 	longan_lcd_init();
 
 	longan_lcd_clear(BLACK);
+
+	/*
+	memset(longan_lcd_handle.buffer, 0xff, longan_lcd_handle.buffer_size);
+	longan_lcd_draw_buffer(0, 0, 160, 80);
+	*/
+
 	longan_lcd_draw_circle(50, 40, 10, RED);
 	//longan_lcd_draw_rectangle(60, 30 - 1, 120, 50 - 1, BLUE);
 	longan_lcd_fill(60, 30 - 1, 120, 50 - 1, BLUE);

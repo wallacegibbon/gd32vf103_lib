@@ -3,6 +3,8 @@
 
 #include "scr1.h"
 
+extern struct scr1_handle longan_lcd_handle;
+
 void longan_lcd_init();
 
 void longan_lcd_fill(int x1, int y1, int x2, int y2, int color);
