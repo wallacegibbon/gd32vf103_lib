@@ -14,9 +14,9 @@ OPENOCD_ARGS = -f interface/ftdi/sipeed-rv-debugger.cfg \
 
 C_ASM_FLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
 	-fno-builtin \
-	-I$(LIBDIR)/riscv -I$(LIBDIR)/peripheral \
-	-I$(LIBDIR)/peripheral/src -I$(LIBDIR)/peripheral/inc \
-	-I$(LIBDIR)/libc -I$(LIBDIR)/longan -I./src \
+	-I$(LIBDIR)/core -I$(LIBDIR)/chip \
+	-I$(LIBDIR)/chip/src -I$(LIBDIR)/chip/inc \
+	-I$(LIBDIR)/c -I$(LIBDIR)/longan -I./src \
 	-march=rv32imac -mabi=ilp32 -DLONGON_NANO -DUSE_FLOAT=$(USE_FLOAT)
 
 ## "-Wl,--gc-sections" will pass "--gc-sections" to linker to make it ignore
@@ -31,7 +31,7 @@ else
 	FLOAT_RELATED_LD_FLAG = -nostdlib
 endif
 
-LD_FLAGS = -T$(LIBDIR)/ldscript/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
+LD_FLAGS = -T$(LIBDIR)/chip/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
 	-nostartfiles $(FLOAT_RELATED_LD_FLAG) \
 	-march=rv32imac -mabi=ilp32 -DLONGON_NANO
 
@@ -42,16 +42,18 @@ OBJCOPY = $(COMPILER_PREFIX)objcopy
 OBJDUMP = $(COMPILER_PREFIX)objdump
 SIZE = $(COMPILER_PREFIX)size
 
-C_FILES = $(wildcard $(LIBDIR)/peripheral/*.c)
-C_FILES += $(wildcard $(LIBDIR)/peripheral/src/*.c)
-C_FILES += $(wildcard $(LIBDIR)/riscv/*.c)
-C_FILES += $(wildcard $(LIBDIR)/libc/*/*.c)
+C_FILES = $(wildcard $(LIBDIR)/chip/*.c)
+C_FILES += $(wildcard $(LIBDIR)/chip/src/*.c)
+C_FILES += $(wildcard $(LIBDIR)/core/*.c)
+C_FILES += $(wildcard $(LIBDIR)/c/*/*.c)
 C_FILES += $(wildcard $(LIBDIR)/longan/*.c)
 C_FILES += $(wildcard ./src/*.c)
 C_OBJS = $(patsubst %.c, %.o, $(C_FILES))
 
-ASM_FILES = $(wildcard $(LIBDIR)/boot/*.S)
-ASM_FILES += $(wildcard $(LIBDIR)/riscv/*.S)
+ASM_FILES = $(wildcard $(LIBDIR)/chip/*.S)
+ASM_FILES += $(wildcard $(LIBDIR)/chip/src/*.S)
+ASM_FILES += $(wildcard $(LIBDIR)/core/*.S)
+ASM_FILES += $(wildcard $(LIBDIR)/c/*/*.S)
 ASM_FILES += $(wildcard $(LIBDIR)/longan/*.S)
 ASM_FILES += $(wildcard ./src/*.S)
 ASM_OBJS = $(patsubst %.S, %.o, $(ASM_FILES))

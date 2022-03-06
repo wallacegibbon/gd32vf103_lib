@@ -10,6 +10,7 @@ void delay_ms(uint32_t count) {
 		start_mtime = get_timer_value();
 	} while (start_mtime == tmp);
 
+	// the frequency of mtime is `sys_core_clk / 4`
 	do {
 		delta_mtime = get_timer_value() - start_mtime;
 	} while (delta_mtime < (sys_core_clk / 4000 * count));
