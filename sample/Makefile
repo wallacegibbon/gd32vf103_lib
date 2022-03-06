@@ -91,7 +91,8 @@ debug:
 lss:
 	$(OBJDUMP) -S -D $(TARGET).elf > $(TARGET).lss
 tags:
-	find $(LIBDIR) . -regex '.*\.[ch]' | xargs ctags
+	find . .. -regex '.*\.[ch]' -exec realpath {} \; \
+		| sort | uniq | xargs ctags
 clean:
 	rm -f $(OBJ_FILES) *.elf *.hex *.bin *.lss tags
 
