@@ -139,8 +139,12 @@ int main(int argc, const char **argv) {
 	*/
 
 	longan_lcd_draw_circle(50, 40, 10, RED);
-	//longan_lcd_draw_rectangle(60, 30 - 1, 120, 50 - 1, BLUE);
-	longan_lcd_fill(60, 30 - 1, 120, 50 - 1, BLUE);
+	longan_lcd_draw_rectangle(60, 30 - 1, 120, 50 - 1, BLUE);
+	//longan_lcd_fill(60, 30 - 1, 120, 50 - 1, BLUE);
+	//longan_lcd_draw_line(0, 0, 160, 20, CYAN);
+	longan_lcd_draw_line(0, 0, 160, 21, RED);
+	//longan_lcd_draw_line(0, 0, 160, 22, GREEN);
+	longan_lcd_draw_line(0, 0, 160, 80, YELLOW);
 
 	int n = printf("this is from the serial port, %s\r\n", my_variable);
 	printf("the size of previous printf is %04d(%04x)%c\r\n", n, n, '~');

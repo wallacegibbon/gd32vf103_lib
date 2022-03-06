@@ -2,7 +2,7 @@
 #include <gd32vf103.h>
 #include "scr1.h"
 
-void scr1_write_bus(struct scr1_handle *scr, int data) {
+static void scr1_write_bus(struct scr1_handle *scr, int data) {
 	scr1_cs_clr(scr);
 
 	spi_i2s_data_transmit(scr->spi_dev, data);
@@ -31,13 +31,18 @@ void scr1_write_reg(struct scr1_handle *scr, int data) {
 }
 
 void scr1_addr_set(struct scr1_handle *scr, int x1, int y1, int x2, int y2) {
-	scr1_write_reg(scr, 0x2a);	// column address settings
+	// column address settings
+	scr1_write_reg(scr, 0x2a);
 	scr1_write_data(scr, x1 + 1);
 	scr1_write_data(scr, x2 + 1);
-	scr1_write_reg(scr, 0x2b);	// row address setting
+
+	// row address setting
+	scr1_write_reg(scr, 0x2b);
 	scr1_write_data(scr, y1 + 26);
 	scr1_write_data(scr, y2 + 26);
-	scr1_write_reg(scr, 0x2c);	// memory write
+
+	// memory write
+	scr1_write_reg(scr, 0x2c);
 }
 
 void scr1_clear(struct scr1_handle *scr, int color) {
@@ -65,53 +70,60 @@ void scr1_draw_point(struct scr1_handle *scr, int x, int y, int color) {
 	scr1_write_data(scr, color);
 }
 
+static inline int calc_inc_and_fix_delta(int *delta) {
+	if (*delta > 0)
+		return 1;
+	if (*delta == 0)
+		return 0;
+	*delta = -*delta;
+	return -1;
+}
+
+#define max(a, b)	(((a) > (b)) ? (a) : (b))
+
+struct draw_line_state {
+	int delta_x, delta_y;
+	int distance;
+	int incx, incy;
+	int x, y;
+	int xerr, yerr;
+	int color;
+};
+
+void scr1_draw_line_point(struct scr1_handle *scr, struct draw_line_state *s) {
+	scr1_draw_point(scr, s->x, s->y, s->color);
+	s->xerr += s->delta_x;
+	if (s->xerr >= s->distance) {
+		s->xerr -= s->distance;
+		s->x += s->incx;
+	}
+	s->yerr += s->delta_y;
+	if (s->yerr >= s->distance) {
+		s->yerr -= s->distance;
+		s->y += s->incy;
+	}
+}
+
 void scr1_draw_line(struct scr1_handle *scr, int x1, int y1, int x2, int y2,
 		int color) {
 
-	int xerr = 0, yerr = 0;
-	int delta_x = x2 - x1;
-	int delta_y = y2 - y1;
-	int urow = x1;
-	int ucol = y1;
+	struct draw_line_state s = {
+		.delta_x = x2 - x1,
+		.delta_y = y2 - y1,
+		.xerr = 0,
+		.yerr = 0,
+		.x = x1,
+		.y = y1,
+		.color = color,
+	};
 
-	int incx, incy;
-	if (delta_x > 0) {
-		incx = 1;
-	} else if (delta_x == 0) {
-		incx = 0;
-	} else {
-		incx = -1;
-		delta_x = -delta_x;
-	}
+	s.incx = calc_inc_and_fix_delta(&s.delta_x);
+	s.incy = calc_inc_and_fix_delta(&s.delta_y);
 
-	if (delta_y > 0) {
-		incy = 1;
-	} else if (delta_y == 0) {
-		incy = 0;
-	} else {
-		incy = -1;
-		delta_y = -delta_x;
-	}
+	s.distance = max(s.delta_x, s.delta_y);
 
-	int distance;
-	if (delta_x > delta_y)
-		distance = delta_x;
-	else
-		distance = delta_y;
-
-	for (int i = 0; i < distance + 1; i++) {
-		scr1_draw_point(scr, urow, ucol, color);
-		xerr += delta_x;
-		yerr += delta_y;
-		if (xerr > distance) {
-			xerr -= distance;
-			urow += incx;
-		}
-		if (yerr > distance) {
-			yerr -= distance;
-			ucol += incy;
-		}
-	}
+	for (int i = 0; i <= s.distance; i++)
+		scr1_draw_line_point(scr, &s);
 }
 
 void scr1_draw_rectangle(struct scr1_handle *scr, int x1, int y1,
