@@ -1,0 +1,10 @@
+## vim: ft=make :
+
+TARGET_NAME = sample
+LIBDIR = ..
+
+USE_FLOAT = 1
+#USE_FLOAT = 0
+
+#USE_RV32E = 1
+USE_RV32E = 0

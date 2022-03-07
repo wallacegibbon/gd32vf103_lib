@@ -1,13 +1,16 @@
-TARGET_NAME = sample
-LIBDIR = ..
-USE_FLOAT = 1
-#USE_FLOAT = 0
+include config.prj
 
 CROSS_COMPILER_PREFIX = /usr/local/nuclei-riscv-tools/gcc/bin/riscv-nuclei-elf-
 OPENOCD_CMD = /usr/local/riscv-openocd/bin/openocd
 
 OPENOCD_ARGS = -f interface/ftdi/sipeed-rv-debugger.cfg \
 	-f target/gd32vf103.cfg
+
+ifeq "$(USE_RV32E)" "1"
+	ARCH_AND_ABI = -march=rv32emac -mabi=ilp32e
+else
+	ARCH_AND_ABI = -march=rv32imac -mabi=ilp32
+endif
 
 ## "-ffunction-sections -fdata-sections" will make every function a section.
 ## this works with the "-Wl,--gc-sections" parameter of the linker.
@@ -17,7 +20,7 @@ CROSS_C_ASM_FLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
 	-I$(LIBDIR)/core -I$(LIBDIR)/chip \
 	-I$(LIBDIR)/chip/src -I$(LIBDIR)/chip/inc \
 	-I$(LIBDIR)/c -I$(LIBDIR)/longan -I./src \
-	-march=rv32imac -mabi=ilp32 -DLONGON_NANO -DUSE_FLOAT=$(USE_FLOAT)
+	$(ARCH_AND_ABI) -DLONGON_NANO -DUSE_FLOAT=$(USE_FLOAT)
 
 ## "-Wl,--gc-sections" will pass "--gc-sections" to linker to make it ignore
 ## unused sections.
@@ -33,8 +36,7 @@ endif
 
 CROSS_LD_FLAGS = -T$(LIBDIR)/chip/gd32vf103.ld \
 	-Wl,--gc-sections -Wl,--no-relax \
-	-nostartfiles $(FLOAT_RELATED_LD_FLAG) \
-	-march=rv32imac -mabi=ilp32 -DLONGON_NANO
+	-nostartfiles $(FLOAT_RELATED_LD_FLAG) $(ARCH_AND_ABI)
 
 CROSS_CC = $(CROSS_COMPILER_PREFIX)gcc
 CROSS_LD = $(CROSS_COMPILER_PREFIX)gcc
@@ -62,6 +64,7 @@ ASM_OBJS = $(patsubst %.S, %.o, $(ASM_FILES))
 OBJ_FILES = $(C_OBJS) $(ASM_OBJS)
 
 all: $(TARGET_NAME).hex
+
 $(TARGET_NAME).hex: $(TARGET_NAME).elf
 	@echo "\tGenerating hex and bin files..."
 	@$(CROSS_OBJCOPY) -Obinary $< $(TARGET_NAME).bin

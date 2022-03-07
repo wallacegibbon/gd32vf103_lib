@@ -1,8 +1,10 @@
+config.prj
 TAGS
 tags
 cscope.out
 *.a
 *.o
+*.so
 *.hex
 *.bin
 *.out
