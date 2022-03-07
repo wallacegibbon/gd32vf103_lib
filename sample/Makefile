@@ -1,9 +1,9 @@
-TARGET = sample
+TARGET_NAME = sample
 LIBDIR = ..
 USE_FLOAT = 1
 #USE_FLOAT = 0
 
-COMPILER_PREFIX = /usr/local/nuclei-riscv-tools/gcc/bin/riscv-nuclei-elf-
+CROSS_COMPILER_PREFIX = /usr/local/nuclei-riscv-tools/gcc/bin/riscv-nuclei-elf-
 OPENOCD_CMD = /usr/local/riscv-openocd/bin/openocd
 
 OPENOCD_ARGS = -f interface/ftdi/sipeed-rv-debugger.cfg \
@@ -12,7 +12,7 @@ OPENOCD_ARGS = -f interface/ftdi/sipeed-rv-debugger.cfg \
 ## "-ffunction-sections -fdata-sections" will make every function a section.
 ## this works with the "-Wl,--gc-sections" parameter of the linker.
 
-C_ASM_FLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
+CROSS_C_ASM_FLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
 	-fno-builtin \
 	-I$(LIBDIR)/core -I$(LIBDIR)/chip \
 	-I$(LIBDIR)/chip/src -I$(LIBDIR)/chip/inc \
@@ -35,12 +35,12 @@ LD_FLAGS = -T$(LIBDIR)/chip/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
 	-nostartfiles $(FLOAT_RELATED_LD_FLAG) \
 	-march=rv32imac -mabi=ilp32 -DLONGON_NANO
 
-CC = $(COMPILER_PREFIX)gcc
-LD = $(COMPILER_PREFIX)gcc
-GDB = $(COMPILER_PREFIX)gdb
-OBJCOPY = $(COMPILER_PREFIX)objcopy
-OBJDUMP = $(COMPILER_PREFIX)objdump
-SIZE = $(COMPILER_PREFIX)size
+CROSS_CC = $(CROSS_COMPILER_PREFIX)gcc
+CROSS_LD = $(CROSS_COMPILER_PREFIX)gcc
+CROSS_GDB = $(CROSS_COMPILER_PREFIX)gdb
+CROSS_OBJCOPY = $(CROSS_COMPILER_PREFIX)objcopy
+CROSS_OBJDUMP = $(CROSS_COMPILER_PREFIX)objdump
+CROSS_SIZE = $(CROSS_COMPILER_PREFIX)size
 
 C_FILES = $(wildcard $(LIBDIR)/chip/*.c)
 C_FILES += $(wildcard $(LIBDIR)/chip/src/*.c)
@@ -60,39 +60,41 @@ ASM_OBJS = $(patsubst %.S, %.o, $(ASM_FILES))
 
 OBJ_FILES = $(C_OBJS) $(ASM_OBJS)
 
-all: $(TARGET).hex
-$(TARGET).hex: $(TARGET).elf
-	$(OBJCOPY) -Obinary $< $(TARGET).bin
-	$(OBJCOPY) -Oihex $< $(TARGET).hex
-	$(SIZE) --format=sysv --radix=16 $<
-	$(SIZE) $<
+all: $(TARGET_NAME).hex
+$(TARGET_NAME).hex: $(TARGET_NAME).elf
+	@echo "\tGenerating hex and bin files..."
+	@$(CROSS_OBJCOPY) -Obinary $< $(TARGET_NAME).bin
+	@$(CROSS_OBJCOPY) -Oihex $< $(TARGET_NAME).hex
+	@echo "\n\tMemory Usage:\n"
+	@$(CROSS_SIZE) $<
 
-$(TARGET).elf: $(OBJ_FILES)
-	$(LD) $(LD_FLAGS) -o $@ $^
+$(TARGET_NAME).elf: $(OBJ_FILES)
+	@echo "\n\tLinking..."
+	@$(CROSS_LD) $(LD_FLAGS) -o $@ $^
 
 %.o: %.c
-	$(warning $<)
-	$(CC) $(C_ASM_FLAGS) -c $< -o $@
+	@echo "\tCROSS_CC $<..."
+	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c $< -o $@
 
 %.o: %.S
-	$(warning $<)
-	$(CC) $(C_ASM_FLAGS) -c $< -o $@
+	@echo "\tCROSS_CC $<..."
+	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c $< -o $@
 
 .PHONY: load openocd debug lss tags clean
 
 load:
 	$(OPENOCD_CMD) $(OPENOCD_ARGS) -d1 \
-		-c "program $(TARGET).bin verify reset exit"
+		-c "program $(TARGET_NAME).bin verify reset exit"
 openocd:
 	$(OPENOCD_CMD) $(OPENOCD_ARGS)
 debug:
-	$(GDB) $(TARGET).elf \
+	$(CROSS_GDB) $(TARGET_NAME).elf \
 		--eval-command="target extended-remote localhost:3333"
 tags:
 	find $(LIBDIR) . -regex '.*\.[ch]' -exec realpath {} \; \
 		| sort | uniq | xargs ctags
 lss:
-	$(OBJDUMP) -S -D $(TARGET).elf > $(TARGET).lss
+	$(CROSS_OBJDUMP) -S -D $(TARGET_NAME).elf > $(TARGET_NAME).lss
 clean:
 	rm -f $(OBJ_FILES) *.elf *.hex *.bin *.lss tags
 
