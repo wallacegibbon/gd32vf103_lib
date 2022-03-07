@@ -88,11 +88,11 @@ openocd:
 debug:
 	$(GDB) $(TARGET).elf \
 		--eval-command="target extended-remote localhost:3333"
+tags:
+	find $(LIBDIR) . -regex '.*\.[ch]' -exec realpath {} \; \
+		| sort | uniq | xargs ctags
 lss:
 	$(OBJDUMP) -S -D $(TARGET).elf > $(TARGET).lss
-tags:
-	find . .. -regex '.*\.[ch]' -exec realpath {} \; \
-		| sort | uniq | xargs ctags
 clean:
 	rm -f $(OBJ_FILES) *.elf *.hex *.bin *.lss tags
 
