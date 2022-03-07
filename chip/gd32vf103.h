@@ -137,11 +137,11 @@ enum control_status {DISABLE = 0, ENABLE = !DISABLE};
 enum flag_status {RESET = 0, SET = 1, MAX = 0x7FFFFFFF};
 enum err_status {ERROR = 0, SUCCESS = !ERROR};
 
-#define REG32(addr) (* (volatile uint32_t *) (uintptr_t) (addr))
-#define REG16(addr) (* (volatile uint16_t *) (uintptr_t) (addr))
-#define REG8(addr) (* (volatile uint8_t *) (uintptr_t) (addr))
+#define REG32(addr)	(* (volatile uint32_t *) (uintptr_t) (addr))
+#define REG16(addr)	(* (volatile uint16_t *) (uintptr_t) (addr))
+#define REG8(addr)	(* (volatile uint8_t *) (uintptr_t) (addr))
 
-#define BIT(x) ((uint32_t) (1 << (x)))
+#define BIT(x)		((uint32_t) (1 << (x)))
 
 #define BITS(start, end) \
 	((0xFFFFFFFF << (start)) & (0xFFFFFFFF >> (31 - (end))))

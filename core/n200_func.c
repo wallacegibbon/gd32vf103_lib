@@ -99,86 +99,93 @@ uint32_t get_cpu_freq() {
 // Note that there are no assertions or bounds checking on these
 // parameter values.
 
-void eclic_init(uint32_t num_irq) {
-	//clear cfg register
-	*(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_CFG_OFFSET) = 0;
 
-	//clear minthresh register
-	*(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_MTH_OFFSET) = 0;
+#define REG32(addr)	(* (volatile uint32_t *) (uintptr_t) (addr))
+#define REG16(addr)	(* (volatile uint16_t *) (uintptr_t) (addr))
+#define REG8(addr)	(* (volatile uint8_t *) (uintptr_t) (addr))
+
+#define ECLIC_INT_IP_REG(offset) \
+	REG8(ECLIC_ADDR_BASE + ECLIC_INT_IP_OFFSET + (offset) * 4)
+
+#define ECLIC_INT_IE_REG(offset) \
+	REG8(ECLIC_ADDR_BASE + ECLIC_INT_IE_OFFSET + (offset) * 4)
+
+#define ECLIC_INT_ATTR_REG(offset) \
+	REG8(ECLIC_ADDR_BASE + ECLIC_INT_ATTR_OFFSET + (offset) * 4)
+
+#define ECLIC_INT_CTRL_REG(offset) \
+	REG8(ECLIC_ADDR_BASE + ECLIC_INT_CTRL_OFFSET + (offset) * 4)
+
+#define ECLIC_CFG_REG	REG8(ECLIC_ADDR_BASE + ECLIC_CFG_OFFSET)
+#define ECLIC_MTH_REG	REG8(ECLIC_ADDR_BASE + ECLIC_MTH_OFFSET)
+
+void eclic_init(uint32_t num_irq) {
+	//clear cfg register and minthresh register
+	ECLIC_CFG_REG = 0;
+	ECLIC_MTH_REG = 0;
 
 	//clear all IP/IE/ATTR/CTRL bits for all interrupt sources
+	volatile uint32_t *p = (volatile uint32_t *) &ECLIC_INT_IP_REG(0);
+	volatile uint32_t *upper = (volatile uint32_t *) (p + num_irq * 4);
 
-	volatile uint32_t *p =
-		(volatile uint32_t *) (ECLIC_ADDR_BASE + ECLIC_INT_IP_OFFSET);
-
-	volatile uint32_t *upper =
-		(volatile uint32_t *) (p + num_irq * 4);
-
-	for (; p < upper; p += 4)
-		*p = 0;
+	while (p < upper)
+		*p++ = 0;
 }
 
+//
 void eclic_enable_interrupt(uint32_t source) {
-	*(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_INT_IE_OFFSET +
-				source * 4) = 1;
+	ECLIC_INT_IE_REG(source) = 1;
 }
 
 void eclic_disable_interrupt(uint32_t source) {
-	*(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_INT_IE_OFFSET +
-				source * 4) = 0;
+	ECLIC_INT_IE_REG(source) = 0;
 }
 
 void eclic_set_pending(uint32_t source) {
-	*(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_INT_IP_OFFSET +
-				source * 4) = 1;
+	ECLIC_INT_IP_REG(source) = 1;
 }
 
 void eclic_clear_pending(uint32_t source) {
-	*(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_INT_IP_OFFSET +
-				source * 4) = 0;
+	ECLIC_INT_IP_REG(source) = 0;
 }
 
 void eclic_set_intctrl(uint32_t source, uint8_t intctrl) {
-	*(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_INT_CTRL_OFFSET +
-				source * 4) = intctrl;
+	ECLIC_INT_CTRL_REG(source) = intctrl;
 }
 
 uint8_t eclic_get_intctrl(uint32_t source) {
-	return *(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_INT_CTRL_OFFSET +
-					source * 4);
+	return ECLIC_INT_CTRL_REG(source);
 }
 
 void eclic_set_intattr(uint32_t source, uint8_t intattr) {
-	*(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_INT_ATTR_OFFSET +
-				source * 4) = intattr;
+	ECLIC_INT_ATTR_REG(source) = intattr;
 }
 
 uint8_t eclic_get_intattr(uint32_t source) {
-	return *(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_INT_ATTR_OFFSET +
-					source * 4);
+	return ECLIC_INT_ATTR_REG(source);
 }
 
+//
 void eclic_set_cliccfg(uint8_t cliccfg) {
-	*(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_CFG_OFFSET) = cliccfg;
+	ECLIC_CFG_REG = cliccfg;
 }
 
 uint8_t eclic_get_cliccfg() {
-	return *(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_CFG_OFFSET);
+	return ECLIC_CFG_REG;
 }
 
 void eclic_set_mth(uint8_t mth) {
-	*(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_MTH_OFFSET) = mth;
+	ECLIC_MTH_REG = mth;
 }
 
 uint8_t eclic_get_mth() {
-	return *(volatile uint8_t *) (ECLIC_ADDR_BASE + ECLIC_MTH_OFFSET);
+	return ECLIC_MTH_REG;
 }
 
 void eclic_set_nlbits(uint8_t nlbits) {
 	//shift nlbits to correct position
 	uint8_t nlbits_shifted = nlbits << ECLIC_CFG_NLBITS_LSB;
 
-	//read the current cliccfg
 	uint8_t old_cliccfg = eclic_get_cliccfg();
 	uint8_t new_cliccfg =
 		(old_cliccfg & ~ECLIC_CFG_NLBITS_MASK) |
