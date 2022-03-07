@@ -68,6 +68,7 @@ $(TARGET_NAME).hex: $(TARGET_NAME).elf
 	@$(CROSS_OBJCOPY) -Oihex $< $(TARGET_NAME).hex
 	@echo "\n\tMemory Usage:\n"
 	@$(CROSS_SIZE) $<
+	@echo "\n\tdone.\n"
 
 $(TARGET_NAME).elf: $(OBJ_FILES)
 	@echo "\n\tLinking..."
@@ -84,18 +85,24 @@ $(TARGET_NAME).elf: $(OBJ_FILES)
 .PHONY: load openocd debug lss tags clean
 
 load:
-	$(OPENOCD_CMD) $(OPENOCD_ARGS) -d1 \
+	@echo "\tWrite to the target machine..."
+	@$(OPENOCD_CMD) $(OPENOCD_ARGS) -d1 \
 		-c "program $(TARGET_NAME).bin verify reset exit"
 openocd:
-	$(OPENOCD_CMD) $(OPENOCD_ARGS)
+	@echo "\tStarting the OpenOCD server..."
+	@$(OPENOCD_CMD) $(OPENOCD_ARGS)
 debug:
-	$(CROSS_GDB) $(TARGET_NAME).elf \
+	@echo "\tStarting GDB and connect to OpenOCD..."
+	@$(CROSS_GDB) $(TARGET_NAME).elf \
 		--eval-command="target extended-remote localhost:3333"
 tags:
-	find $(LIBDIR) . -regex '.*\.[ch]' -exec realpath {} \; \
+	@echo "\tGenerating ctag file..."
+	@find $(LIBDIR) . -regex '.*\.[ch]' -exec realpath {} \; \
 		| sort | uniq | xargs ctags
 lss:
-	$(CROSS_OBJDUMP) -S -D $(TARGET_NAME).elf > $(TARGET_NAME).lss
+	@echo "\tGenerating the disassembled file..."
+	@$(CROSS_OBJDUMP) -S -D $(TARGET_NAME).elf > $(TARGET_NAME).lss
 clean:
-	rm -f $(OBJ_FILES) *.elf *.hex *.bin *.lss tags
+	@echo "\tRemoving generated files..."
+	@rm -f $(OBJ_FILES) *.elf *.hex *.bin *.lss tags
 
