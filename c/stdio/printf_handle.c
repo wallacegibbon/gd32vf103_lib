@@ -3,6 +3,9 @@
 
 #define ABS_NUM_AND_RET_SIGN(num) (((num) < 0) ? (num = -num, 1) : 0)
 
+/* 4294967296(2**32, 10 based) has 10 characters, so 9999999999 is invalid */
+#define MAX_PRECISION_WIDTH 9
+
 static inline int print_char_n(struct printf_handle *ph, int ch,
 		unsigned short n) {
 
@@ -100,9 +103,6 @@ static inline int length_of_num(long num) {
 
 	return r;
 }
-
-/* 4294967296(2**32, 10 based) has 10 characters, so 9999999999 is invalid */
-#define MAX_PRECISION_WIDTH 9
 
 static int adjust_zero_precision_width(struct printf_handle *ph,
 		int int_width) {

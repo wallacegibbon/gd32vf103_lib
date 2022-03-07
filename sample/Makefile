@@ -25,13 +25,14 @@ CROSS_C_ASM_FLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
 ## if you want to use float point, you need to remove "-nostdlib" and add "-lm"
 ## which could increase the whole size.
 
-ifeq ($(USE_FLOAT), 1)
+ifeq "$(USE_FLOAT)" "1"
 	FLOAT_RELATED_LD_FLAG = -lm
 else
 	FLOAT_RELATED_LD_FLAG = -nostdlib
 endif
 
-LD_FLAGS = -T$(LIBDIR)/chip/gd32vf103.ld -Wl,--gc-sections -Wl,--no-relax \
+CROSS_LD_FLAGS = -T$(LIBDIR)/chip/gd32vf103.ld \
+	-Wl,--gc-sections -Wl,--no-relax \
 	-nostartfiles $(FLOAT_RELATED_LD_FLAG) \
 	-march=rv32imac -mabi=ilp32 -DLONGON_NANO
 
@@ -70,7 +71,7 @@ $(TARGET_NAME).hex: $(TARGET_NAME).elf
 
 $(TARGET_NAME).elf: $(OBJ_FILES)
 	@echo "\n\tLinking..."
-	@$(CROSS_LD) $(LD_FLAGS) -o $@ $^
+	@$(CROSS_LD) $(CROSS_LD_FLAGS) -o $@ $^
 
 %.o: %.c
 	@echo "\tCROSS_CC $<..."
