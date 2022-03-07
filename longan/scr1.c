@@ -2,7 +2,7 @@
 #include <gd32vf103.h>
 #include "scr1.h"
 
-static void scr1_write_bus(struct scr1_handle *scr, int data) {
+static void scr1_write_bus(struct scr1_handle *scr, unsigned char data) {
 	scr1_cs_clr(scr);
 
 	spi_i2s_data_transmit(scr->spi_dev, data);

@@ -126,6 +126,15 @@ void printf_width_test() {
 	printf("string pad test: |%4s|\r\n", "hello");
 }
 
+void update_loop_display() {
+	static unsigned short start_color = 0;
+	int max = 35;
+	for (int i = 0; i < max; i++)
+		longan_lcd_draw_circle(80, 40, i, start_color + i * 10);
+
+	start_color += 50;
+}
+
 int main(int argc, const char **argv) {
 	init();
 	fd_init();
@@ -138,6 +147,7 @@ int main(int argc, const char **argv) {
 	longan_lcd_draw_buffer(0, 0, 160, 80);
 	*/
 
+	/*
 	longan_lcd_draw_circle(50, 40, 10, RED);
 	longan_lcd_draw_rectangle(60, 30 - 1, 120, 50 - 1, BLUE);
 	//longan_lcd_fill(60, 30 - 1, 120, 50 - 1, BLUE);
@@ -145,6 +155,7 @@ int main(int argc, const char **argv) {
 	longan_lcd_draw_line(0, 0, 160, 21, RED);
 	//longan_lcd_draw_line(0, 0, 160, 22, GREEN);
 	longan_lcd_draw_line(0, 0, 160, 80, YELLOW);
+	*/
 
 	int n = printf("this is from the serial port, %s\r\n", my_variable);
 	printf("the size of previous printf is %04d(%04x)%c\r\n", n, n, '~');
@@ -161,12 +172,19 @@ int main(int argc, const char **argv) {
 
 	while (1) {
 		gpio_bit_set(GPIOC, GPIO_PIN_13);
-		delay_ms(1000);
+		//delay_ms(50);
+
 		//pmu_to_sleepmode(WFI_CMD);
 		//pmu_to_deepsleepmode(PMU_LDO_NORMAL, WFI_CMD);
 		//pmu_to_standbymode(WFI_CMD);
+
+		update_loop_display();
+
 		gpio_bit_reset(GPIOC, GPIO_PIN_13);
-		delay_ms(1000);
+		//delay_ms(50);
+
+		update_loop_display();
+
 	}
 
 	return 0;
