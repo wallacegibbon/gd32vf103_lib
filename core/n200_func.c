@@ -328,7 +328,7 @@ void eclic_set_negedge_trig(uint32_t source) {
 }
 
 __attribute__((weak))
-uintptr_t handle_trap(uintptr_t mcause, uintptr_t sp) {
+uintptr_t core_exception_handler(uintptr_t mcause, uintptr_t sp) {
 	while (1);
 }
 

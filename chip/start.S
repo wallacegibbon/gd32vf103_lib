@@ -146,7 +146,7 @@ _start_1:
 	csrs CSR_MTVT2, 1
 
 	/* init csr mtvec for trap and nmi base addr */
-	la t0, trap_entry
+	la t0, exception_entry
 	csrw CSR_MTVEC, t0
 
 	/* set the nmi base to share with mtvec */

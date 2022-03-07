@@ -16,7 +16,11 @@
 	addi sp, sp, -20*REGBYTES
 	#endif
 #else
+	#ifndef __riscv_32e
 	addi sp, sp, -20*REGBYTES
+	#else
+	addi sp, sp, -14*REGBYTES
+	#endif
 #endif
 	STORE ra,  0*REGBYTES(sp)
 	STORE tp,  1*REGBYTES(sp)
@@ -30,12 +34,12 @@
 	STORE a4,  9*REGBYTES(sp)
 	STORE a5, 10*REGBYTES(sp)
 #ifndef __riscv_32e
-	STORE a6, 11*REGBYTES(sp)
-	STORE a7, 12*REGBYTES(sp)
-	STORE t3, 13*REGBYTES(sp)
-	STORE t4, 14*REGBYTES(sp)
-	STORE t5, 15*REGBYTES(sp)
-	STORE t6, 16*REGBYTES(sp)
+	STORE a6, 14*REGBYTES(sp)
+	STORE a7, 15*REGBYTES(sp)
+	STORE t3, 16*REGBYTES(sp)
+	STORE t4, 17*REGBYTES(sp)
+	STORE t5, 18*REGBYTES(sp)
+	STORE t6, 19*REGBYTES(sp)
 #endif
 #ifdef __riscv_flen
 	#if (__riscv_flen == 64)
@@ -77,12 +81,12 @@
 	LOAD a4,  9*REGBYTES(sp)
 	LOAD a5, 10*REGBYTES(sp)
 #ifndef __riscv_32e
-	LOAD a6, 11*REGBYTES(sp)
-	LOAD a7, 12*REGBYTES(sp)
-	LOAD t3, 13*REGBYTES(sp)
-	LOAD t4, 14*REGBYTES(sp)
-	LOAD t5, 15*REGBYTES(sp)
-	LOAD t6, 16*REGBYTES(sp)
+	LOAD a6, 14*REGBYTES(sp)
+	LOAD a7, 15*REGBYTES(sp)
+	LOAD t3, 16*REGBYTES(sp)
+	LOAD t4, 17*REGBYTES(sp)
+	LOAD t5, 18*REGBYTES(sp)
+	LOAD t6, 19*REGBYTES(sp)
 #endif
 #ifdef __riscv_flen
 	#if (__riscv_flen == 64)
@@ -116,66 +120,49 @@
 	addi sp, sp, 20*REGBYTES
 	#endif
 #else
-	/* De-allocate the stack space */
+	#ifndef __riscv_32e
 	addi sp, sp, 20*REGBYTES
+	#else
+	addi sp, sp, 14*REGBYTES
+	#endif
 #endif
 	.endm
 
 
-	.macro SAVE_EPC_STATUS
-	csrr t0, CSR_MEPC
-	STORE t0, 17*REGBYTES(sp)
-	csrr t0, CSR_MSTATUS
-	STORE t0, 18*REGBYTES(sp)
-	csrr t0, CSR_MSUBM
-	STORE t0, 19*REGBYTES(sp)
+	.macro SAVE_CSR_CONTEXT
+	csrrwi x0, CSR_PUSHMCAUSE, 11
+	csrrwi x0, CSR_PUSHMEPC, 12
+	csrrwi x0, CSR_PUSHMSUBM, 13
 	.endm
 
 
-	.macro RESTORE_EPC_STATUS
-	LOAD t0, 17*REGBYTES(sp)
-	csrw CSR_MEPC, t0
-	LOAD t0, 18*REGBYTES(sp)
-	csrw CSR_MSTATUS, t0
-	LOAD t0, 19*REGBYTES(sp)
+	.macro RESTORE_CSR_CONTEXT
+	LOAD t0, 13*REGBYTES(sp)
 	csrw CSR_MSUBM, t0
+	LOAD t0, 12*REGBYTES(sp)
+	csrw CSR_MEPC, t0
+	LOAD t0, 11*REGBYTES(sp)
+	csrw CSR_MCAUSE, t0
 	.endm
 
 
 	.section .text.trap
 	/* In CLIC mode, the trap entry must be 64bytes aligned */
 	.align 6
-	.global trap_entry
-	.weak trap_entry
-trap_entry:
+	.global exception_entry
+	.weak exception_entry
+exception_entry:
 	SAVE_CONTEXT
-	SAVE_EPC_STATUS
+	SAVE_CSR_CONTEXT
 
 	csrr a0, mcause
 	mv a1, sp
-	call handle_trap
+	call core_exception_handler
 
-	RESTORE_EPC_STATUS
+	RESTORE_CSR_CONTEXT
 	RESTORE_CONTEXT
 
 	mret
-
-
-	.macro SAVE_CSR_CONTEXT
-	csrrwi x0, CSR_PUSHMCAUSE, 17
-	csrrwi x0, CSR_PUSHMEPC, 18
-	csrrwi x0, CSR_PUSHMSUBM, 19
-	.endm
-
-
-	.macro RESTORE_CSR_CONTEXT
-	LOAD t0, 19*REGBYTES(sp)
-	csrw CSR_MSUBM, t0
-	LOAD t0, 18*REGBYTES(sp)
-	csrw CSR_MEPC, t0
-	LOAD t0, 17*REGBYTES(sp)
-	csrw CSR_MCAUSE, t0
-	.endm
 
 
 	.section .text.irq
