@@ -128,11 +128,10 @@ void printf_width_test() {
 
 void update_loop_display() {
 	static unsigned short start_color = 0;
-	int max = 35;
-	for (int i = 0; i < max; i++)
-		longan_lcd_draw_circle(80, 40, i, start_color + i * 10);
-
-	start_color += 50;
+	for (int i = 0; i < 36; i++) {
+		start_color += 50;
+		longan_lcd_draw_circle(80, 40, i, start_color);
+	}
 }
 
 int main(int argc, const char **argv) {
