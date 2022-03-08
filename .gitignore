@@ -2,6 +2,7 @@ config.prj
 TAGS
 tags
 cscope.out
+*.d
 *.a
 *.o
 *.so

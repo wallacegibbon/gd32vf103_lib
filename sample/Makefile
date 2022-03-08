@@ -79,11 +79,20 @@ $(TARGET_NAME).elf: $(OBJ_FILES)
 
 %.o: %.c
 	@echo "\tCROSS_CC $<..."
+	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -M $< | \
+		sed "s,$(@F)\s*:,$@:," > $<.d
 	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c $< -o $@
 
 %.o: %.S
 	@echo "\tCROSS_CC $<..."
+	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -M $< | \
+		sed "s,$(@F)\s*:,$@:," > $<.d
 	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c $< -o $@
+
+DEPENDENCY_FILES = $(patsubst %.c, %.c.d, $(C_FILES))
+DEPENDENCY_FILES += $(patsubst %.S, %.S.d, $(ASM_FILES))
+
+-include $(DEPENDENCY_FILES)
 
 .PHONY: load openocd debug lss tags clean
 
@@ -107,5 +116,6 @@ lss:
 	@$(CROSS_OBJDUMP) -S -D $(TARGET_NAME).elf > $(TARGET_NAME).lss
 clean:
 	@echo "\tRemoving generated files..."
-	@rm -f $(OBJ_FILES) *.elf *.hex *.bin *.lss tags
+	@rm -f $(OBJ_FILES) $(DEPENDENCY_FILES) \
+		*.elf *.hex *.bin *.lss tags
 
