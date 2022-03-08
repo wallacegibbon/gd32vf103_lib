@@ -79,13 +79,13 @@ $(TARGET_NAME).elf: $(OBJ_FILES)
 
 %.o: %.c
 	@echo "\tCROSS_CC $<..."
-	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -M $< | \
+	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM $< | \
 		sed "s,$(@F)\s*:,$@:," > $<.d
 	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c $< -o $@
 
 %.o: %.S
 	@echo "\tCROSS_CC $<..."
-	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -M $< | \
+	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM $< | \
 		sed "s,$(@F)\s*:,$@:," > $<.d
 	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c $< -o $@
 
