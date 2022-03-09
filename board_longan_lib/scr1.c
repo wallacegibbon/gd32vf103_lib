@@ -70,16 +70,7 @@ void scr1_draw_point(struct scr1_handle *scr, int x, int y, int color) {
 	scr1_write_data(scr, color);
 }
 
-static inline int calc_inc_and_fix_delta(int *delta) {
-	if (*delta > 0)
-		return 1;
-	if (*delta == 0)
-		return 0;
-	*delta = -*delta;
-	return -1;
-}
-
-#define max(a, b)	(((a) > (b)) ? (a) : (b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
 
 struct draw_line_state {
 	int delta_x, delta_y;
@@ -89,6 +80,30 @@ struct draw_line_state {
 	int xerr, yerr;
 	int color;
 };
+
+void draw_line_state_init(struct draw_line_state *s, int x1, int y1,
+		int x2, int y2, int color) {
+	s->delta_x = x2 - x1;
+	s->delta_y = y2 - y1;
+	if (s->delta_x < 0) {
+		s->incx = -1;
+		s->delta_x = -s->delta_x;
+	} else {
+		s->incx = 1;
+	}
+	if (s->delta_y < 0) {
+		s->incy = -1;
+		s->delta_y = -s->delta_y;
+	} else {
+		s->incy = 1;
+	}
+	s->distance = max(s->delta_x, s->delta_y);
+	s->x = x1;
+	s->y = y1;
+	s->color = color;
+	s->xerr = 0;
+	s->yerr = 0;
+}
 
 void scr1_draw_line_point(struct scr1_handle *scr, struct draw_line_state *s) {
 	scr1_draw_point(scr, s->x, s->y, s->color);
@@ -107,20 +122,9 @@ void scr1_draw_line_point(struct scr1_handle *scr, struct draw_line_state *s) {
 void scr1_draw_line(struct scr1_handle *scr, int x1, int y1, int x2, int y2,
 		int color) {
 
-	struct draw_line_state s = {
-		.delta_x = x2 - x1,
-		.delta_y = y2 - y1,
-		.xerr = 0,
-		.yerr = 0,
-		.x = x1,
-		.y = y1,
-		.color = color,
-	};
+	struct draw_line_state s;
 
-	s.incx = calc_inc_and_fix_delta(&s.delta_x);
-	s.incy = calc_inc_and_fix_delta(&s.delta_y);
-
-	s.distance = max(s.delta_x, s.delta_y);
+	draw_line_state_init(&s, x1, x2, y1, y2, color);
 
 	for (int i = 0; i <= s.distance; i++)
 		scr1_draw_line_point(scr, &s);
@@ -135,21 +139,22 @@ void scr1_draw_rectangle(struct scr1_handle *scr, int x1, int y1,
 	scr1_draw_line(scr, x2, y1, x2, y2, color);
 }
 
-void scr1_draw_circle(struct scr1_handle *scr, int x0, int y0,
-		int r, int color) {
+static void scr1_draw_point_x(struct scr1_handle *scr, int x0, int y0,
+		int a, int b, int color) {
+	scr1_draw_point(scr, x0 - a, y0 + b, color);
+	scr1_draw_point(scr, x0 + a, y0 - b, color);
+
+	scr1_draw_point(scr, x0 - a, y0 - b, color);
+	scr1_draw_point(scr, x0 + a, y0 + b, color);
+}
+
+void scr1_draw_circle(struct scr1_handle *scr, int x0, int y0, int r,
+		int color) {
 	int a = 0, b = r;
 	while (a <= b) {
-		scr1_draw_point(scr, x0 - b, y0 - a, color); // 3
-		scr1_draw_point(scr, x0 + b, y0 - a, color); // 0
-		scr1_draw_point(scr, x0 - a, y0 + b, color); // 1
-		scr1_draw_point(scr, x0 - a, y0 - b, color); // 2
-		scr1_draw_point(scr, x0 + b, y0 + a, color); // 4
-		scr1_draw_point(scr, x0 + a, y0 - b, color); // 5
-		scr1_draw_point(scr, x0 + a, y0 + b, color); // 6
-		scr1_draw_point(scr, x0 - b, y0 + a, color); // 7
+		scr1_draw_point_x(scr, x0, y0, a, b, color);
+		scr1_draw_point_x(scr, x0, y0, b, a, color);
 		a++;
-
-		//Determine whether the points to be drawn are too far away
 		if ((a * a + b * b) > (r * r))
 			b--;
 	}

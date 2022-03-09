@@ -191,3 +191,4 @@ enum err_status {ERROR = 0, SUCCESS = !ERROR};
 #include "gd32vf103_libopt.h"
 
 #endif
+

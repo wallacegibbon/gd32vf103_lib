@@ -118,7 +118,7 @@ _start:
 
 	/* move from 0x00000000 to 0x08000000 address space if necessary. */
 
-	la a0, _start_1
+	la a0, _start
 
 	/* compare with 2^29 (0x20000000) */
 	li a1, 1
@@ -161,9 +161,9 @@ _start_1:
 #endif
 
 	/* initialized .data section and clear .bss section */
-	la a0, _etext
-	la a1, _sdata
-	la a2, _edata
+	la a0, _text_end
+	la a1, _data_start
+	la a2, _data_end
 	bgeu a1, a2, 2f
 1:
 	lw t0, (a0)
@@ -172,8 +172,8 @@ _start_1:
 	addi a1, a1, 4
 	bltu a1, a2, 1b
 2:
-	la a0, _sbss
-	la a1, _ebss
+	la a0, _bss_start
+	la a1, _bss_end
 	bgeu a0, a1, 2f
 1:
 	sw zero, (a0)
@@ -182,6 +182,7 @@ _start_1:
 2:
 	call disable_mcycle_minstret
 	call system_init
+
 	/* Call main(0, NULL) */
 	li a0, 0
 	li a1, 0

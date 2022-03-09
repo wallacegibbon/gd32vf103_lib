@@ -1,6 +1,6 @@
 ## Introduction
 
-This is a library for GD32VF103xxxx (Based on the Bumblebee kernel of Nucleisys) RISC-V microcontrollers. It depends on the GNU toolchains (GCC, Binutils) for (at least) RV32I/RV32E.
+This is a library for GD32VF103xxxx RISC-V microcontrollers. It depends on the GNU toolchains (GCC, Binutils) for (at least) RV32I/RV32E.
 
 
 ## Debugger Adaptor
@@ -39,6 +39,14 @@ sudo cp misc/sipeed-rv-debugger.cfg /usr/local/riscv-openocd/share/openocd/scrip
 ## C library
 
 A simple (and incomplete) C library is included in this repository.
+
+
+## No C++
+
+C++ is not supported by this library on purpose.
+
+Sometimes it is good to resist the urge to make a good thing (looks) better.
+Let's just keep things super small and simple.
 
 
 ## Extra

@@ -86,7 +86,7 @@ static int print_int(struct printf_handle *ph, long num, int radix, int width,
 	return cnt + is_minus + pad_cnt;
 }
 
-#if USE_FLOAT == 1
+#if CONFIG_USE_FLOAT == 1
 
 static inline long pow(long num, long exponent) {
 	int r = 1;
@@ -154,8 +154,8 @@ static int print_float(struct printf_handle *ph, double num) {
 
 	// put the int part and decimal part into 2 long integers.
 	long int_part = (long) num;
-	int int_width = length_of_num(int_part) + is_minus;
 
+	int int_width = length_of_num(int_part) + is_minus;
 	int extra_width = adjust_precision_width(ph, int_width);
 
 	long decimal_part =
@@ -256,7 +256,7 @@ static void printf_handle_flag(struct printf_handle *ph) {
 		ph->state = PRINTF_FLAG_L;
 		break;
 	case 'f':
-#if USE_FLOAT == 1
+#if CONFIG_USE_FLOAT == 1
 		ph->cnt += print_float(ph, va_arg(ph->ap, double));
 		printf_handle_reset_flag_arg(ph);
 #else

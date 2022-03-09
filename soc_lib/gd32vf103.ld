@@ -25,35 +25,37 @@ SECTIONS {
 		*(.srodata .srodata.*)
 		*(.text .text.*)
 		. = ALIGN(4);
-		_etext = .;
+		_text_end = .;
 	} >FLASH
 
 	/* VMA is 0x0800xxxx here */
 
-	.data : AT(_etext) {
+	.data : AT(_text_end) {
 		. = ALIGN(4);
-		_sdata = .;
+		_data_start = .;
 		*(.rdata);
 		*(.data .data.*)
 		*(.sdata .sdata.*)
 		. = ALIGN(4);
-		_edata = .;
+		_data_end = .;
 	} >RAM
 
 	/* VMA is 0x2000xxxx here */
 
 	.bss : {
 		. = ALIGN(4);
-		_sbss = .;
+		_bss_start = .;
 		*(.sbss*)
 		*(.bss .bss.*)
 		*(COMMON)
 		. = ALIGN(4);
-		_ebss = .;
+		_bss_end = .;
+		_heap_start = .;
 	} >RAM
 
 	.stack ORIGIN(RAM) + LENGTH(RAM) - __stack_size : {
 		. = ALIGN(4);
+		_heap_end = .;
 		. = __stack_size;
 		_sp = .;
 	} >RAM
