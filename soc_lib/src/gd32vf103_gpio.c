@@ -121,7 +121,7 @@ void gpio_init(uint32_t gpio_periph, uint32_t mode, uint32_t speed,
 }
 
 void gpio_bit_set(uint32_t gpio_periph, uint32_t pin) {
-	GPIO_BOP(gpio_periph) = (uint32_t) pin;
+	GPIO_BOP(gpio_periph) = pin;
 }
 
 void gpio_bit_reset(uint32_t gpio_periph, uint32_t pin) {

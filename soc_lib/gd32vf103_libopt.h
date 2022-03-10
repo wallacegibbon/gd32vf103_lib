@@ -7,7 +7,6 @@
 #include "gd32vf103_crc.h"
 #include "gd32vf103_dac.h"
 #include "gd32vf103_dma.h"
-#include "gd32vf103_eclic.h"
 #include "gd32vf103_exmc.h"
 #include "gd32vf103_exti.h"
 #include "gd32vf103_fmc.h"

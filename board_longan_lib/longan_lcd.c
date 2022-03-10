@@ -1,7 +1,6 @@
-#include <stdint.h>
 #include <gd32vf103.h>
-#include "util.h"
 #include "longan_lcd.h"
+#include "util.h"
 
 unsigned char scr_buffer[160 * 80 * 2];
 

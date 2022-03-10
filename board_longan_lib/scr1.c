@@ -1,5 +1,6 @@
-#include <stdint.h>
 #include <gd32vf103.h>
+#include <stdlib.h>
+#include <stdint.h>
 #include "scr1.h"
 
 static void scr1_write_bus(struct scr1_handle *scr, unsigned char data) {
@@ -121,10 +122,8 @@ void scr1_draw_line_point(struct scr1_handle *scr, struct draw_line_state *s) {
 
 void scr1_draw_line(struct scr1_handle *scr, int x1, int y1, int x2, int y2,
 		int color) {
-
 	struct draw_line_state s;
-
-	draw_line_state_init(&s, x1, x2, y1, y2, color);
+	draw_line_state_init(&s, x1, y1, x2, y2, color);
 
 	for (int i = 0; i <= s.distance; i++)
 		scr1_draw_line_point(scr, &s);
@@ -132,28 +131,27 @@ void scr1_draw_line(struct scr1_handle *scr, int x1, int y1, int x2, int y2,
 
 void scr1_draw_rectangle(struct scr1_handle *scr, int x1, int y1,
 		int x2, int y2, int color) {
-
 	scr1_draw_line(scr, x1, y1, x2, y1, color);
-	scr1_draw_line(scr, x1, y1, x1, y2, color);
-	scr1_draw_line(scr, x1, y2, x2, y2, color);
+	scr1_draw_line(scr, x2, y2, x1, y2, color);
+
+	scr1_draw_line(scr, x1, y2, x1, y1, color);
 	scr1_draw_line(scr, x2, y1, x2, y2, color);
 }
 
-static void scr1_draw_point_x(struct scr1_handle *scr, int x0, int y0,
+static void scr1_draw_point_x(struct scr1_handle *scr, int x, int y,
 		int a, int b, int color) {
-	scr1_draw_point(scr, x0 - a, y0 + b, color);
-	scr1_draw_point(scr, x0 + a, y0 - b, color);
+	scr1_draw_point(scr, x - a, y + b, color);
+	scr1_draw_point(scr, x + a, y - b, color);
 
-	scr1_draw_point(scr, x0 - a, y0 - b, color);
-	scr1_draw_point(scr, x0 + a, y0 + b, color);
+	scr1_draw_point(scr, x - a, y - b, color);
+	scr1_draw_point(scr, x + a, y + b, color);
 }
 
-void scr1_draw_circle(struct scr1_handle *scr, int x0, int y0, int r,
-		int color) {
+void scr1_draw_circle(struct scr1_handle *scr, int x, int y, int r, int color) {
 	int a = 0, b = r;
 	while (a <= b) {
-		scr1_draw_point_x(scr, x0, y0, a, b, color);
-		scr1_draw_point_x(scr, x0, y0, b, a, color);
+		scr1_draw_point_x(scr, x, y, a, b, color);
+		scr1_draw_point_x(scr, x, y, b, a, color);
 		a++;
 		if ((a * a + b * b) > (r * r))
 			b--;

@@ -146,9 +146,9 @@ int main(int argc, const char **argv) {
 	longan_lcd_draw_buffer(0, 0, 160, 80);
 	*/
 
+	longan_lcd_draw_rectangle(10, 10, 150, 70, CYAN);
 	/*
 	longan_lcd_draw_circle(50, 40, 10, RED);
-	longan_lcd_draw_rectangle(60, 30 - 1, 120, 50 - 1, BLUE);
 	//longan_lcd_fill(60, 30 - 1, 120, 50 - 1, BLUE);
 	//longan_lcd_draw_line(0, 0, 160, 20, CYAN);
 	longan_lcd_draw_line(0, 0, 160, 21, RED);
