@@ -1,130 +1,9 @@
 #include <gd32vf103.h>
 #include <stdio.h>
-#include <stdint.h>
 #include <string.h>
-#include "custom/fd.h"
-#include "util.h"
-#include "longan_lcd.h"
-
-// This array will be put in the `.data` section and it will be initialized by
-// the startup code (in the assembly language file)
-char my_variable[] = "hello, world!";
-
-void init() {
-	rcu_periph_clock_enable(RCU_GPIOA);
-	rcu_periph_clock_enable(RCU_GPIOC);
-	rcu_periph_clock_enable(RCU_USART0);
-
-	eclic_global_interrupt_enable();
-	eclic_priority_group_set(ECLIC_PRIGROUP_LEVEL3_PRIO1);
-	eclic_irq_enable(USART0_IRQn, 1, 0);
-
-	// IO for USART0
-	gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_9);
-	gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_10);
-
-	// trun off all LEDs
-	gpio_bit_set(GPIOA, GPIO_PIN_1 | GPIO_PIN_2);
-	gpio_bit_set(GPIOC, GPIO_PIN_13);
-
-	// IO for LED
-	gpio_init(GPIOA, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ,
-			GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_13);
-	gpio_init(GPIOC, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_13);
-
-	usart_deinit(USART0);
-	usart_baudrate_set(USART0, 128000);
-	usart_word_length_set(USART0, USART_WL_8BIT);
-	usart_stop_bit_set(USART0, USART_STB_1BIT);
-	usart_parity_config(USART0, USART_PM_NONE);
-	usart_hardware_flow_rts_config(USART0, USART_RTS_DISABLE);
-	usart_hardware_flow_cts_config(USART0, USART_CTS_DISABLE);
-	usart_receive_config(USART0, USART_RECEIVE_ENABLE);
-	usart_transmit_config(USART0, USART_TRANSMIT_ENABLE);
-	usart_enable(USART0);
-
-	// enable the interrupt after initializing the usart
-	usart_interrupt_enable(USART0, USART_INT_RBNE);
-}
-
-void fd_init() {
-	bind_file_descriptor(1, putchar);
-}
-
-int putchar(int ch) {
-	usart_data_transmit(USART0, (uint8_t) ch);
-	while (usart_flag_get(USART0, USART_FLAG_TBE) == RESET);
-	return 1;
-}
-
-void c_lib_test() {
-	char buf1[] = "hello, this is from buffer 1.";
-	char buf2[] = "hello, quick brown fox jumps over the lazy dog.";
-
-	printf("buf1(%p): %s\r\nbuf2(%p): %s\r\n", buf1, buf1, buf2, buf2);
-
-	printf("strcmp(buf1, buf2) = %d\r\n", strcmp(buf1, buf2));
-	printf("strcmp(buf2, buf1) = %d\r\n", strcmp(buf2, buf1));
-
-	printf("memcmp(buf1, buf2, 3) = %d\r\n", memcmp(buf1, buf2, 3));
-	printf("memcmp(buf2, buf1, 3) = %d\r\n", memcmp(buf2, buf1, 3));
-
-	printf("memcmp(buf1, buf2, 10) = %d\r\n", memcmp(buf1, buf2, 10));
-	printf("memcmp(buf2, buf1, 10) = %d\r\n", memcmp(buf2, buf1, 10));
-
-	printf("strlen(buf1) = %d\r\n", strlen(buf1));
-
-	printf("memcpy(buf1, buf2, 10): %p\r\n", memcpy(buf1, buf2, 10));
-	printf("buf1(%p): %s\r\nbuf2(%p): %s\r\n", buf1, buf1, buf2, buf2);
-
-	printf("memset(buf1, 'a', 10): %p\r\n", memset(buf1, 'a', 10));
-	printf("buf1(%p): %s\r\nbuf2(%p): %s\r\n", buf1, buf1, buf2, buf2);
-
-	printf("\r\n");
-}
-
-void printf_float_test() {
-	printf("floating point number print:\r\n");
-
-	printf("\t\t pi = |%010.3f|,  e = |%10.3f|\r\n", 3.1415926, 2.718281);
-
-	printf("negative\t-pi = |%010.3f|, -e = |%10.3f|\r\n",
-			-3.1415926, -2.718281);
-
-	printf("'-'\t\t-pi = |%-010.3f|, -e = |%-10.3f|\r\n",
-			-3.1415926, 2.718281);
-
-	printf("partial\t\t pi = |%.4f|, e = |%10f|\r\n",
-			3.1415926, 2.718281);
-
-	printf("no precision\t-pi = |%10f|,  e = |%10f|\r\n",
-			-3.1415926, 2.718281);
-
-	printf("short & noarg\t pi = |%3f|, e = |%f|\r\n",
-			3.1415926, 2.718281);
-
-	printf("\r\n");
-}
-
-void printf_width_test() {
-	printf("too big width test:\r\n|%0100f|\r\n", -3.1415926);
-	printf("too big width test:\r\n|%100f|\r\n", -3.1415926);
-	printf("too big width test:\r\n|%-0100f|\r\n", -3.1415926);
-
-	printf("star test: |%*.*f|\r\n", 10, 3, 3.1415926);
-	printf("star test: |%0*.*f|\r\n", 10, 3, 3.1415926);
-	printf("star test: |%-0*.*f|\r\n", 10, 3, 3.1415926);
-
-	printf("string pad test: |%10.3s|\r\n", "hello");
-	printf("string pad test: |%010.3s|\r\n", "hello");
-	printf("string pad test: |%-10.3s|\r\n", "hello");
-	printf("string pad test: |%-10s|\r\n", "hello");
-	printf("string pad test: |%-.3s|\r\n", "hello");
-	printf("string pad test: |%-.8s|\r\n", "hello");
-	printf("string pad test: |%-10.8s|\r\n", "hello");
-	printf("string pad test: |%10.8s|\r\n", "hello");
-	printf("string pad test: |%4s|\r\n", "hello");
-}
+#include <longan_lcd.h>
+#include "c_lib_test.h"
+#include "init.h"
 
 void update_loop_display() {
 	static unsigned short start_color = 0;
@@ -134,57 +13,41 @@ void update_loop_display() {
 	}
 }
 
-int main(int argc, const char **argv) {
-	init();
-	fd_init();
-	longan_lcd_init();
-
-	longan_lcd_clear(BLACK);
-
-	/*
+void longan_all_screen_white() {
 	memset(longan_lcd_handle.buffer, 0xff, longan_lcd_handle.buffer_size);
 	longan_lcd_draw_buffer(0, 0, 160, 80);
-	*/
+}
 
-	longan_lcd_draw_rectangle(10, 10, 150, 70, CYAN);
-	/*
-	longan_lcd_draw_circle(50, 40, 10, RED);
-	//longan_lcd_fill(60, 30 - 1, 120, 50 - 1, BLUE);
-	//longan_lcd_draw_line(0, 0, 160, 20, CYAN);
-	longan_lcd_draw_line(0, 0, 160, 21, RED);
-	//longan_lcd_draw_line(0, 0, 160, 22, GREEN);
-	longan_lcd_draw_line(0, 0, 160, 80, YELLOW);
-	*/
-
-	int n = printf("this is from the serial port, %s\r\n", my_variable);
-	printf("the size of previous printf is %04d(%04x)%c\r\n", n, n, '~');
-
-	// pointer printing test
-	printf("the address of a string literal: %p\r\n", "hi");
-
-	printf_float_test();
-	printf_width_test();
-
-	c_lib_test();
-
-	dprintf(1, "dprintf test: |%010.3f|\r\n", 3.1415926);
-
+void wfi_test_loop() {
 	while (1) {
-		gpio_bit_set(GPIOC, GPIO_PIN_13);
-		//delay_ms(50);
-
-		//pmu_to_sleepmode(WFI_CMD);
+		printf("entering sleep mode...\r\n");
+		pmu_to_sleepmode(WFI_CMD);
 		//pmu_to_deepsleepmode(PMU_LDO_NORMAL, WFI_CMD);
 		//pmu_to_standbymode(WFI_CMD);
+	}
+}
 
+void circle_display_loop() {
+	while (1) {
+		gpio_bit_set(GPIOC, GPIO_PIN_13);
 		update_loop_display();
-
 		gpio_bit_reset(GPIOC, GPIO_PIN_13);
-		//delay_ms(50);
-
 		update_loop_display();
 
 	}
+}
+
+int main(int argc, const char **argv) {
+	basic_init();
+
+	longan_lcd_clear(BLACK);
+	longan_lcd_draw_rectangle(10, 10, 150, 70, CYAN);
+
+	c_lib_test();
+
+	circle_display_loop();
+
+	//wfi_test_loop();
 
 	return 0;
 }

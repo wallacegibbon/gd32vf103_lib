@@ -17,10 +17,13 @@ endif
 
 CROSS_C_ASM_FLAGS = -W -g -Os -ffunction-sections -fdata-sections -fno-common \
 	-fno-builtin \
-	-I$(LIBDIR)/core_lib -I$(LIBDIR)/soc_lib \
-	-I$(LIBDIR)/soc_lib/src -I$(LIBDIR)/soc_lib/inc \
-	-I$(LIBDIR)/c_lib -I$(LIBDIR)/board_longan_lib -I./src \
-	$(ARCH_AND_ABI) -DCONFIG_USE_FLOAT=$(CONFIG_USE_FLOAT)
+	-I$(LIBDIR)/soc_lib -I$(LIBDIR)/soc_lib/src -I$(LIBDIR)/soc_lib/inc \
+	-I$(LIBDIR)/core_lib \
+	-I$(LIBDIR)/c_lib \
+	-I$(LIBDIR)/board_longan_lib \
+	-I./src \
+	$(ARCH_AND_ABI) \
+	-DCONFIG_USE_FLOAT=$(CONFIG_USE_FLOAT)
 
 ifeq "$(CONFIG_IS_LONGAN)" "1"
 	CROSS_C_ASM_FLAGS += -DLONGON_NANO
@@ -67,10 +70,10 @@ ifeq "$(CONFIG_IS_LONGAN)" "1"
 	C_FILES += $(wildcard $(LIBDIR)/board_longan_lib/*.c)
 endif
 
-ASM_OBJS = $(patsubst %.S, %.o, $(ASM_FILES))
-C_OBJS = $(patsubst %.c, %.o, $(C_FILES))
+ASM_OBJ_FILES = $(patsubst %.S, %.o, $(ASM_FILES))
+C_OBJ_FILES = $(patsubst %.c, %.o, $(C_FILES))
 
-OBJ_FILES = $(C_OBJS) $(ASM_OBJS)
+OBJ_FILES = $(ASM_OBJ_FILES) $(C_OBJ_FILES)
 
 all: $(TARGET_NAME).hex
 
