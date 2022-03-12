@@ -52,23 +52,13 @@ CROSS_OBJCOPY = $(CROSS_COMPILER_PREFIX)objcopy
 CROSS_OBJDUMP = $(CROSS_COMPILER_PREFIX)objdump
 CROSS_SIZE = $(CROSS_COMPILER_PREFIX)size
 
-ASM_FILES = $(wildcard $(LIBDIR)/soc_lib/*.S)
-ASM_FILES += $(wildcard $(LIBDIR)/soc_lib/src/*.S)
-ASM_FILES += $(wildcard $(LIBDIR)/core_lib/*.S)
-ASM_FILES += $(wildcard $(LIBDIR)/c_lib/*/*.S)
+ASM_FILES = $(wildcard $(LIBDIR)/*_lib/*.S)
+ASM_FILES += $(wildcard $(LIBDIR)/*_lib/*/*.S)
 ASM_FILES += $(wildcard ./src/*.S)
-ifeq "$(CONFIG_IS_LONGAN)" "1"
-	ASM_FILES += $(wildcard $(LIBDIR)/board_longan_lib/*.S)
-endif
 
-C_FILES = $(wildcard $(LIBDIR)/soc_lib/*.c)
-C_FILES += $(wildcard $(LIBDIR)/soc_lib/src/*.c)
-C_FILES += $(wildcard $(LIBDIR)/core_lib/*.c)
-C_FILES += $(wildcard $(LIBDIR)/c_lib/*/*.c)
+C_FILES = $(wildcard $(LIBDIR)/*_lib/*.c)
+C_FILES += $(wildcard $(LIBDIR)/*_lib/*/*.c)
 C_FILES += $(wildcard ./src/*.c)
-ifeq "$(CONFIG_IS_LONGAN)" "1"
-	C_FILES += $(wildcard $(LIBDIR)/board_longan_lib/*.c)
-endif
 
 ASM_OBJ_FILES = $(patsubst %.S, %.o, $(ASM_FILES))
 C_OBJ_FILES = $(patsubst %.c, %.o, $(C_FILES))
@@ -90,13 +80,13 @@ $(TARGET_NAME).elf: $(OBJ_FILES)
 	@$(CROSS_LD) $(CROSS_LD_FLAGS) -o $@ $^
 
 %.o: %.c
-	@echo "\tCROSS_CC $<..."
+	@echo "\tCompiling $<..."
 	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM $< | \
 		sed "s,$(@F)\s*:,$@:," > $<.d
 	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c $< -o $@
 
 %.o: %.S
-	@echo "\tCROSS_CC $<..."
+	@echo "\tCompiling $<..."
 	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM $< | \
 		sed "s,$(@F)\s*:,$@:," > $<.d
 	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c $< -o $@
