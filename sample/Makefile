@@ -60,8 +60,8 @@ C_FILES = $(wildcard $(LIBDIR)/*_lib/*.c)
 C_FILES += $(wildcard $(LIBDIR)/*_lib/*/*.c)
 C_FILES += $(wildcard ./src/*.c)
 
-ASM_OBJ_FILES = $(patsubst %.S, %.o, $(ASM_FILES))
-C_OBJ_FILES = $(patsubst %.c, %.o, $(C_FILES))
+ASM_OBJ_FILES = $(patsubst %.S, %.S.o, $(ASM_FILES))
+C_OBJ_FILES = $(patsubst %.c, %.c.o, $(C_FILES))
 
 OBJ_FILES = $(ASM_OBJ_FILES) $(C_OBJ_FILES)
 
@@ -82,13 +82,13 @@ $(TARGET_NAME).elf: $(OBJ_FILES)
 	@echo "\n\tLinking..."
 	@$(CROSS_LD) $(CROSS_LD_FLAGS) -o $@ $^
 
-%.o: %.c
+%.c.o: %.c
 	@echo "\tCompiling $<..."
 	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM $< \
 		| sed "s,$(@F)\s*:,$@:," > $<.d
 	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c $< -o $@
 
-%.o: %.S
+%.S.o: %.S
 	@echo "\tCompiling $<..."
 	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM $< \
 		| sed "s,$(@F)\s*:,$@:," > $<.d
