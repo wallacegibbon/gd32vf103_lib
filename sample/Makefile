@@ -84,15 +84,13 @@ $(TARGET_NAME).elf: $(OBJ_FILES)
 
 %.c.o: %.c
 	@echo "\tCompiling $<..."
-	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM $< \
-		| sed "s,$(@F)\s*:,$@:," > $<.d
-	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c $< -o $@
+	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM -MT $@ -MF $<.d $<
+	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c -o $@ $<
 
 %.S.o: %.S
 	@echo "\tCompiling $<..."
-	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM $< \
-		| sed "s,$(@F)\s*:,$@:," > $<.d
-	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c $< -o $@
+	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM -MT $@ -MF $<.d $<
+	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c -o $@ $<
 
 DEPENDENCY_FILES = $(patsubst %.S, %.S.d, $(ASM_FILES))
 DEPENDENCY_FILES += $(patsubst %.c, %.c.d, $(C_FILES))

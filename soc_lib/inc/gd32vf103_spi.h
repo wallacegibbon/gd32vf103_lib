@@ -165,15 +165,11 @@
 struct spi_param {   
 	// SPI master or slave
 	uint32_t device_mode;
-
 	uint32_t trans_mode;
-
 	// SPI frame size
 	uint32_t frame_size;
-
 	// SPI NSS control by handware or software
 	uint32_t nss;
-
 	uint32_t endian;
 	uint32_t clock_polarity_phase;
 	uint32_t prescale;
@@ -181,7 +177,7 @@ struct spi_param {
 
 // SPI mode definitions
 #define SPI_MASTER			(SPI_CTL0_MSTMOD | SPI_CTL0_SWNSS)
-#define SPI_SLAVE			((uint32_t) 0x00000000U)
+#define SPI_SLAVE			0
 
 // SPI work in transmit-only mode
 #define SPI_BIDIRECTIONAL_TRANSMIT	SPI_CTL0_BDOEN
@@ -190,7 +186,7 @@ struct spi_param {
 
 // SPI transmit type
 // SPI receive and send data at fullduplex communication
-#define SPI_TRANSMODE_FULLDUPLEX	((uint32_t) 0x00000000U)
+#define SPI_TRANSMODE_FULLDUPLEX	0
 // SPI only receive data
 #define SPI_TRANSMODE_RECEIVEONLY	SPI_CTL0_RO
 // bidirectional receive data
@@ -200,21 +196,21 @@ struct spi_param {
 
 // SPI frame size
 #define SPI_FRAMESIZE_16BIT		SPI_CTL0_FF16
-#define SPI_FRAMESIZE_8BIT            	((uint32_t) 0x00000000U)
+#define SPI_FRAMESIZE_8BIT            	0
 
 // SPI NSS control by software
 #define SPI_NSS_SOFT			SPI_CTL0_SWNSSEN
 // SPI NSS control by hardware
-#define SPI_NSS_HARD                    ((uint32_t) 0x00000000U)
+#define SPI_NSS_HARD                    0
 
 // SPI transmit way is big endian: transmit MSB first
-#define SPI_ENDIAN_MSB			((uint32_t) 0x00000000U)
+#define SPI_ENDIAN_MSB			0
 // SPI transmit way is little endian: transmit LSB first
 #define SPI_ENDIAN_LSB			SPI_CTL0_LF
 
 
 // SPI clock polarity is low level and phase is first edge
-#define SPI_CK_PL_LOW_PH_1EDGE		((uint32_t) 0x00000000U)
+#define SPI_CK_PL_LOW_PH_1EDGE		0
 // SPI clock polarity is high level and phase is first edge
 #define SPI_CK_PL_HIGH_PH_1EDGE		SPI_CTL0_CKPL
 
@@ -261,7 +257,7 @@ struct spi_param {
 #define I2S_FRAMEFORMAT_DT32B_CH32B	(I2SCTL_DTLEN(2) | SPI_I2SCTL_CHLEN)
 
 // I2S master clock output
-#define I2S_MCKOUT_DISABLE		((uint32_t) 0x00000000U)
+#define I2S_MCKOUT_DISABLE		0
 #define I2S_MCKOUT_ENABLE		SPI_I2SPSC_MCKOEN
 
 // I2S operation mode
@@ -291,40 +287,40 @@ struct spi_param {
 #define I2S_STD_PCMLONG			(I2SCTL_I2SSTD(3) | SPI_I2SCTL_PCMSMOD)
 
 // I2S clock polarity
-#define I2S_CKPL_LOW			((uint32_t) 0x00000000U)
+#define I2S_CKPL_LOW			0
 #define I2S_CKPL_HIGH			SPI_I2SCTL_CKPL
 
 /* SPI DMA constants definitions */                                    
-#define SPI_DMA_TRANSMIT		((uint8_t) 0x00U)
-#define SPI_DMA_RECEIVE			((uint8_t) 0x01U)
+#define SPI_DMA_TRANSMIT		((uint8_t) 0)
+#define SPI_DMA_RECEIVE			((uint8_t) 1)
 
 // SPI CRC constants definitions
-#define SPI_CRC_TX			((uint8_t) 0x00U)
-#define SPI_CRC_RX			((uint8_t) 0x01U)
+#define SPI_CRC_TX			((uint8_t) 0)
+#define SPI_CRC_RX			((uint8_t) 1)
 
 // SPI/I2S interrupt enable/disable constants definitions
 // transmit buffer empty interrupt
-#define SPI_I2S_INT_TBE			((uint8_t) 0x00U)
+#define SPI_I2S_INT_TBE			((uint8_t) 0)
 // receive buffer not empty interrupt
-#define SPI_I2S_INT_RBNE		((uint8_t) 0x01U)
+#define SPI_I2S_INT_RBNE		((uint8_t) 1)
 // error interrupt
-#define SPI_I2S_INT_ERR			((uint8_t) 0x02U)
+#define SPI_I2S_INT_ERR			((uint8_t) 2)
 
 // SPI/I2S interrupt flag constants definitions
 // transmit buffer empty interrupt flag
-#define SPI_I2S_INT_FLAG_TBE		((uint8_t) 0x00U)
+#define SPI_I2S_INT_FLAG_TBE		((uint8_t) 0)
 // receive buffer not empty interrupt flag
-#define SPI_I2S_INT_FLAG_RBNE		((uint8_t) 0x01U)
+#define SPI_I2S_INT_FLAG_RBNE		((uint8_t) 1)
 // overrun interrupt flag
-#define SPI_I2S_INT_FLAG_RXORERR	((uint8_t) 0x02U)
+#define SPI_I2S_INT_FLAG_RXORERR	((uint8_t) 2)
 // config error interrupt flag
-#define SPI_INT_FLAG_CONFERR		((uint8_t) 0x03U)
+#define SPI_INT_FLAG_CONFERR		((uint8_t) 3)
 // CRC error interrupt flag
-#define SPI_INT_FLAG_CRCERR		((uint8_t) 0x04U)
+#define SPI_INT_FLAG_CRCERR		((uint8_t) 4)
 // underrun error interrupt flag
-#define I2S_INT_FLAG_TXURERR		((uint8_t) 0x05U)
+#define I2S_INT_FLAG_TXURERR		((uint8_t) 5)
 // format error interrupt flag
-#define SPI_I2S_INT_FLAG_FERR		((uint8_t) 0x06U)
+#define SPI_I2S_INT_FLAG_FERR		((uint8_t) 6)
 
 // SPI/I2S flag definitions
 // receive buffer not empty flag
