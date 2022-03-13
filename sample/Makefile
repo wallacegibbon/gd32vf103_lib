@@ -65,7 +65,10 @@ C_OBJ_FILES = $(patsubst %.c, %.o, $(C_FILES))
 
 OBJ_FILES = $(ASM_OBJ_FILES) $(C_OBJ_FILES)
 
-all: $(TARGET_NAME).hex
+TARGET_BINARY_FILES = \
+	$(TARGET_NAME).elf $(TARGET_NAME).hex $(TARGET_NAME).bin
+
+all: $(TARGET_BINARY_FILES)
 
 $(TARGET_NAME).hex: $(TARGET_NAME).elf
 	@echo "\tGenerating hex and bin files..."
@@ -81,14 +84,14 @@ $(TARGET_NAME).elf: $(OBJ_FILES)
 
 %.o: %.c
 	@echo "\tCompiling $<..."
-	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM $< | \
-		sed "s,$(@F)\s*:,$@:," > $<.d
+	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM $< \
+		| sed "s,$(@F)\s*:,$@:," > $<.d
 	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c $< -o $@
 
 %.o: %.S
 	@echo "\tCompiling $<..."
-	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM $< | \
-		sed "s,$(@F)\s*:,$@:," > $<.d
+	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -MM $< \
+		| sed "s,$(@F)\s*:,$@:," > $<.d
 	@$(CROSS_CC) $(CROSS_C_ASM_FLAGS) -c $< -o $@
 
 DEPENDENCY_FILES = $(patsubst %.S, %.S.d, $(ASM_FILES))
@@ -99,7 +102,7 @@ DEPENDENCY_FILES += $(patsubst %.c, %.c.d, $(C_FILES))
 .PHONY: load openocd debug lss tags clean
 
 load:
-	@echo "\tWrite to the target machine..."
+	@echo "\tLoad program to the target machine..."
 	@$(OPENOCD_CMD) $(OPENOCD_ARGS) -d1 \
 		-c "program $(TARGET_NAME).bin verify reset exit"
 openocd:
@@ -114,10 +117,10 @@ tags:
 	@find $(LIBDIR) . -regex '.*\.[ch]' -exec realpath {} \; \
 		| sort | uniq | xargs ctags
 lss:
-	@echo "\tGenerating the disassembled file..."
+	@echo "\tGenerating disassembled file..."
 	@$(CROSS_OBJDUMP) -S -D $(TARGET_NAME).elf > $(TARGET_NAME).lss
 clean:
 	@echo "\tRemoving generated files..."
-	@rm -f $(OBJ_FILES) $(DEPENDENCY_FILES) \
-		*.elf *.hex *.bin *.lss tags
+	@rm -f $(TARGET_BINARY_FILES) $(OBJ_FILES) $(DEPENDENCY_FILES) \
+		$(TARGET_NAME).lss tags
 
